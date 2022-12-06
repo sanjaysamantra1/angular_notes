@@ -71,7 +71,7 @@ Angular
 -provides ready to use tools,standards			-provides reusable functions for our code
  templates for fast application development
 -Collection of libraries & APIs					-collection of helper functions,objects
--cann't be easily replaceable 					-can be easily replaceable by another library
+-cann't be easily replaceable 					-can be easily replaceable 
 -angular,vue									-jQuery,lodash,momentjs,ReactJs
 -Hospital with full of doctors					-A doctor specialized in 1 thing		
 
@@ -138,6 +138,28 @@ Component
 -Each component defines a class that contains application data and logic, and is associated with an HTML template that defines a view to be displayed.
 -@Component() decorator identifies the class immediately below it as a component, and provides the template and related component-specific metadata.
 
+https://angular.io/api/core/Component#description
+
+@Component configuration options:
+--------------------------------
+selector:      Ex: 'app-header'
+template:      `<div>This is header Component</div>`
+templateUrl:   './header.component.html'
+styles:  	   ['.class1{color:red}']
+styleUrls:     ['./header.component.css']
+encapsulation: ViewEncapsulation.ShadowDom
+providers:     [Services]
+changeDetection:ChangeDetectionStrategy.OnPush
+viewProviders: []
+moduleId:  ''
+animations:  []
+interpolation: []
+entryComponents: []
+preserveWhitespaces?: boolean
+standalone?: boolean
+imports:[]
+schemas?:[]
+
 
 
 Decorators
@@ -179,10 +201,10 @@ Module	    ng g module my-new-module
 
 
 Angular Project - Folder Structure
-===================================
+==================================
 .editorconfig	: Configuration for code editors. See EditorConfig.
 .gitignore		: Specifies intentionally untracked files that Git should ignore.
-README.md		: Introductory documentation for the root application.
+README.md		: Introductory documentation for the application.
 angular.json	: CLI configuration defaults for all projects in the workspace, including configuration options for build, serve, and test tools that the CLI uses, such as TSLint, Karma, and Protractor. For details, see Angular Workspace Configuration.
 package.json	: Configures npm package dependencies that are available to all projects in the workspace. See npm documentation for the specific format and contents of this file.
 package-lock.json : 	Provides version information for all packages installed into node_modules by the npm client. See npm documentation for details. If you use the yarn client, this file will be yarn.lock instead.
@@ -743,7 +765,7 @@ there are 2 change detection strategies:
 
 Angular Services
 ****************
-- share logic/data across components
+- share logic/data across components.
 - code Reuseability
 	(write once use that in multiple components)
 - Lazily instantiated
@@ -811,6 +833,12 @@ PUT vs POST
 -(POST)if you retry the request N times, you will end up having N resources with N different URIs created on server.
 -Use PUT when you want to modify a singular resource which is already a part of resources collection.
 -Use POST when you want to add a child resource under resources collection.
+
+
+Idempotent
+----------
+-It ensures that multiple identical requests will have similar response no matter how many times they get called.
+
 
 
 PUT vs PATCH
@@ -894,7 +922,7 @@ HttpClient vs fetch()
 models in Angular
 -----------------
 -Handling raw JSON objects is really painful and hard to maintain.
- ex:-Users have a firstName and a lastName.the full name of your user within your templates like this:
+ ex:-Users have a firstName and a lastName.the full name of your user within your templates looks like this:
      <li *ngFor="let user of users">{{ user.firstName }} {{ user.lastName }}</li>
 	what if customer calls and tells that the order of firstname and lastname should be switched,go through every template and switch the expressions.
 -But if your user is a User object, you can simply implement a function to print the fullname.
@@ -910,7 +938,7 @@ models in Angular
 Http Interceptor
 ----------------
 -interceptors are used to pre-process and post-process the HTTP request.
--Used before sending and after getting response from the server. 
+-Used before sending request and after getting response from the server. 
 -Add an Access Token  or some custom HTTP header for all outgoing HTTP requests.
 -Create a global Error catch incase HTTP Request fails.
 -Create a mock response to test.
@@ -945,7 +973,7 @@ observables
 ***********
 -An Observable is an entity that emits (or publishes) multiple data values (stream of data)over time and asynchronously.
 -observables are lazy collections of multiple values over time.
--Observables help you manage asynchronous data, such as data coming from a backend service.
+-Observables help to manage asynchronous data, such as data coming from a backend service.
 -To use observables, Angular uses a third-party library called Reactive Extensions (RxJS).
 -used for event handling, asynchronous programming, and handling multiple values.
 
@@ -1034,8 +1062,7 @@ switchMap() = map + switch
 	-Switching to the Most Recent Observable & cancelling previous observables.
 	-SwitchMap emits items only from the most recent inner Observable.
 	-SwitchMap cancels previous inner Observables when a new inner Observable appears. 
-	-Items of inner Observable that were emitted after the Observable was canceled will be lost(not included in the resulting Observable).
-	-A very common use case for switchMap is a search Typeahead.where you are no longer concerned with the response of the previous request when a new input arrives
+	-A very common use case for switchMap is a search Typeahead.where you are no longer concerned with the response of the previous request when a new input arrives.
 	-If only one inner subscription should be active at a time, try switchMap
 
    
@@ -1143,7 +1170,7 @@ Model driven forms/Reactive Forms Features
 --------------------------------------
 -More flexible
 -Handles any complex scenarios
--No data binding is done (immutable data model preferred by most developers)
+-No data binding is done (immutable data model)
 -More component code and less HTML markup
 -Adding elements dynamically
 -Easier unit testing(testing validation logic)
@@ -1251,7 +1278,8 @@ Validate a form on blur/change/submit
 --------------------------------------
 lastname: new FormControl("tendulkar",
       { validators: [Validators.required], updateOn: "blur" }
-    )
+    )	
+new FormGroup({fName:new FormControl()}, { updateOn: 'submit' })
 	
 	
 	
@@ -1292,7 +1320,7 @@ URL segments: parts of the URL that are divided by slashes
 
 
 routing Program:
------------------
+----------------
 1. create components
 	ng g c home
 	ng g c aboutus
@@ -1315,7 +1343,7 @@ routing Program:
 
 
 3.  Nav-bar.component.html   
-   <a class="nav-link" routerLink="home">Home</a>
+   <a class="nav-link" routerLink="home" routerLinkActive="active-link">Home</a>
    <a class="nav-link" routerLink="aboutus">Aboutus</a>
    <a class="nav-link" routerLink="careers">Careers</a>
    
@@ -1526,6 +1554,8 @@ vendor.js: it contains all the 3rd party library deatils.
 			(bootstrap,d3chart,ngx-pagination,ng2-search,sweetalert2)
 scripts.js: It contains the scripts you declare in the scripts section of your angular.json file.
 
+lazy-loaded  modules
+
 			
 web-pack:
 ---------
@@ -1588,7 +1618,7 @@ Deploy Angular Application in GitHub
 2. build angular project 'project1'
    ng build --output-path docs --base-href project1   
 3. create a new github repository 'deploy_angular_in_github'
-4. in your project folder initialize git & link to remote Repo
+4. in your project folder initialize git & link to remote Repository
    git init
    git add .
    git commit -m "first commit"
@@ -1614,7 +1644,7 @@ Unit Testing Using Jasmine and karma
 -karma is a test runner ( Runs the test cases & generates Report)
 
 ng test/t --code-coverage=true
- 
+
  
 Jasmine Terminologies
 =====================
@@ -1640,7 +1670,7 @@ toContain()
 
 
 Jasmine Global Functions
------------------------
+------------------------
 beforeAll()
 beforeEach()
 afterEach()
@@ -1649,6 +1679,7 @@ afterAll()
 fdescribe() - focused describe. If it exists, jasmine will run only fdescribe spec and ignore other type of describe (describe and xdescribe).
 xdescribe() - disabled describe. It will never be executed.
 fit() - focused it()
+xit() - disabled it()
 
 
 
@@ -1788,6 +1819,9 @@ Angular Preloading Strategy
  ex: authentication module, core module, shared module etc
 2.Preload all frequently used modules, may be after some delay
 3.Lazy load remaining modules
+
+https://www.tektutorialshub.com/angular/angular-preloading-strategy/
+
 								
 
 ShadowDom 

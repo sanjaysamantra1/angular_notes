@@ -1210,25 +1210,38 @@ export class AppComponent {
 
 Program: Model Class
 -----------------------------
-export class EmployeeClass {
+export class Employee {
   private id: number;
   private firstName: string;
   private lastName: string;
-  private salary: number;
-  constructor(id: number, firstName: string, lastName, salary: number) {
+  private sal: number;
+
+  constructor(id: number, firstName: string, lastName: string, sal: number) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
-    this.salary = salary;
+    this.sal = sal;
   }
   getFullName(): string {
     return `${this.firstName} ${this.lastName}`;
   }
   getYearlySalary(): number {
-    return 12 * this.salary;
+    return 12 * this.sal;
   }
 }
-	
+
+
+getEmployees(): Observable<Employee[]> {
+    return this.httpClient.get<Employee[]>(this.url, { observe: 'body' }).pipe(
+      map((response: Employee[]) => {
+        return response.map((emp: Employee) => {
+          return new Employee(emp.id, emp.firstName, emp.lastName, emp.sal);
+        });
+      })
+    );
+  }	
+  
+  
 
 	
 Program-39 HTTP Interceptor Example
@@ -1248,11 +1261,8 @@ export class MyInterceptor implements HttpInterceptor{
 }
 
 ============
-	{
-      provide: HTTP_INTERCEPTORS,
-      useClass: MyInterceptor,
-      multi: true
-    } //in modules providers
+{ provide: HTTP_INTERCEPTORS, useClass: MyInterceptor1, multi: true }
+//in modules providers
 
 
 
@@ -1519,65 +1529,132 @@ export class TestComponent implements AfterViewInit {
 
 program-44 :  TypeAhead using SwitchMap
 --------------------------------------
-Get continents
-<input id="type-ahead" />
-<hr />
-<div id="output"></div>
-----------------------------------
-import { fromEvent, of } from 'rxjs';
-import {
-  debounceTime,
-  distinctUntilChanged,
-  map,
-  switchMap,
-  tap
-} from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 
-const getContinents = keys =>
-  [
-    'africa',
-    'antarctica',
-    'asia',
-    'australia',
-    'europe',
-    'north america',
-    'south america'
-  ].filter(e => e.indexOf(keys.toLowerCase()) > -1);
+interface PeopleData {
+  name: string;
+  birthYear: string;
+  height: number;
+  weight: number;
+  eyeColor: string;
+}
 
-const fakeContinentsRequest = keys =>
-  of(getContinents(keys)).pipe(
-    tap(_ => console.log(`API CALL at ${new Date()}`))
-  );
+@Component({
+  selector: 'my-app',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'],
+})
+export class AppComponent implements OnInit {
+  searchResult$: Observable<PeopleData>;
 
-fromEvent(document.getElementById('type-ahead'), 'keyup')
-  .pipe(
-    debounceTime(200),
-    map((e: any) => e.target.value),
-    distinctUntilChanged(),
-    switchMap(fakeContinentsRequest),
-    tap(c => (document.getElementById('output').innerText = c.join('\n')))
-  )
-  .subscribe();
-  
---------------------
-const searchBox = document.getElementById('search-box') as HTMLInputElement;
-const typeahead = fromEvent(searchBox, 'input').pipe(
-  map(e => (e.target as HTMLInputElement).value),
-  filter(text => text.length > 2),
-  debounceTime(10),
-  distinctUntilChanged(),
-  switchMap(searchTerm => ajax(`/api/endpoint?search=${searchTerm}`))
-);
+  search = new FormControl();
 
-typeahead.subscribe(data => {
-  // Handle the data from the API
-});
-  
-  
-  
+  searchFormGroup = new FormGroup({
+    search: this.search,
+  });
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    this.searchResult$ = this.search.valueChanges.pipe(
+      switchMap((term) =>
+        this.http.get<any>(`https://swapi.dev/api/people/?search=${term}`)
+      ),
+      map((response) =>
+        response.count > 0 ? response.results[0] : { name: 'No results' }
+      ),
+      map(
+        (response) =>
+          ({
+            name: response.name,
+            birthYear: response.birth_year,
+            height: Number(response.height),
+            weight: Number(response.mass),
+            eyeColor: response.eye_color,
+          } as PeopleData)
+      )
+    );
+  }
+}
+--------------------------------
+<div class="body">
+  <h1>Search for a Star Wars Character</h1>
+  <p>
+    Simply start typing the name of your favorite Star Wars character to see
+    more details about them!
+  </p>
+
+  <div [formGroup]="searchFormGroup">
+    <input formControlName="search" />
+  </div>
+
+  <ng-container *ngIf="searchResult$ | async as person">
+    <table *ngIf="person.name !== 'No results'; else noResults ">
+      <tr>
+        <td class="heading">
+          Name
+        </td>
+        <td>
+          {{ person.name }}
+        </td>
+      </tr>
+
+      <tr></tr>
+      <tr>
+        <td class="heading">
+          Birth Year
+        </td>
+        <td>
+          {{ person.birthYear }}
+        </td>
+      </tr>
+
+      <tr></tr>
+      <tr>
+        <td class="heading">
+          Height
+        </td>
+        <td>
+          {{ person.height }} cm
+        </td>
+      </tr>
+
+      <tr></tr>
+      <tr>
+        <td class="heading">
+          Weight
+        </td>
+        <td>
+          {{ person.weight }} kg
+        </td>
+      </tr>
+
+      <tr></tr>
+      <tr>
+        <td class="heading">
+          Eye Color
+        </td>
+        <td>
+          {{ person.eyeColor }}
+        </td>
+      </tr>
+
+      <tr></tr>
+    </table>
+
+    <ng-template #noResults>
+      No Results Found
+    </ng-template>
+  </ng-container>
+</div>
+
   
 
-program RXJS-Subject Example
+program - exhaustMap Example
 ----------------------------
 exhaustMapDemo() {
     const clicks = fromEvent(document, 'click');
@@ -1607,7 +1684,7 @@ export class MessageService {
   }
 
   clearMessages() {
-    this.subject.next();
+    this.subject.next(null);
   }
 
   getMessage(): Observable<any> {
@@ -2301,7 +2378,7 @@ Program-56:Path-Param Example
     this.sub = this.route.params.subscribe(params => {
        this.id = +params['id']; // (+) converts string 'id' to a number
 
-       // In a real app: dispatch action to load the details here.
+       // In a real app: make Http call to get the details
     });
   }	
 
