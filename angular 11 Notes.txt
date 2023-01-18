@@ -188,6 +188,7 @@ c: Component
 
 scaffold	usage
 ---------   --------
+project     ng new <ProjectName>
 Component	ng g component my-new-component
 Directive	ng g directive my-new-directive
 Pipe	    ng g pipe my-new-pipe
@@ -292,17 +293,16 @@ CSS
 4. styleUrls[] in component
 5. styles.css global
 
-Note:- the styles in the style(CSS) file applies only to one component. 
+Note:- the styles written in component's css file applies only to one component. 
       They are not inherited by any components nested within the template nor by any content projected into the component
 
 
 
 View Encapsulation
 ******************
-View encapsulation defines whether the template and styles defined within the component 
-can affect the whole application or vice versa. 
+View encapsulation defines whether the template and styles defined within the component can affect the whole application or vice versa. 
 
-Angular provides these encapsulation strategies:
+Angular provides below encapsulation strategies:
 1. Emulated (default) - styles from main HTML(index.html) propagates to the component. 
 					Styles defined in component are scoped to that component only.
 
@@ -317,14 +317,14 @@ ex:- encapsulation: ViewEncapsulation.None
 	 encapsulation: ViewEncapsulation.shadowDOM
 	 encapsulation: ViewEncapsulation.Emulated(default)
 
-Emulated: main HTML--->parent Component (yes)
-		  main HTML-->child component (yes)
+Emulated: index HTML--->parent Component (yes)
+		  index HTML-->child component (yes)
 		  Parent(Emulated) --> child(Emulated) (No)
-ShadowDom: main HTML--->parent Component (No)
-		   main HTML-->child component (No)
+ShadowDom: index HTML--->parent Component (No)
+		   index HTML-->child component (No)
 		   Parent (shadowDOM) --> child(Emulated) (Yes)		   
 		   Parent (shadowDOM) --> child(ShadowDom) (No)		   
-None: main<--->parent Component(None)<-->child component
+None: index<--->parent Component(None)<-->child component
 	 
 
 
@@ -391,23 +391,6 @@ read data from a JSON file
 
 
 
-Custom Directives
-=================
--Create custom directives to attach custom behavior to elements in the DOM.
--@Directive decorator is used to create a custom Directive.
--directives won't have templates, whereas components have templates.
-
--@HostBinding allows to set properties on the element that hosts the directive, 
--@HostListener allows to listen for events on the host element.
-
-
-
-Component vs Directive
-----------------------
--Component has View/Template  where as Directives won't have View/Template.
--Components are used to create UI widgets , Directives are used to add behavior to an existing DOM element.
-
-
 
 
 ng-template , ng-container
@@ -426,10 +409,20 @@ ng-content/ Content projection
 -used to create configurable components.
 -Components that are used in published libraries make use of <ng-content> to make themselves configurable.
 -if We want to insert HTML elements or other components in a component, then We do that using the concept of content projection. 
--We achieve content projection using <ng-content></ng-content>.  
--We can make reusable components and scalable applications by properly using content projection.
+-We achieve content projection using <ng-content></ng-content>
 https://www.freecodecamp.org/news/everything-you-need-to-know-about-ng-template-ng-content-ng-container-and-ngtemplateoutlet-4b7b51223691/
 
+
+child
+======
+<ng-content></ng-content>
+<ng-content select="#div1"></ng-content>
+<ng-content select=".div2"></ng-content>
+<ng-content select="span"></ng-content>
+
+parent
+======
+<h1 id="div1">Registration Form</h1>
 
 
 ngxPagination
@@ -472,13 +465,10 @@ ng2searchfilter
 How to use SweetAlert	
 =====================	
 1. npm i sweetalert2	
-2. import Swal from 'sweetalert2'	
+2. import sweet-Alert in your component
+   import Swal from 'sweetalert2'	
 3. on button click call a function, which has the below code	
-	Swal.fire(	
-	  'Good job!',	
-	  'You clicked the button!',	
-	  'success'	
-	)
+   Swal.fire('Good job!', 'You clicked the button!', 'success');
 
 
 
@@ -486,11 +476,34 @@ How to use SweetAlert
 Assignment
 ----------
 1. create 1 EmployeeCRUD component
-2. display list of employees in a table
-3. user should be able to delete Employee
+2. display list of employees in a table(data comes from an array)
+3. user should be able to delete Employee (ask user confirmation)
 4. view the details of each employee in a modal (bootstrap)
 5. add a new employee to the table
-6. use sweetAlert to display messages
+6. use sweetAlert to display messages ('Added Successfully')
+
+
+
+
+
+
+Custom Directives
+=================
+-Create custom directives to attach custom behavior to elements in the DOM.
+-@Directive decorator is used to create a custom Directive.
+-directives won't have templates, whereas components have templates.
+
+-@HostBinding allows to set properties on the element that hosts the directive, 
+-@HostListener allows to listen for events on the host element.
+
+
+
+
+
+Component vs Directive
+----------------------
+-Component has View/Template  where as Directives won't have View/Template.
+-Components are used to create UI widgets , Directives are used to add behavior to an existing DOM element.
 
 
 	
@@ -678,8 +691,7 @@ Child to parent
 component lifecycle hooks/method 
 -------------------------------- 
 constructor - ngOnChanges - ngOnInit  - ngDoCheck - ngAfterContentInit - 
-ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - 
-ngOnDestroy. (1+8)
+ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - ngOnDestroy. (1+8)
 
  
 3 steps to use lifecycle hooks, they are:
@@ -722,7 +734,7 @@ ngOnInit()
 ngDoCheck()
 -Invoked when the change detector of the given component is invoked. 
 -It allows us to implement our own change detection algorithm for the given component.
--Use ngDoCheck when you want to capture changes that Angular doesn't capture.
+-useful to detect and act upon the changes that can not be detected by Angular on its own.
 
  
  
@@ -741,7 +753,7 @@ Invoked when the component’s view has been fully initialized.
 this is the best place for DOM manipulation.
 
 ngAfterViewChecked()
-Invoked each time the view of the given component has been checked by the change detection mechanism of Angular.
+after the default change detector has completed one change-check cycle for a component's view.
 
 N.p-ngDoCheck and ngOnChanges should not be implemented together on the same component
 
@@ -812,7 +824,8 @@ HTTP Methods
 GET - Retrieve a resource/Retrieve data from DB
 	  search
 	  
-POST - to send data to server  ( sign up ) (create a resource/create a new record in DB)
+POST - to send data to server  ( sign up ) 
+	   create a resource/create a new record in DB
 	   to fetch data securly    (send params in body not in URL)
 
 PUT - update data/create or replace a resource  
@@ -827,7 +840,7 @@ DELETE - remove a resource/delete a record from DB
 PUT vs POST
 -----------
 -PUT for UPDATE operations, POST for CREATE operations.
--PUT is idempotent, where POST is non-idempotent
+-PUT is idempotent, where POST is non-idempotent.
 -Idempotence(producing the same result even if the same request is made multiple times)
 -(PUT)if you retry a request N times, that should be equivalent to single request modification.
 -(POST)if you retry the request N times, you will end up having N resources with N different URIs created on server.
@@ -860,6 +873,7 @@ http status codes
 POSTMAN
 =======
 -application / Chrome extension used to Test REST APIs.
+ https://www.postman.com/downloads/
 
 
 Fake Online REST API for Testing 
@@ -869,18 +883,19 @@ Fake Online REST API for Testing
 4. https://api.github.com/users/google
 5. https://dummyjson.com/products
 6. https://dummy.restapiexample.com/
-
+7. https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies
+https://api.publicapis.org/entries
 
 
 Create REST API with json-server
---------------------------------
+================================
 https://medium.com/codingthesmartway-com-blog/create-a-rest-api-with-json-server-36da8680136d
 
-1.  Install json-server (not necessarily in a project, run the below command in cmd)
+1.Install json-server (not necessarily inside angular project, run the below command in cmd)
 	npm install -g json-server
-2.  create a json file with some data(not necessarily inside an angular project)
+2.create a json file with some data(not necessarily inside an angular project)
     employees.json (filename can be anything.json)
-3. start json server(go to the folder where json file is present,run the below command in cmd)
+3.start json server(go to the folder where json file is present,run the below command in cmd)
    json-server --watch employees.json
    
 http://localhost:3000/employees   
@@ -933,6 +948,7 @@ models in Angular
 -Classes are used not only for type-checking but also if we need some methods,they are used to instantiate.
 
 
+InterFace As Model: fields mentioned in interface can only be used in view.
 
 
 Http Interceptor
@@ -948,7 +964,7 @@ Http Interceptor
 
 
 Create HTTP Interceptor
-------------------------
+-----------------------
 1. create a class that should implement HttpInterceptor interface, override intercept() method.
 2. modify the Request, and call next.handle() to pass the modified request.   
 3. Register the interceptor in module's providers:[]
@@ -972,7 +988,7 @@ Authentication Vs Authorization
 observables
 ***********
 -An Observable is an entity that emits (or publishes) multiple data values (stream of data)over time and asynchronously.
--observables are lazy collections of multiple values over time.
+-Observables are lazy collections of multiple values over time.
 -Observables help to manage asynchronous data, such as data coming from a backend service.
 -To use observables, Angular uses a third-party library called Reactive Extensions (RxJS).
 -used for event handling, asynchronous programming, and handling multiple values.
@@ -1086,7 +1102,7 @@ State Management Using rxJS
 ============================		
 Subject
 -------
--An observable allows us to subscribe only whereas a subject allows us to both publish and subscribe
+-An observable allows us only to subscribe  whereas a subject allows us to both publish and subscribe
 -A subject allows our services to be used as both a publisher and a subscriber.
 -Subjects are like EventEmitters: they maintain a registry of many listeners.
 -Subject is a special type of Observable that allows values to be multicasted to many Observers,While plain Observables are unicast.
@@ -1139,14 +1155,14 @@ Subjects (Subject,ReplaySubject,BehaviorSubject)
 Subject		 ---------- Only Upcoming values
 BehaviorSubject-------  one previous value(current/initial) & upcoming values
 ReplaySubject---------  all previous values and upcoming values
-AsyncSubject  --------  latest value when stream will close
+AsyncSubject  --------  latest value when stream gets closed
 
 
 
 
 Forms in Angular
 ================
--Angular forms are used to collect the data from the user.
+-Forms are used to collect the data from the user.
 
 1. Template driven
 2. Model Driven Form / Reactive Form
@@ -1211,12 +1227,28 @@ Template Driven Form
 		console.log(formInfo.value);
    }
   
-  
+
+
+
+FormControl
+-----------
+-we can get access to the FormControl instance by assigning the ngModel to th element.
+ <input type="text" name="firstname" #fname="ngModel" ngModel>
+-the variable #fname holds the reference to the firstname FormControl. We can then access the properties of FormControl like value, valid, isvalid, touched etc.
+  <h3>{{fname.value}}</h1>
+ 
+ 
+
 Set value in template-driven forms
 ----------------------------------
 There are two ways we can set the value of the form elements:
-	1. Two-way data binding (recomended)
-	2. Use the template reference variable
+1. Two-way data binding (recomended)
+	user: any = { fname: 'sachin', lname: 'tendulkar' };
+	
+	<p>First Name: <input name="firstName" ngModel [(ngModel)]='user.fname'/></p>
+    <p>Last Name: <input name="lastName" ngModel [(ngModel)]='user.lname'></p>
+	
+2. Use the template reference variable
 
 
 Reset the form
@@ -1224,13 +1256,28 @@ Reset the form
 <button type="reset">reset</button>
 	(OR)
 reset(myForm :NgForm) {
+  console.log('Do Something...');
   myForm.resetForm();
 }
+
+
+Validation
+----------
+<input name="firstName" #fname="ngModel" [(ngModel)]='user.fname' required minlength="5" />
+ <span *ngIf="fname.hasError('required') && fname.dirty" class="text-danger">Plz fill firstname</span>
+<span *ngIf="fname.hasError('minlength') && fname.dirty" class="text-danger">Minimum 5 chars required</span>
+
+<input type="email" name="email" #emailRef="ngModel" [(ngModel)]='user.email' required email />
+<span *ngIf="emailRef.hasError('required') && emailRef.dirty" class="text-danger">plz fill email</span>
+<span *ngIf="emailRef.hasError('email') && emailRef.dirty" class="text-danger">email format is not correct</span>
+
 
 
 Assignment
 ----------
 -Create a Registration form with validation (inputbox,radio,checkbox,dropdown,textarea)
+https://www.tektutorialshub.com/angular/template-driven-form-validation-in-angular/
+
 
 
 Model driven form
@@ -1258,17 +1305,17 @@ Model driven form
 FormBuilder
 ===========
 -Angular FormBuilder API makes it easier to build reactive forms.
--We can easily add the FormGroup, nested FormGroups, FormArrays & FormControls easily.
+-We can easily add the FormGroup, nested FormGroups, FormArrays & FormControls.
 -Helps to create Dynamic Form with Dynamic number of fields.
 
 
 How to use:
 -----------
-1. inject it into our component class
-   constructor(private formBuilder: FormBuilder) {
+1. inject FormBuilder into our component class
+    constructor(private formBuilder: FormBuilder) {
 	}
 2. this.contactForm = this.formBuilder.group({
-	firstname: ['']
+   firstname: ['']
    })
 
 
@@ -1351,6 +1398,14 @@ routing Program:
    <router-outlet>
 
 
+
+Active-Route
+------------
+<a routerLink="/" routerLinkActive="active">Home</a>
+<a routerLink="careers" routerLinkActive="active">careers</a>
+
+
+
 Navigate from one route to another
 ----------------------------------
 <button routerLink="/html">take me to HTML </button>			
@@ -1404,6 +1459,7 @@ Protecting routes with guard
 -canActivateChild : When Angular finds a canActivateChild guard attached to the parent route, it invokes it every time the user tries to navigates to the child route. Hence instead of attaching Guard service every child, you can attach it to the parent route.
 -canDeactivate : Checks to see if a user can exit a route while navigating from a route
 -canLoad: Checks to see if a user can route to a module that lazy loaded.
+-canMatch: 
 
 Note:-canActivate Guard prevents unauthorized user from accessing the route. 
 	But it does not stop the module from being downloaded. 
@@ -1411,13 +1467,10 @@ Note:-canActivate Guard prevents unauthorized user from accessing the route.
 	The CanLoad Guard prevents the module from being downloaded.
 
 Router-Guard
--------------
-1. create a service that should implement CanActivate Interface and override canActivate()
-   (ng g guard myguard1)
-   export class myGuard implements CanActivate {
-		canActivate() {
-		}
-	}
+------------
+1. create a guard by using below CLI command
+   ng g guard auth 
+   (change the logic inside the guard)   
 
 2. in Route Configuration protect the route by adding canActivate:[myGuard]
    {
@@ -1441,19 +1494,19 @@ Steps to use resolvers
 ----------------------
 1. write a service to fetch data
 	export class ProductService {
-	  url = 'https://dummyjson.com/products';
-	  constructor(public http: HttpClient) {}
-	  getProducts() {
-		return this.http.get(this.url);
+	   constructor(public http: HttpClient) {}
+	   getProductDetails(id: number) {
+		const url = `https://fakestoreapi.com/products/${id}`;
+		return this.http.get(url);
 	  }
 	}
 2. add a resolver and Access the Route Parameters in the Resolver
 	@Injectable()
 	export class ProductResolverService implements Resolve<any> {
-	  constructor(private productService: ProductService) {}
-
-	  resolve(route: ActivatedRouteSnapshot) {
-		return this.productService.getProducts(route.paramMap.get('id'));
+	  constructor(private productsService:ProductsService) { }
+	  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+		const id = parseInt(route.paramMap.get('id') || '');
+		return this.productsService.getProductDetails(id);
 	  }
 	}
 3. Passing the Route Resolver to the Angular  Router
@@ -1485,9 +1538,10 @@ step-2: Configure the routes.
 		path: 'customers',
 		loadChildren: () =>
 		  import('./customers/customers.module').then((m) => m.CustomersModule),
-	 }
+	   }
         
 ng generate module customers --route customers --module app.module
+ng generate module grocery --route grocery --module app.module
 
 
   
@@ -1583,20 +1637,6 @@ compiles an application and stores the generated files in dist folder.
 -Application will be pre compiled 
 -The browser doesnt require angular compiler because it will be compiled in the build itself.
 
-> ng serve --aot (It wont create dist folder but it will be stored in the internal memory) - 
-      It wont perform web optimization(Minifying the Scripts)
-
-> ng build --aot (It creates a dist folder)-It wont perform web optimization(Minifying the Scripts)
-
-> ng build --prod (It creates a dist folder)-It performs web optimization(Minifying the Scripts)
-
-
-
-
-Run Commands using Package.json
---------------------------------
-> npm run start ( "start": "ng serve --port 3000")
-> npm run build ( "build": "ng build --prod")
 
 
 -Install a server and deploy our project
@@ -1698,7 +1738,7 @@ AngularJs vs angular
 5. Controller				5. Controller-No
 6. $scope,$rootscope		6. No $scope (component class)
 7. Unit testing 			7. Unit testing - better
-8. mobile devices-No		8. mobile devices-yes
+
 
 
 Angular-4
@@ -1998,3 +2038,7 @@ APP_INITIALIZER
 ===============
 -The provided functions are injected at application startup and executed during app initialization.
 -If any of these functions returns a Promise or an Observable, initialization does not complete until the Promise is resolved or the Observable is completed.
+
+
+
+ng add @angular-eslint/schematics@14

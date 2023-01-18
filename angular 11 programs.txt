@@ -4,7 +4,7 @@ program-1:Use bootstrap
 2. add the below line in 'styles.css'
 	@import '~bootstrap/dist/css/bootstrap.css'
 3. add "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" in angular.json
-   projects ->architect->build->scripts array
+   projects ->architect->build->scripts:[]  array
 
 
 program-2:display Local image
@@ -121,66 +121,6 @@ export class AppComponent {
   add(a,b){
     alert(Number(a)+Number(b));
   }
-}
-
-
-
-program-8:class binding
-------------------------
-import { Component } from '@angular/core';
-
-@Component({
-    selector: 'my-app',
-    styles:['.myClass{color:red;border:5px solid green;}'],
-    template: `
-    <h1>
-      <p [class.myClass]='flag'> Add a class to an element </p>
-      <p [ngClass]="myClasses"> Add Multiple classes to an element </p>
-      <p [ngClass]="myFunction()"> Add Multiple classes to an element </p>
-	  <button class="btn" [ngClass]="flag ? 'btn-success' : 'btn-danger'">
-		Class Binding example
-		</button>
-    </h1>`
-})
-export class AppComponent {
-    flag : boolean = true;
-    myClasses = {
-      class1 : true,
-      class2 : false,
-      class3 : true
-    } 
-    myFunction(){
-      return this.myClasses;
-    }
-}
-
-
-program-9:style binding
-------------------------
-import { Component } from '@angular/core';
-
-@Component({
-    selector: 'my-app',
-    template: `
-    <h1>
-      <p [style.color]="num % 2 == 0 ? 'blue' : 'red'"> Add a style </p>
-      <p [style.fontSize.px]='48'> Add style with unit </p>
-      <p [style.background-color]=" flag?'green':'blue' "> Add style conditionally </p>
-      <p [ngStyle]="myStyles"> NgStyle for multiple values </p>
-      <p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
-    </h1>`
-})
-export class AppComponent {
-    flag : boolean = true;
-    myStyles = {
-        'background-color': 'lime',
-        'font-size': '20px',
-        'border': '5px dotted red',
-        'padding':'20px'
-    }
-    myFunction(){
-      return this.myStyles;
-    }
 }
 
 
@@ -349,6 +289,73 @@ export class AppComponent {
 }
 
 
+
+
+
+
+
+program-8:class binding
+------------------------
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'my-app',
+    styles:['.myClass{color:red;border:5px solid green;}'],
+    template: `
+    <h1>
+      <p [class.myClass]='flag'> Add a class to an element </p>
+      <p [ngClass]="myClasses"> Add Multiple classes to an element </p>
+      <p [ngClass]="myFunction()"> Add Multiple classes to an element </p>
+	  <button class="btn" [ngClass]="flag ? 'btn-success' : 'btn-danger'">
+		Class Binding example
+		</button>
+    </h1>`
+})
+export class AppComponent {
+    flag : boolean = true;
+    myClasses = {
+      class1 : true,
+      class2 : false,
+      class3 : true
+    } 
+    myFunction(){
+      return this.myClasses;
+    }
+}
+
+
+
+
+
+program-9:style binding
+------------------------
+import { Component } from '@angular/core';
+
+@Component({
+    selector: 'my-app',
+    template: `
+    <h1>
+      <p [style.color]="num % 2 == 0 ? 'blue' : 'red'"> Add a style </p>
+      <p [style.fontSize.px]='48'> Add style with unit </p>
+      <p [style.background-color]=" flag?'green':'blue' "> Add style conditionally </p>
+      <p [ngStyle]="myStyles"> NgStyle for multiple values </p>
+      <p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
+    </h1>`
+})
+export class AppComponent {
+    flag : boolean = true;
+    myStyles = {
+        'background-color': 'lime',
+        'font-size': '20px',
+        'border': '5px dotted red',
+        'padding':'20px'
+    }
+    myFunction(){
+      return this.myStyles;
+    }
+}
+
+
 program-15: ng-container Example
 -----------------------------
 <!-- adds unnecessary divs -->
@@ -359,8 +366,7 @@ program-15: ng-container Example
 </div>
 *********************************************
 <ng-container *ngFor='let emp of employees'>
-    <div *ngIf='emp.sal>7000'>
-           
+    <div *ngIf='emp.sal>7000'>           
     </div>
 </ng-container>
 
@@ -371,6 +377,33 @@ employees = [
     { eId: 102, name: 'sita', sal: 9000, gender: 'male' },
   ];
 
+
+
+students:any[] = []
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Roll</th>
+            <th>Name</th>
+            <th>Mark</th>
+        </tr>
+    </thead>
+    <tbody>
+        <ng-container *ngIf="students.length>0;else noRecord">
+            <tr *ngFor="let std of students;let i=index">
+                <td>{{std?.roll}}</td>
+                <td>{{std?.name}}</td>
+                <td>{{std?.mark}}</td>
+            </tr>
+        </ng-container>
+    </tbody>
+</table>
+<ng-template #noRecord>
+    <tr colspan="2" align="center">
+        No record Found
+    </tr>
+</ng-template>
 
 
 
@@ -627,6 +660,37 @@ export class CountPipe implements PipeTransform {
     return output;
   }
 }
+
+
+
+
+program-24: Custom Pipe(Truncate)
+---------------------------------------
+import { Pipe, PipeTransform } from '@angular/core';
+@Pipe({
+  name: 'truncate'
+})
+export class TruncatePipe implements PipeTransform {
+  transform(value: string, limit = 20, completeWords = false, ellipsis = '...') {
+    if (completeWords) {
+      limit = value.substr(0, limit).lastIndexOf(' ');
+    }
+    return value.length > limit ? value.substr(0, limit) + ellipsis : value;
+  }
+}
+  <h1>{{longStr | truncate }}</h1> 
+  <!-- Outputs: A really long string that... -->
+  
+  <h1>{{longStr | truncate : 12 }}</h1> 
+  <!-- Outputs: A really lon... -->
+
+  <h1>{{longStr | truncate : 12 : true }}</h1> 
+  <!-- Outputs: A really... -->
+
+  <h1>{{longStr | truncate : 12 : false : '***' }}</h1> 
+  <!-- Outputs: A really lon*** -->
+
+
 
 
 
@@ -1087,6 +1151,8 @@ result;
 
 program-36 :  HttpClient with Headers
 --------------------------------------
+Reading the full response(not only the body)
+
 this.http.get('https://jsonplaceholder.typicode.com/posts',
 	{ observe: 'response' }).subscribe(
       (res)=>{
@@ -1772,7 +1838,6 @@ todo.service.ts
 ---------------
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
 export interface Todo {
   id: any;
   value: string;
@@ -1781,40 +1846,29 @@ const initialTodos = [
   { id: 1, value: 'Todo 1' },
   { id: 2, value: 'Todo 2' },
 ];
-
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root',
+})
 export class TodoService {
-  private _todo$ = new BehaviorSubject<Todo[]>(initialTodos);
-  readonly todos$ = this._todo$.asObservable();
+  private todoSubject = new BehaviorSubject<Todo[]>(initialTodos);
+  readonly todoObs = this.todoSubject.asObservable();
 
-  private todos: Todo[] = initialTodos;
+  private todosArr: Todo[] = initialTodos;
   private nextId = 2;
-
-  constructor() {}
-
-  load() {
-    //Load from Database
-  }
-
   create(item: Todo) {
     item.id = ++this.nextId;
-
-    //Update database
-    this.todos.push(item);
-    this._todo$.next(Object.assign([], this.todos));
+    this.todosArr.push(item);
+    this.todoSubject.next(Object.assign([], this.todosArr));
   }
-
   remove(id: number) {
-    this.todos.forEach((t, i) => {
-      if (t.id === id) {
-        this.todos.splice(i, 1);
+    this.todosArr.forEach((todo, ind) => {
+      if (todo.id === id) {
+        this.todosArr.splice(ind, 1);
       }
-      this._todo$.next(Object.assign([], this.todos));
+      this.todoSubject.next(Object.assign([], this.todosArr));
     });
   }
 }
-
-
 
 
 
@@ -1835,12 +1889,9 @@ import { TodoService } from '../todo.service';
 })
 export class TodoAddComponent implements OnInit {
   constructor(private todoService: TodoService) {}
-  ngOnInit() {}
-
-  addNewTodo(inputBox: any) {
-    const newTodo = { value: inputBox.value, id: null };
-    this.todoService.create(newTodo);
-    inputBox.value = '';
+  ngOnInit(): void {}
+  addToDo(todoText: string) {
+    this.todoService.create({ id: 3, value: todoText });
   }
 }
 
@@ -1865,15 +1916,13 @@ import { Todo, TodoService } from '../todo.service';
   `,
 })
 export class TodoListComponent implements OnInit {
-  todos$: Observable<Todo[]> | undefined;
-
+  todos: Observable<Todo[]> | undefined;
   constructor(private todoService: TodoService) {}
-
-  ngOnInit() {
-    this.todos$ = this.todoService.todos$;
+  ngOnInit(): void {
+    this.todos = this.todoService.todoObs;
   }
-  deleteTodo(todoId: number) {
-    this.todoService.remove(todoId);
+  deleteTodo(id: number) {
+    this.todoService.remove(id);
   }
 }
 
@@ -2346,7 +2395,7 @@ export class myGuard implements CanActivate {
     }
 }
 ----------------
-{
+	{
         path: 'product-details',
         component: ProductDetailsComponent,
         canActivate: [myGuard]
@@ -2367,7 +2416,7 @@ Program-56:Path-Param Example
   }
   
 3. add the below code in products.html
-   <button class="btn btn-primary" [routerLink]="['/productdetails', x.pId]">
+   <button class="btn btn-primary" [routerLink]="['/productdetails', x.id]">
         View Details</button>
 		
 4. add the below code in productdetails.comp.ts
@@ -2375,9 +2424,8 @@ Program-56:Path-Param Example
    {
    }
    ngOnInit() {
-    this.sub = this.route.params.subscribe(params => {
+    this.route.params.subscribe(params => {
        this.id = +params['id']; // (+) converts string 'id' to a number
-
        // In a real app: make Http call to get the details
     });
   }	
@@ -2398,16 +2446,16 @@ program-57 : Query-param example
   
 2. add the below code in products.html
    <button class="btn btn-primary" [routerLink]="['/productdetails']" 
-   [queryParams]="{id:x.pId,name:x.name,price:x.price}">
+   [queryParams]="{id:x.id,name:x.name,price:x.price}">
        View Details</button>
 		
 3. add the below code in productdetails.comp.ts
-	constructor(public routeObj: ActivatedRoute) {
-		//this.prodId = routeObj.snapshot.queryParamMap.params.id;
-		}
+	constructor(public activatedRoute: ActivatedRoute) {		
+	}
 	ngOnInit(){
-		this.route.queryParamMap.subscribe(params => {
-		  this.myObj = {...params.keys, ...params};
+		this.activatedRoute.queryParams.subscribe((queryparams) => {
+		  console.log(queryparams);
+		  this.prod = queryparams;
 		});
 	}
  
@@ -2527,6 +2575,10 @@ Program:60 ToDo App using NgRx
 ==============================
 1. Install NgRx Store in the project
    ng add @ngrx/store
+		(OR)
+   ng add @ngrx/store@latest
+		(OR)
+   ng add @ngrx/store@14
    
 2. Create Folders & Files manually for store , actions, reducers and components
     store-->store.ts       
@@ -2536,7 +2588,6 @@ Program:60 ToDo App using NgRx
 
 3. Add below Reducer Code in Reducers.ts
 
-    import { State } from '@ngrx/store';
 	const initialState = [
 	  { id: 1, text: 'ToDo 1', isCompleted: true },
 	  { id: 2, text: 'ToDo 2', isCompleted: false },
