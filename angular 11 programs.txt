@@ -124,7 +124,7 @@ export class AppComponent {
 }
 
 
-program-10:Two-way data binding
+program-8:Two-way data binding
 -------------------------------
 - import { FormsModule }   from '@angular/forms';
 - imports: [
@@ -147,7 +147,7 @@ export class AppComponent {
 
 
 
-Program-11:  View Encapsulation
+Program-9:  View Encapsulation
 -----------------------------
 <!doctype html>
 <html lang="en">
@@ -186,7 +186,7 @@ export class AppComponent {
 }
 
 
-program-12:Template Reference Variable @viewChild
+program-10:Template Reference Variable @viewChild
 -----------------------------
 import { Component, ViewChild } from '@angular/core';
 
@@ -217,7 +217,7 @@ Age: <input ref-age><br><br>
 
 
 
-program-13: *ngIf-else directive
+program-11: *ngIf-else directive
 ----------------------------------
 import { Component } from '@angular/core';
 
@@ -266,7 +266,7 @@ export class AppComponent {
 
 
 
-program-14: ngswitch directive
+program-12: ngswitch directive
 ----------------------------------
 import { Component } from '@angular/core';
 @Component({
@@ -294,7 +294,7 @@ export class AppComponent {
 
 
 
-program-8:class binding
+program-13:class binding
 ------------------------
 import { Component } from '@angular/core';
 
@@ -327,7 +327,7 @@ export class AppComponent {
 
 
 
-program-9:style binding
+program-14:style binding
 ------------------------
 import { Component } from '@angular/core';
 
@@ -542,7 +542,7 @@ export class BackButtonDirective {
 
 
 
-Program-20: Custom Directive - Count Click
+Program-21: Custom Directive - Count Click
 ===========================================
 @Directive({ selector: 'button[counting]' })
 export class CountDirective {
@@ -556,7 +556,7 @@ export class CountDirective {
 
 
 
-Program- How to use Modal
+Program-22 How to use Modal
 =========================
 1. npm i bootstrap
 2. Add the below TS code
@@ -602,7 +602,7 @@ Program- How to use Modal
   
   
   
-program-21 (Decimal Pipe/number)
+program-23 (Decimal Pipe/number)
 ----------------------------
 <h1> {{ 2585285762678 | number }} </h1>
 <h1> {{ 258.5285762678 | number }} </h1>
@@ -616,7 +616,7 @@ minFractionDigits = 2
 maxFractionDigits = 5 
 
 
-program-22 (Date Pipe)
+program-24 (Date Pipe)
 ----------------------------
 <h1> {{ ob }} </h1>
 <h1> {{ ob | date }} </h1>
@@ -628,7 +628,7 @@ program-22 (Date Pipe)
 
 
 
-program-23: async pipe
+program-25: async pipe
 ----------------------------
 import { Component } from "@angular/core";
 import { Observable,interval } from 'rxjs';
@@ -648,7 +648,7 @@ export class AppComponent {
 
 
 
-program-24: Custom Pipe(Remaining Char)
+program-26: Custom Pipe(Remaining Char)
 ---------------------------------------
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
@@ -664,7 +664,7 @@ export class CountPipe implements PipeTransform {
 
 
 
-program-24: Custom Pipe(Truncate)
+program-27: Custom Pipe(Truncate)
 ---------------------------------------
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
@@ -694,7 +694,7 @@ export class TruncatePipe implements PipeTransform {
 
 
 
-program-25: Custom Pipe(Search)
+program-28: Custom Pipe(Search)
 --------------------------------
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
@@ -715,7 +715,7 @@ export class SearchPipe implements PipeTransform {
 
 
 
-program-26: Custom Pipe(Mr. Miss)
+program-29: Custom Pipe(Mr. Miss)
 --------------------------------
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
@@ -732,7 +732,7 @@ export class SearchPipe implements PipeTransform {
 
 
 
-program-27: use pre-defined pipes in component
+program-30: use pre-defined pipes in component
 --------------------------------------------
 import { Component, ViewChild } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
@@ -754,7 +754,7 @@ export class AppComponent {
 
 
 
-program-28: pure pipe vs impure pipe
+program-31: pure pipe vs impure pipe
 ---------------------------------
 -A pure pipe is only called when Angular detects a change in the value 
 or the parameters passed to a pipe.(on component load only)
@@ -820,7 +820,7 @@ export class AppComponent {
 
 
 
-program-29: inputs and outputs(component communication)
+program-32: inputs and outputs(component communication)
 ----------------------------
 import { Component, OnInit } from '@angular/core';
 @Component({
@@ -889,7 +889,7 @@ export class ChildComponent {
 
 
 
-program-30 : life cycle hooks all methods
+program-33 : life cycle hooks all methods
 --------------------------------------
 import { Component } from "@angular/core";
 @Component({
@@ -986,7 +986,7 @@ export class MychildComponent implements OnInit {
 
 
 
-program-31 ngDOCheck()
+program-34 ngDOCheck()
 -----------------------
 import { Component, OnInit, OnChanges, ChangeDetectionStrategy, DoCheck, 
   ChangeDetectorRef } from '@angular/core';
@@ -1014,7 +1014,7 @@ export class ChildComponent implements OnChanges, OnInit, DoCheck {
 
 
 
-program-32: @ViewChild and ngAfterViewInit lifecycle hooks
+program-35: @ViewChild and ngAfterViewInit lifecycle hooks
 ----------------------------------------------
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 @Component({
@@ -1039,7 +1039,7 @@ export class AppComponent implements AfterViewInit {
 
 
 
-Program-33 @viewChild to access child members in parent component
+Program-36 @viewChild to access child members in parent component
 --------------------------------------------------------------
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { ChildComponent } from './child/child.component'
@@ -1067,7 +1067,7 @@ export class AppComponent implements AfterViewInit {
 
 
 
-Program-  @viewChildren
+Program-37  @viewChildren
 -----------------------
 @ViewChildren('myInputBox') allinputBoxes: any;
 
@@ -1080,7 +1080,7 @@ ngAfterViewInit() {
 
 
 
-program-34: create a math Services
+program-38: create a math Services
 ------------------------------
 import { Injectable } from '@angular/core';
 @Injectable()
@@ -1125,7 +1125,7 @@ export class AppComponent {
 
 
 
-program-35: httpClient example
+program-39: httpClient example
 ---------------------------
 import { Component } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
@@ -1149,7 +1149,7 @@ result;
 
 
 
-program-36 :  HttpClient with Headers
+program-40 :  HttpClient with Headers
 --------------------------------------
 Reading the full response(not only the body)
 
@@ -1163,7 +1163,7 @@ this.http.get('https://jsonplaceholder.typicode.com/posts',
 
 
 
-program-37: httpClientt (Todo Service)
+program-41: httpClientt (Todo Service)
 ------------------------------------
 todo.ts
 -------
@@ -1217,7 +1217,7 @@ export class AppComponent {
 
 
 
-program-38: Http with Model & Observable
+program-42: Http with Model & Observable
 -----------------------------------------
 export class Comment {
   constructor(
@@ -1274,7 +1274,7 @@ export class AppComponent {
 
 
 
-Program: Model Class
+Program:43 Model Class
 -----------------------------
 export class Employee {
   private id: number;
@@ -1310,7 +1310,7 @@ getEmployees(): Observable<Employee[]> {
   
 
 	
-Program-39 HTTP Interceptor Example
+Program-44 HTTP Interceptor Example
 ----------------------------------
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
 import { Observable } from "rxjs";
@@ -1333,7 +1333,7 @@ export class MyInterceptor implements HttpInterceptor{
 
 
 
-Program- : Retry Interceptor
+Program-45 : Retry Interceptor
 ============================
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpEvent, HttpResponse, HttpRequest, HttpHandler, HttpErrorResponse } from '@angular/common/http';
@@ -1348,7 +1348,7 @@ export class RetryInterceptor implements HttpInterceptor {
 
 
 
-program- : Sucess Interceptor
+program-46 : Sucess Interceptor
 ==============================
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
 import { Injectable } from "@angular/core";
@@ -1358,7 +1358,7 @@ export class SucessInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         return next.handle(req).pipe(tap(event=>{
             if(event instanceof HttpResponse){
-                alert('data fetched successfully!!!')
+                alert('data fetched successfully!!!');
             }
         }))
     }
@@ -1367,7 +1367,7 @@ export class SucessInterceptor implements HttpInterceptor {
 
 
 
-Program-40: Observables
+Program-47: Observables
 ----------------------
 import { Component } from "@angular/core";
 import { Observable, from, interval, range } from 'rxjs';
@@ -1432,7 +1432,7 @@ export class AppComponent {
 
 
 
-Program: Zip()
+Program:48 Zip()
 --------------
 zipDemo() {
     let publisher1 = of(32, 31, 34);
@@ -1448,7 +1448,7 @@ zipDemo() {
 
 
 
-program-41 : forkjoin
+program-49 : forkjoin
 ----------------------
 fetchDataFromMultipleAPIs() {
     let request1 = this.httpClient.get(
@@ -1468,7 +1468,7 @@ fetchDataFromMultipleAPIs() {
   
 
 
-Program-42 :  MergeMap
+Program-50 :  MergeMap
 -----------------------
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
@@ -1540,7 +1540,7 @@ export class TestComponent implements AfterViewInit {
     });
                    
 
-Program-43 ConcatMap Example
+Program-51 ConcatMap Example
 ----------------------------
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
@@ -1593,7 +1593,7 @@ export class TestComponent implements AfterViewInit {
 
 
 
-program-44 :  TypeAhead using SwitchMap
+program-52 :  TypeAhead using SwitchMap
 --------------------------------------
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
@@ -1720,9 +1720,9 @@ export class AppComponent implements OnInit {
 
   
 
-program - exhaustMap Example
+program : 53- exhaustMap Example
 ----------------------------
-exhaustMapDemo() {
+ exhaustMapDemo() {
     const clicks = fromEvent(document, 'click');
     const result = clicks.pipe(
       exhaustMap(() => this.httpClient.get('https://fakestoreapi.com/products'))
@@ -1735,7 +1735,7 @@ exhaustMapDemo() {
   
 
 
-Program-45 RXJS-Subject Example
+Program-54 RXJS-Subject Example
 -------------------------------
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
@@ -1832,7 +1832,7 @@ export class Rxjs2Component implements OnInit {
 
 
 
-Program:-46 RXJS Behaviour-Subject Example
+Program:-55 RXJS Behaviour-Subject Example
 ---------------------------------------
 todo.service.ts
 ---------------
@@ -1934,7 +1934,7 @@ export class TodoListComponent implements OnInit {
 ******
 Angular Forms
 *********
-program-47: Form with Class Names
+program-56: Form with Class Names
 --------------------------------
 <form name='myForm'>
     Name:
@@ -1953,7 +1953,7 @@ program-47: Form with Class Names
 </style>
 
 
-program-48 template driven form Example
+program-57 template driven form Example
 --------------------------------------
 <form #myForm="ngForm" (ngSubmit)="logForm(myForm.value)">
   <label>Firstname:</label>
@@ -1979,7 +1979,7 @@ program-48 template driven form Example
 
 
 
-program-49: Template Driven Form with validation
+program-58: Template Driven Form with validation
 ---------------------------------------------
 <h1>template driven Form with validation</h1>
 
@@ -2024,7 +2024,7 @@ export class TemplateComponent {
 
 
 
-program-50: Model driven form example
+program-58: Model driven form example
 -------------------------------------
 <form [formGroup]="registerForm">
   <label>Firstname:</label>
@@ -2070,7 +2070,7 @@ export class AppComponent {
 
 
 
-program-51: Model driven form with validation
+program-59: Model driven form with validation
 ------------------------------------------
 <div>
     <h2> Model Driven Forms </h2>
@@ -2148,7 +2148,7 @@ export class AppComponent {
 
 
 
-program-52 dynamic Form
+program-60 dynamic Form
 =======================
 import { Component, VERSION } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
@@ -2258,17 +2258,12 @@ export class AppComponent {
  
 {{this.empForm.value | json}}
  
-<br /><br />
-<a
-  href="https://www.tektutorialshub.com/angular/nested-formarray-example-add-form-fields-dynamically/"
-  >Nested FormArray / Dynamic FormArray</a
->
 
 
 
 
 
-program-53 Custom Validation
+program-60 Custom Validation
 ----------------------------
 import { FormControl } from '@angular/forms';
 
@@ -2290,7 +2285,7 @@ email: new FormControl('abcd@gmail.com', [Validators.required, EmailValidator.is
 
 
 
-program-54: routing
+program-61: routing
 --------------------
 1. Specify the Base URL: <base href="/"> in index.html
 2. Import RouterModule from '@angular/router'
@@ -2376,9 +2371,68 @@ N.P:- Create 3 components
 	  ng g c aboutUs
 	  ng g c career
 
+
+	
+
+Program-62:Path-Param Example
+-----------------------------
+1. create productDetailsComponent
+   ng g c productDetails
+   
+2. add the below code in app-routing.module.ts
+   {
+    path: 'productdetails/:id', 
+    component: ProductdetailsComponent
+   }
+  
+3. add the below code in products.html
+   <button class="btn btn-primary" [routerLink]="['/productdetails', x.id]">
+        View Details</button>
+		
+4. add the below code in productdetails.comp.ts
+   constructor(private route: ActivatedRoute) 
+   {
+   }
+   ngOnInit() {
+    this.route.params.subscribe(params => {
+       this.id = +params['id']; // (+) converts string 'id' to a number
+       // In a real app: make Http call to get the details
+    });
+  }	
+
+5. add the below code in productdetails.component.html
+	<h1>This is details for product- {{id}}
+	
+	
+	
+
+program-63 : Query-param example
+--------------------------------
+1. add the below code in app-routing.module.ts
+   {
+    path: 'productdetails', 
+    component: ProductdetailsComponent
+  }
+  
+2. add the below code in products.html
+   <button class="btn btn-primary" [routerLink]="['/productdetails']" 
+   [queryParams]="{id:x.id,name:x.name,price:x.price}">
+       View Details</button>
+		
+3. add the below code in productdetails.comp.ts
+	constructor(public activatedRoute: ActivatedRoute) {		
+	}
+	ngOnInit(){
+		this.activatedRoute.queryParams.subscribe((queryparams) => {
+		  console.log(queryparams);
+		  this.prod = queryparams;
+		});
+	}
+ 
+ 
 	  
 	  
-Program-55 Router Guard
+Program-64 Router Guard
 -----------------------
 @Injectable()
 export class myGuard implements CanActivate {
@@ -2402,65 +2456,9 @@ export class myGuard implements CanActivate {
     },
 
 
-	
-
-Program-56:Path-Param Example
------------------------------
-1. create productDetailsComponent
-   ng g c productDetails
-   
-2. add the below code in app-routing.module.ts
-   {
-    path: 'productdetails/:id', 
-    component: ProductdetailsComponent
-  }
-  
-3. add the below code in products.html
-   <button class="btn btn-primary" [routerLink]="['/productdetails', x.id]">
-        View Details</button>
-		
-4. add the below code in productdetails.comp.ts
-   constructor(private route: ActivatedRoute) 
-   {
-   }
-   ngOnInit() {
-    this.route.params.subscribe(params => {
-       this.id = +params['id']; // (+) converts string 'id' to a number
-       // In a real app: make Http call to get the details
-    });
-  }	
-
-5. add the below code in productdetails.component.html
-	<h1>This is details for product- {{id}}
-	
-	
-	
-
-program-57 : Query-param example
---------------------------------
-1. add the below code in app-routing.module.ts
-   {
-    path: 'productdetails', 
-    component: ProductdetailsComponent
-  }
-  
-2. add the below code in products.html
-   <button class="btn btn-primary" [routerLink]="['/productdetails']" 
-   [queryParams]="{id:x.id,name:x.name,price:x.price}">
-       View Details</button>
-		
-3. add the below code in productdetails.comp.ts
-	constructor(public activatedRoute: ActivatedRoute) {		
-	}
-	ngOnInit(){
-		this.activatedRoute.queryParams.subscribe((queryparams) => {
-		  console.log(queryparams);
-		  this.prod = queryparams;
-		});
-	}
  
 
-program-58 : Route resolver Example
+program-65 : Route resolver Example
 -----------------------------------
 1. create ProductService and add the below code
 
@@ -2517,7 +2515,7 @@ program-58 : Route resolver Example
 
   
 
-Program-59: jasmine karma
+Program-66: jasmine karma
 --------------------------
 import { JasmineComponent } from './jasmine.component';
 
@@ -2571,7 +2569,7 @@ export class JasmineComponent implements OnInit {
 
 
 
-Program:60 ToDo App using NgRx
+Program:67 ToDo App using NgRx
 ==============================
 1. Install NgRx Store in the project
    ng add @ngrx/store
