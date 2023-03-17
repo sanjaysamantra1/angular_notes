@@ -57,7 +57,7 @@ vscode extensions
 
 Angular
 =======
--Angular is a platform and framework for building single-page client applications 
+-Angular is a platform and framework for building single-page client applications
  using HTML and TypeScript.
 -A framework is a set of helper functions,tools and rules that help us to build our application.
 -Angular is a collection of well-integrated libraries that cover a wide variety of features including routing,forms management, client-server communication, and more
@@ -97,8 +97,8 @@ Bootstrapping angular Application
 -Bootstrapping is a technique of initializing/loading our Angular application.
 
 1. index.html --> <app-root></app-root> (component)
-2. main.ts   --> which module to bootstrap/load (AppModule)
-3. app.module.ts --> which component to bootstrap/load (AppComponent)
+2. main.ts   --> which module to load (AppModule)
+3. app.module.ts --> which component to load (AppComponent)
 4. app.component.ts-->app.component.html-->app.component.css
 
 steps to bootstrap the application:
@@ -1681,8 +1681,8 @@ compiles an application and stores the generated files in dist folder.
 Deploy Angular Application in GitHub
 ====================================
 1. npm install -g angular-cli-ghpages
-2. ng build --base-href angular_sept_2022
-3. ngh --dir dist/angular_sept_2022
+2. ng build --base-href naresh_23nov_angular
+3. ngh --dir dist/naresh_23nov_angular
    go to github website & open your Repository
    Settings Tab --> pages --> you should see the live URL
 			(OR)
@@ -1758,7 +1758,7 @@ xit() - disabled it()
 Angular flavours
 ================
 AngularJS - Angular-1.x
-Angular   - Angular-2,4,5,6,7,8,9,10,11,12,13,14
+Angular   - Angular-2,4,5,6,7,8,9,10,11,12,13,14,15
 
 
 AngularJs vs angular
@@ -1774,7 +1774,7 @@ AngularJs vs angular
 
 
 Angular-4
-------------
+---------
 -a lot of improvements made to reduce the size of the AOT (Ahead-of-time) compiler generated code.
 -In Angular 2 only TypeScript 1.8 version was supported, whereas, in Angular 4, it supports TypeScript 2.1 and TypeScript 2.2.
 -The Animation features are separated from @angular/core package and added to @angular/animations.
