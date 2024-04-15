@@ -24,9 +24,8 @@ Angular installation
    ng new project1 (project1 - name of the project, can be any other valid name)
    ng new your-angular-project --defaults
    
-   you will be prompted for 2 things, just select 'yes' (enter)
-   1. Do You want Routing? 
-   2. CSS/SCSS/LESS - select css
+   you will be prompted for few things, just select 'yes' (enter)
+   1. CSS/SCSS/LESS - select css
 
 7. Run the project / Start the project
    in command prompt go to the project directory (ex: c:/users/sanjay/angular/project1)
@@ -43,6 +42,8 @@ Angular installation
 -To Run the project in other port
 	ng serve --port 5000 --open
 
+
+npx @angular/cli new angular-internationalization-example --style=css --routing=false --skip-tests
 
 
 
@@ -176,7 +177,7 @@ Angular CLI
 ===========
 -Angular CLI is a command-line interface tool used to initialize, develop, scaffold, and maintain Angular applications directly from a command shell
 
-ng g c demo --dry-run --flat --no-spec --inline-template --inline-style
+ng g c demo --dry-run --flat --skip-tests --inline-template --inline-style
 
 g: Generate
 c: Component
@@ -270,6 +271,20 @@ Property: to set an element property to a non-string data value.
 		b. imports: [ BrowserModule,FormsModule]
 	2. in view file use [(ngModel)]='variable'
 		<input type="text" [(ngModel)]='x'>
+
+
+
+Attribute Binding
+=================
+-attributes are defined by HTML and properties are defined by the DOM.
+-Every element doesn't have all the properties those are available as attribute.
+ <table [width]='myWidth' [attr.height]='myHeight'></table>
+ <tr><td [attr.colspan]="1 + 1">One-Two</td></tr>   Correct
+ <tr><td [colSpan]="1 + 1">One-Two</td></tr>   Correct
+ <tr><td [colspan]="1 + 1">One-Two</td></tr>   Wrong
+ 
+Note: 'colspan' is attribute whereAs 'colSpan' is property. 
+
 
 
 
@@ -377,7 +392,7 @@ preserve the value of the <select> element when nested <option> elements are dyn
 
 
 
-read data from a JSON file 
+Read data from a JSON file 
 ==========================
 1. create a JSON file (employees.json/products.json)
    [ {},{},{} ]
@@ -397,7 +412,7 @@ ng-template , ng-container
 ==========================
 -<ng-template> directive represents an Angular template.
 -content of this <ng-template> will contain part of a template, that can be composed together with other templates in order to form the final component template. 
--Angular is already using <ng-template> under the hood in many of the structural directives  that we use all the time: ngIf, ngFor and ngSwitch
+-Angular is already using <ng-template> under the hood in many of the structural directives that we use all the time: ngIf, ngFor and ngSwitch
  
 -Angular <ng-container> is a grouping element that doesn't interfere with styles or layout because Angular doesn't put it in the DOM.
 -if we need a helper element for nested structural directives.<ng-container> can be used instead of creating an un-nscessary element(<div>).
@@ -430,14 +445,13 @@ ngxPagination
 1. install ngxpagination module
    npm install ngx-pagination 
 
-2. add ngxpaginationModule to our module
+2. add ngxpaginationModule to our module (app.module.ts)
    import {NgxPaginationModule} from 'ngx-pagination';
    imports: [BrowserModule, NgxPaginationModule]
    
 3. use the below code in html
-	<ul>
-      <li *ngFor="let item of collection | paginate: { itemsPerPage: 10, currentPage: p }"> ... </li>
-    </ul>               
+	<div *ngFor="let prod of products| paginate: { itemsPerPage: 4, currentPage: p}">              
+	</div>
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
 
 
@@ -713,7 +727,7 @@ The hooks/lifecycle methods are executed in this order:
 --------------------------------------------------------
 constructor()
 -This is invoked when Angular creates a component or directive by calling new on the class.
--Initialize class members,dependency Injection.
+-Initialize class variables,dependency Injection.
 -No Business Logic should be written in constructor.
 
 ngOnChanges()
@@ -725,6 +739,7 @@ ngOnInit()
 -Invoked for every component when a component gets Initialized.
 -This hook is called only once after the first ngOnChanges.not after every ngOnchanges()
 -Time Consuming Logic goes here. Ex:- API Call
+
 
 ngDoCheck()
 -Invoked when the change detector of the given component is invoked. 
@@ -769,11 +784,12 @@ there are 2 change detection strategies:
 -if we want to access multiple child references, then we have to use @ViewChildren.
 
 	
+	
 
 Angular Services
 ****************
 - share logic/data across components.
-- code Reuseability
+- code Reusability
 	(write once use that in multiple components)
 - Lazily instantiated
 	(Angular only instantiates a service when a component depends on it)
@@ -805,6 +821,20 @@ Dependency injection
 ex: constructor(private http:HttpClient){
 }
   
+
+Providing a service
+===================
+1. providedIn: 'root'  	   - provide the service in the root injector
+2. providedIn: UserModule  - this service will be available only for userModule
+3. AppModule --> providers: [TestService] - 
+4. AppComponent--> providers: [TestService] -
+
+
+Hierarchical Injector
+=====================
+1. ModuleInjector
+2. ElementInjector
+
 
 
   
@@ -872,7 +902,7 @@ POSTMAN
 
 
 Fake Online REST API for Testing 
-1. https://jsonplaceholder.typicode.com/
+1. https://jsonplaceholder.typicode.com/users
 2. https://reqres.in/
 3. https://fakestoreapi.com/products
 4. https://api.github.com/users/google
@@ -1004,13 +1034,15 @@ Promises:
 2. not cancellable
 3. more readable code with try/catch and async/await
 4. no Operator support (map,filter,reduce,retry)
+5. then()
 
 Observables:
 -----------
 1. multiple values over time
 2. cancellable
-3. support map, filter, reduce & other operators
+3. support Operators like:- tap(),retry(),distinctUntilChanged(),map()
 4. use Reactive Extensions (RxJS)
+5. subscribe()
 
 
 
@@ -1029,7 +1061,7 @@ RxJS
 RxJS Operators
 --------------
 Creation			from, of, interval, range
-Combination			forkjoin, combineLatest, concat, merge,mergeAll, startWith ,zip
+Combination			forkjoin, combineLatest, concat, merge,mergeAll, startWith ,zip, race
 Filtering			debounceTime, distinctUntilChanged, filter, take, takeUntil, first
 Transformation		bufferTime, concatMap, map, mergeMap/flatMap, scan, switchMap
 Utility				tap,delay,repeat
@@ -1137,13 +1169,13 @@ Observables
 ===========
 1. They are cold: Code gets executed when they have at least a single observer.
 2. Creates copy of data: Observable creates copy of data for each observer.
-3. Uni-directional: Observer can not assign value to observable.
+3. Uni-directional: Observer/subscriber can not assign value to observable.
 
 Subjects (Subject,ReplaySubject,BehaviorSubject)
 ================================================
 1. They are hot: code gets executed and value gets broadcasted even if there is no observer.
 2. Shares data: Same data gets shared between all observers.
-3. bi-directional: Observer can assign value to observable.
+3. bi-directional: Observer/subscriber can assign value to observable.
 
 
 	subjects				Each Next Subscribers receive
@@ -1214,7 +1246,7 @@ Template Driven Form
    b. Use ngModel directive with every input field 
       <input name="firstName" ngModel /> 
    
-  c. use ngModelGroup directive to group multiple fields
+   c. use ngModelGroup directive to group multiple fields
 	 <fieldset ngModelGroup="address">...</fieldset>
 
 3. Receive the data in component class from our form
@@ -1334,12 +1366,9 @@ Routing
 dynamically update that page as the user interacts with the application.
 -Complete page reload doesn't happen. only a portion of a page gets loaded.
 
-Every time a link is clicked or the browser URL changes, 
-Angular router makes sure your application reacts accordingly.
+Every time a link is clicked or the browser URL changes, Angular router makes sure our application reacts accordingly.
 
 To accomplish that, Angular router performs the following 7 steps in order:
-
-
 PRIGRAM
 --------
 Parse: it parses the browser URL the user wants to navigate to
@@ -1361,6 +1390,18 @@ guard: script that runs when a route is loaded, activated or deactivated
 resolver: script that fetches data before the requested page is activated
 router outlet: location in the DOM where Angular router can place activated components
 URL segments: parts of the URL that are divided by slashes
+
+
+Location Strategies
+===================
+Angular supports two Location Strategies:
+1.HashLocationStrategy
+	ex: http://localhost:4200/#/product
+2. PathLocationStrategy
+   ex: http://localhost:4200/product
+
+
+
 
 
 routing Program:
@@ -1391,7 +1432,7 @@ routing Program:
    <a class="nav-link" routerLink="aboutus">Aboutus</a>
    <a class="nav-link" routerLink="careers">Careers</a>
    
-4. center.html
+4. use router-outlet
    <router-outlet>
 
 
@@ -1539,7 +1580,7 @@ step-2: Configure the routes.
         
 ng generate module customers --route customers --module app.module
 ng generate module grocery --route grocery --module app.module
-
+	
 
 
 
@@ -1579,7 +1620,7 @@ https://www.tektutorialshub.com/angular/angular-preloading-strategy/
   
 Web optimization and Build
 ---------------------------
--An Angular application consists mainly of components and their HTML templates. Because the components and templates provided by Angular cannot be understood by the browser directly, Angular applications require a compilation process before they can run in a browser.
+-An Angular application consists mainly of components and their HTML templates. As the components and templates provided by Angular cannot be understood by the browser directly, Angular applications require a compilation process before they can run in a browser.
 
 -Angular offers two ways to compile your application:
 
@@ -1654,15 +1695,13 @@ web-pack:
 It Builds and serves the application. rebuilding on file changes.
 	1. It won't create dist folder;
 	2. generated files will be  stored in the internal memory
-	3. It wont perform web optimization(Minifying the Scripts)
-	4. we cann't run in external server.
+	3. we cann't run in external server.
 
 > ng build:
 compiles an application and stores the generated files in dist folder.
 	1. It creates a dist folder
 	2. generated files will be  stored in dist(that can be moved)
-	3. It wont perform web optimization(Minifying the Scripts)
-	4. generated dist folder can be placed in any server and application can be run. (tomcat/weblogic)
+	3. generated dist folder can be placed in any server and application can be run. (tomcat/weblogic)
 
 
 2. AOT (Ahead-Of-Time)Compilation : 
@@ -1681,8 +1720,8 @@ compiles an application and stores the generated files in dist folder.
 Deploy Angular Application in GitHub
 ====================================
 1. npm install -g angular-cli-ghpages
-2. ng build --base-href naresh_23nov_angular
-3. ngh --dir dist/naresh_23nov_angular
+2. ng build --base-href angular_april_2023
+3. ngh --dir dist/angular_april_2023
    go to github website & open your Repository
    Settings Tab --> pages --> you should see the live URL
 			(OR)
@@ -1869,6 +1908,20 @@ Angular-14
 -Angular DevTools
 
 
+Angular-15
+----------
+-Standalone components are stable
+-NgOptimizedImage directive stable
+-Better Stack Traces
+
+
+Angular-16
+----------
+-
+
+
+
+
 Update a project from 1 version to another angular version
 ==========================================================
 https://angular.io/guide/update-to-latest-version
@@ -1888,7 +1941,7 @@ ShadowDom
 
 
 Virtual DOM
-============
+===========
 -In Virtual-DOM copy of DOM is saved in the memory and while any change is done 
 in the DOM, it’s compared to find differences. 
 -Then browser knows which elements were changed and can update only those part of the application to avoid re-rendering all the DOM. 
