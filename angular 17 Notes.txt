@@ -32,7 +32,9 @@ Angular installation
    Run the Below command 
    ng serve 
 	  (OR)
-   ng serve --open / ng s -o  (step-8 is not required)
+   ng serve --open 
+	  (OR)
+   ng s -o  (step-8 is not required)
 -ng serve command launches the server, watches your files, and rebuilds the app as you make changes to those files.
    
 8. open your browser and open the below URL   
@@ -98,8 +100,8 @@ Bootstrapping angular Application
 -Bootstrapping is a technique of initializing/loading our Angular application.
 
 1. index.html --> <app-root></app-root> (component)
-2. main.ts   --> which module to load (AppModule)
-3. app.module.ts --> which component to load (AppComponent)
+2. main.ts   --> bootstrapApplication(AppComponent, appConfig)
+3. app.config.ts --> config information about our application (App level route info)
 4. app.component.ts-->app.component.html-->app.component.css
 
 steps to bootstrap the application:
@@ -222,7 +224,7 @@ How to Use Bootstrap in Angular
 -Bootstrap can be used in Angular either by using CDN or by installing.
 1. npm install  bootstrap
 2. add the below line in 'styles.css'
-	@import '~bootstrap/dist/css/bootstrap.css'
+	@import 'bootstrap/dist/css/bootstrap.css'
 3. add 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' in 'angular.json'     projects->architect->build->scripts array
 
 
@@ -232,20 +234,6 @@ How to Display Images from local folder
 1. place the images inside assests folder
 2. use it in HTML file
    <img src='assets/images/sachin.jpg' />
-
-
-
-How to use a component from other module
-========================================
-1. create a different module (ex-login)
-   ng g module login
-2. create a component inside the other module(login/signup)
-   ng g component login/signup
-3. make sure 'SignupComponent' is exported by 'login' module
-	exports: [SignupComponent]
-4. appModule should import the module from which it wants to use the component
-   imports: [loginModule]
-
 
 
 
