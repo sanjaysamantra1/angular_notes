@@ -1238,7 +1238,7 @@ export class Comment {
   constructor(
     public id: number,
     public postId: number,
-    public name: string,x
+    public name: string,
     public email: string,
 	public body: string
   ) {}
@@ -1342,8 +1342,10 @@ export class MyInterceptor implements HttpInterceptor{
 }
 
 ============
+Add below code in app.config.ts
+
 { provide: HTTP_INTERCEPTORS, useClass: MyInterceptor1, multi: true }
-//in modules providers
+
 
 
 

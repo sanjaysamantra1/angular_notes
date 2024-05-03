@@ -506,7 +506,7 @@ Component vs Directive
 
 	
 Angular Pipes
-*************
+=============
 -transform strings, currency amounts, dates, and other data for display.
 -Pipes are used in template expressions to accept an input value and return a transformed value.
  ex: {{ 5000 | currency }}    output: $5,000.00
@@ -810,12 +810,7 @@ ex: constructor(private http:HttpClient){
 }
   
 
-Providing a service
-===================
-1. providedIn: 'root'  	   - provide the service in the root injector
-2. providedIn: UserModule  - this service will be available only for userModule
-3. AppModule --> providers: [TestService] - 
-4. AppComponent--> providers: [TestService] -
+
 
 
 Hierarchical Injector
@@ -902,7 +897,7 @@ https://api.publicapis.org/entries
 
 Create REST API with json-server
 ================================
-https://medium.com/codingthesmartway-com-blog/create-a-rest-api-with-json-server-36da8680136d
+https://medium.com/@devmrin/create-a-rest-api-json-server-in-less-than-1-minute-acf286600f03
 
 1.Install json-server (not necessarily inside angular project, run the below command in cmd)
 	npm install -g json-server
@@ -923,9 +918,10 @@ DELETE /employees/{id}
 
 httpClient Service
 ------------------
-1. make httpClientModule available to our module
-	a. import {HttpClientModule} from '@angular/common/http' 
-	b. add it to imports:[HttpClientModule]
+1. make httpClientModule available to our application
+	a. import { provideHttpClient } from '@angular/common/http';
+	b. add provideHttpClient in providers array of app.config.ts
+	   providers: [provideRouter(routes), provideHttpClient()]
 
 2. make httpClient Service available to Service/component
    a. import httpClient service from '@angular/common/http' in component
