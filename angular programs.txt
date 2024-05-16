@@ -4,7 +4,7 @@ program-1:Use bootstrap
 2. add the below line in 'styles.css'
 	@import 'bootstrap/dist/css/bootstrap.css'
 3. add "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" in angular.json
-   projects ->architect->build->scripts:[]  array
+   projects ->architect->build->scripts:[]  
 
 
 program-2:display Local image
@@ -1328,18 +1328,22 @@ getEmployees(): Observable<Employee[]> {
 Program-44 HTTP Interceptor Example
 ----------------------------------
 import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-export class MyInterceptor implements HttpInterceptor{
+@Injectable()
+export class MyInterceptor1 implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+        console.log('My Interceptor-1 called...')
         const hardCodedToken = "1d38fe-8671-6735-7360-2hjhsjh5";
         const requestWithToken = req.clone({
-          setHeaders: {
-            Authorization: `Bearer ${hardCodedToken}`
-          }
+            setHeaders: {
+                Authorization: `Bearer ${hardCodedToken}`
+            }
         });
         return next.handle(requestWithToken);
     }
 }
+
 
 ============
 Add below code in app.config.ts
@@ -1450,7 +1454,7 @@ export class AppComponent {
 
 
 Program:48 Zip()
---------------
+-----------------
 zipDemo() {
     let publisher1 = of(32, 31, 34);
     let publisher2 = of('sanjay', 'sameer', 'bishnu');
@@ -1468,21 +1472,15 @@ zipDemo() {
 program-49 : forkjoin
 ----------------------
 fetchDataFromMultipleAPIs() {
-    let request1 = this.httpClient.get(
-      'https://jsonplaceholder.typicode.com/todos'
-    );
-    let request2 = this.httpClient.get(
-      'https://jsonplaceholder.typicode.com/comments'
-    );
-    let request3 = this.httpClient.get(
-      'https://jsonplaceholder.typicode.com/users'
-    );
-
-    forkJoin([request1, request2, request3]).subscribe(([res1, res2, res3]) => {
-      console.log(res1, res2, res3);
+    let userNames = ['sanjaysamantra1', 'ushamahesh818', 'seun035'];
+    let requests = userNames.map(userName => {
+      return this.httpClient.get(`https://api.github.com/users/${userName}`)
     });
-  }
-  
+    forkJoin(requests).subscribe((responses) => {
+      console.log(responses);
+    });
+}
+
 
 
 Program-50 :  MergeMap
@@ -1905,11 +1903,11 @@ import { TodoService } from '../todo.service';
   `,
 })
 export class TodoAddComponent implements OnInit {
-  constructor(private todoService: TodoService) {}
-  ngOnInit(): void {}
-  addToDo(todoText: string) {
-    this.todoService.create({ id: 3, value: todoText });
-  }
+	  constructor(private todoService: TodoService) {}
+	  ngOnInit(): void {}
+	  addToDo(todoText: string) {
+		this.todoService.create({ id: 3, value: todoText });
+	  }
 }
 
 
@@ -2167,7 +2165,7 @@ export class AppComponent {
 
 program-60 dynamic Form
 =======================
-import { Component, VERSION } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
  
 @Component({
@@ -2282,11 +2280,10 @@ export class AppComponent {
 
 program-60 Custom Validation
 ----------------------------
-import { FormControl } from '@angular/forms';
+import { AbstractControl } from '@angular/forms';
 
-export class EmailValidator {
-
-    static isValidEmail(inputBox: FormControl) {
+export class MyEmailValidator {
+    static isValidEmail(inputBox: AbstractControl) {
         if (inputBox.value !== 'sanjay@gmail.com') {
             return { invalidMail: true } //The Control is invalid
         }
@@ -2294,11 +2291,14 @@ export class EmailValidator {
     }
 }
 
+
 ********
 email: new FormControl('abcd@gmail.com', [Validators.required, EmailValidator.isValidEmail]),
 ********
 <span *ngIf='registrationForm.controls.email.hasError("invalidMail")'>
         invalid email</span>
+
+
 
 
 
@@ -2482,50 +2482,42 @@ program-65 : Route resolver Example
 	import { HttpClient } from '@angular/common/http';
 	import { Injectable } from '@angular/core';
 	@Injectable({
-	  providedIn: 'root',
+	  providedIn: 'root'
 	})
 	export class ProductService {
-	  url = 'https://dummyjson.com/products';
-	  constructor(public http: HttpClient) {}
-	  getProducts() {
-		return this.http.get(this.url);
+	  constructor(public http: HttpClient) { }
+	  getProductDetails(id: number) {
+		const url = `https://fakestoreapi.com/products/${id}`;
+		return this.http.get(url);
 	  }
 	}
 
-2. create ProductResolverService and add the below code
 
-	import { Injectable } from '@angular/core';
-	import { ActivatedRouteSnapshot, Resolve } from '@angular/router';
-	import { catchError, of } from 'rxjs';
-	import { ProductService } from './product.service';
-	@Injectable({
-	  providedIn: 'root',
-	})
-	export class ProductResolverService implements Resolve<any> {
-	  constructor(private productService: ProductService) {}
-	  resolve(route: ActivatedRouteSnapshot) {
-		console.log('Called Get Product in resolver...', route);
-		return this.productService.getProducts().pipe(
-		  catchError((error) => {
-			return of('No data');
-		  })
-		);
-	  }
-	}
-3. add the below code in app-routing.module.ts
+2. create productdetailResolver and add the below code
+
+	import { HttpClient } from '@angular/common/http';
+	import { inject } from '@angular/core';
+	import { ResolveFn } from '@angular/router';
+	import { ProductService } from '../services/product.service';
+
+	export const productdetailsResolver: ResolveFn<Object> = (route, state) => {
+	  const id = +route.params['id'];
+	  return inject(ProductService).getProductDetails(id);
+	};
+
+3. add the below code in app.route.ts
 	 {
-		path: 'products',
-		component: ProductsComponent,
-		canActivate: [MyGuard],
-		resolve: { products: ProductResolverService },
-	  }
-4. Add the below code in products.component.ts
+        path: 'productdetails/:id',
+        component: ProductdetailsComponent,
+        resolve: { product: productdetailsResolver }
+    }
+4. Add the below code in productdetails.component.ts
 
-	  allProducts: any = [];
-	  constructor(private activatedRoute: ActivatedRoute) {}
-	  ngOnInit(): void {
+	  constructor(private activatedRoute: ActivatedRoute) { }
+	  ngOnInit() {
+		console.log( this.activatedRoute)
 		this.activatedRoute.data.subscribe((response: any) => {
-		  this.allProducts = response.products.products;
+		  this.product = response.product; // to be shown in UI
 		});
 	  }
 
