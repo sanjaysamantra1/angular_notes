@@ -154,7 +154,6 @@ encapsulation: ViewEncapsulation.ShadowDom
 providers:     [Services]
 changeDetection:ChangeDetectionStrategy.OnPush
 viewProviders: []
-moduleId:  ''
 animations:  []
 interpolation: []
 entryComponents: []
@@ -172,6 +171,15 @@ Decorators
 @Directive - Decorator marks a class as an Angular Directive
 @Injectable - Decorator marks a class as an Angular Service
 @Pipe - Decorator marks a class as an Angular Pipe
+@Input - collect data from parent component
+@Output  - Child component emits event to parent component
+@HostBinding - Binds value to the host element  (custom directive)
+@HostListener - listens event from the host element (custom directive)
+@ViewChild - 
+@ViewChildren - 
+@ContentChild - 
+@ContentChildren - 
+
 
 
 
@@ -200,7 +208,11 @@ Class	    ng g class my-new-class
 Guard	    ng g guard my-new-guard
 Interface	ng g interface my-new-interface
 Enum	    ng g enum my-new-enum
+interceptor ng g interceptor my-interceptor
+Resolver    ng g resolver my-resolver
 Module	    ng g module my-new-module
+
+https://angular.io/cli/generate
 
 
 
@@ -351,6 +363,57 @@ Directives
 Note : Compononent can also be considered as directive, because it powers up the html by creating Custom Element, but the directives cannot be considered as component because it does not have a View (template and templateUrl cannot be used in directives)
 
 
+Angular-17
+==========
+@if(!flag){
+	<h1>truuuuuuuuuuuuu</h1>
+}@else{
+	<h1>Falseeeeeeeeeeeeeeeeeeeee</h1>
+}
+----------
+@switch (n) {
+    @case (1) { <h1>Monday</h1> }
+    @case (2) { <h1>Tuesday</h1> }
+    @case (3) { <h1>Wednesday</h1> }
+    @case (4) { <h1>Thursday</h1> }
+    @case (5) { <h1>Friday</h1> }
+    @case (6) { <h1>Saturday</h1> }
+    @case (7) { <h1>Sunday</h1> }
+    @default { <h1>Not a Valid number</h1>> }
+}
+
+------------------
+@for (user of users; track user.id) {
+  {{ user.name }}
+} @empty {
+  Empty list of users
+}
+
+
+
+ngStyle
+=======
+-ngStyle is used to apply some style conditionally.
+
+<p [style.color]="num % 2 == 0 ? 'blue' : 'red'"> Add a style </p>
+<p [style.fontSize.px]='48'> Add style with unit </p>
+<p [style.background-color]=" flag?'green':'blue' "> Add style conditionally </p>
+<p [ngStyle]="myStyles"> NgStyle for multiple values </p>
+<p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
+
+
+ngClass
+=======
+-ngClass is used to apply css classes conditionally
+
+<p [class.myClass]='flag'> Add a class to an element </p>
+<p [ngClass]="myClasses"> Add Multiple classes to an element </p>
+<p [ngClass]="myFunction()"> Add Multiple classes to an element </p>
+<button class="btn" [ngClass]="flag ? 'btn-success' : 'btn-danger'">
+	Class Binding example
+</button>
+
+
 
 *ngIf vs hidden
 ----------------
@@ -365,6 +428,7 @@ first
 last
 even
 odd
+
 
 ngFor trackBy
 -------------
@@ -388,7 +452,9 @@ Read data from a JSON file
     "resolveJsonModule": true,
 3. import the data & use in component file (products.component.ts)
    import * as data from './products.json';
-   myProducts = (data as any).default;
+   
+   myProducts = (data as any).default;  (inside the class)
+   
 4. use 'myProducts' in HTML file
    <div *ngFor="let prod of myProducts"> </div>
 
@@ -920,7 +986,7 @@ httpClient Service
 ------------------
 1. make httpClientModule available to our application
 	a. import { provideHttpClient } from '@angular/common/http';
-	b. add provideHttpClient in providers array of app.config.ts
+	b. add provideHttpClient in providers:[] of app.config.ts
 	   providers: [provideRouter(routes), provideHttpClient()]
 
 2. make httpClient Service available to Service/component
@@ -978,9 +1044,10 @@ Create HTTP Interceptor
 -----------------------
 1. create a class that should implement HttpInterceptor interface, override intercept() method.
 2. modify the Request, and call next.handle() to pass the modified request.   
-3. Register the interceptor in module's providers:[]
+3. Register the interceptor in app.config.ts, add below code in providers:[]
 	providers: [ 
-		{ provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true },
+		provideHttpClient(withInterceptorsFromDi()),
+		{ provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true }
 	  ]
 
 
@@ -1001,7 +1068,7 @@ observables
 -An Observable is an entity that emits (or publishes) multiple data values (stream of data)over time and asynchronously.
 -Observables are lazy collections of multiple values over time.
 -Observables help to manage asynchronous data, such as data coming from a backend service.
--To use observables, Angular uses a third-party library called Reactive Extensions (RxJS).
+-To use observables, Angular uses a library called Reactive Extensions (RxJS).
 -used for event handling, asynchronous programming, and handling multiple values.
 
 
@@ -1017,7 +1084,7 @@ Promises:
 1. return a single value
 2. not cancellable
 3. more readable code with try/catch and async/await
-4. no Operator support (map,filter,reduce,retry)
+4. no Operator support (map,filter,reduce,retry,tap)
 5. then()
 
 Observables:
@@ -1064,7 +1131,7 @@ forkjoin()
 
 
 
-map() vs mergemap() vs switchmap() vs concatmap():
+map() vs mergemap() vs concatmap() vs switchmap():
 --------------------------------------------------
 Map() :  For each value that the Observable emits we can apply a function in which we can modify the data
 		 
@@ -1075,6 +1142,12 @@ mergeMap() = map + mergeAll
 	-inner observables might finish in an order that is different from the order in which they are subscribed
 	-receive data from an observable (outer observable). For each of those values, you want to call another observable (inner observable) to get more data.
 	-mergeMap the movie into an http request to IMDB and by that, to enhance your movie cards with this additional data
+	
+	outerObservable.pipe(mergeMap(OuterObservableResponse => {
+      return this.httpClient.get(`https://jsonplaceholder.typicode.com/users/${OuterObservableResponse}`)
+    })).subscribe(innerObservableResponse => {
+      console.log(innerObservableResponse)
+    })
 
 	 
 concatMap() = map + concatAll
@@ -1221,7 +1294,7 @@ ng-untouched: not yet touched
 
 Template Driven Form
 ---------------------
-1. import FormsModule to our module
+1. import FormsModule to our module/Component
 
 2. view File-
    a. use ngForm directive with form's template reference variable
@@ -1295,7 +1368,7 @@ https://www.tektutorialshub.com/angular/template-driven-form-validation-in-angul
 
 Model driven form
 -----------------
-1. import ReactiveFormsModule to our module & add to imports:[]
+1. import ReactiveFormsModule 
 	a. import { ReactiveFormsModule } from '@angular/forms';
 	b. imports:[BrowserModule,ReactiveFormsModule]  
 	
@@ -1396,7 +1469,7 @@ routing Program:
 	ng g c career
 	ng g c notfound
 
-2. in app-routing.module.ts configure all the routes.
+2. in app.routes.ts configure all the routes.
 	const routes: Routes = [
 	  { path: 'home', component: HomeComponent },
 	  { path: 'aboutus', component: AboutusComponent },
@@ -1442,10 +1515,10 @@ constructor(private routerObj : Router) { }
   
 Route-Parameter
 ---------------
-1. Path-Param
+1. Path Param
 	ex:- /productDetails/101
 
-2. Query-param
+2. Query param
 	ex:- /search?searchWord=skybag&filter=something
 	
 
@@ -1523,25 +1596,23 @@ Steps to use resolvers
 	  }
 	}
 2. add a resolver and Access the Route Parameters in the Resolver
-	@Injectable()
-	export class ProductResolverService implements Resolve<any> {
-	  constructor(private productsService:ProductsService) { }
-	  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-		const id = parseInt(route.paramMap.get('id') || '');
-		return this.productsService.getProductDetails(id);
-	  }
-	}
+	export const productdetailsResolver: ResolveFn<Object> = (route, state) => {
+		const id = +route.params['id'];
+		return inject(ProductService).getProductDetails(id);
+	};
 3. Passing the Route Resolver to the Angular  Router
  ex: {
     path: 'products',
     component: ProductsComponent,
-    resolve: { products: ProductsResolverService }
+    resolve: { product: productdetailsResolver }
   }
 4. Access the Resolved Data in the component
-  constructor(private activatedRoute: ActivatedRoute) {}
-  this.activatedRoute.data.subscribe((response: any) => {
-      this.products = response.products; // to be shown in UI
+  constructor(private activatedRoute: ActivatedRoute) { }
+  ngOnInit() {
+    this.activatedRoute.data.subscribe((response: any) => {
+      this.product = response.product; // to be shown in UI
     });
+  }
 
  
  
@@ -1597,6 +1668,21 @@ Angular Preloading Strategy
 
 https://www.tektutorialshub.com/angular/angular-preloading-strategy/
 
+
+
+Lazy loading a standalone component
+===================================
+-Any route can lazily load its routed, standalone component by using loadComponent
+
+1. Remove the import at the top
+   import { ProductListComponent } from './components/product-list/product-list.component';
+2. use loadComponent() instead of component
+ { path: 'productlist', component: ProductListComponent }
+ 
+ {
+ path: 'admin', 
+ loadComponent: () => import('./components/product-list/product-list.component').then(response => response.ProductListComponent) 
+ }
 
 
 
@@ -1665,7 +1751,7 @@ vendor.js: it contains all the 3rd party library deatils.
 			(bootstrap,d3chart,ngx-pagination,ng2-search,sweetalert2)
 scripts.js: It contains the scripts you declare in the scripts section of your angular.json file.
 
-lazy-loaded  modules
+lazy-loaded  components  (chunk-ABCDEF.js)
 
 			
 web-pack:
@@ -1688,10 +1774,6 @@ compiles an application and stores the generated files in dist folder.
 	3. generated dist folder can be placed in any server and application can be run. (tomcat/weblogic)
 
 
-2. AOT (Ahead-Of-Time)Compilation : 
--Application will be pre compiled 
--The browser doesnt require angular compiler because it will be compiled in the build itself.
-
 
 
 -Install a server and deploy our project
@@ -1705,9 +1787,11 @@ Deploy Angular Application in GitHub
 ====================================
 1. npm install -g angular-cli-ghpages
 2. ng build --base-href angular_april_2023
-3. ngh --dir dist/angular_april_2023
+3. ngh --dir dist/angular_april_2023/browser
    go to github website & open your Repository
    Settings Tab --> pages --> you should see the live URL
+   
+
 			(OR)
 1. create an angular project 'project1'
 2. build angular project 'project1'
@@ -1781,7 +1865,7 @@ xit() - disabled it()
 Angular flavours
 ================
 AngularJS - Angular-1.x
-Angular   - Angular-2,4,5,6,7,8,9,10,11,12,13,14,15
+Angular   - Angular-2,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
 
 
 AngularJs vs angular
@@ -1899,11 +1983,14 @@ Angular-15
 -Better Stack Traces
 
 
-Angular-16
+angular-17
 ----------
+-Deferrable views
+	@defer {
+	  <large-component />
+	}
+-New built-in control flow,  @if() @else()
 -
-
-
 
 
 Update a project from 1 version to another angular version
@@ -2098,3 +2185,10 @@ APP_INITIALIZER
 
 
 ng add @angular-eslint/schematics@14
+
+
+
+
+Reference
+=========
+https://testbook.com/interview/angular-architecture-interview-questions

@@ -291,9 +291,6 @@ export class AppComponent {
 
 
 
-
-
-
 program-13:class binding
 ------------------------
 import { Component } from '@angular/core';
@@ -461,7 +458,7 @@ Program-17 : Pagination
 1. Install Pagination Library
 	npm i ngx-pagination
 	
-2. Add pagination module to our module 
+2. Add pagination module 
 	import { NgxPaginationModule } from 'ngx-pagination';
 	 imports: [ BrowserModule, NgxPaginationModule]
 	 
@@ -470,23 +467,6 @@ Program-17 : Pagination
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
 
 
-
-
-ng2searchfilter
----------------
-1. install the library
-   npm i ng2-search-filter
-
-2. add the module to our module
-   import { Ng2SearchPipeModule } from 'ng2-search-filter';
-   imports : [Ng2SearchPipeModule]
-
-3. use the below code in HTML file
-   <input type="search"  [(ngModel)]="searchText">
-	
-   <h1 *ngFor='let x of names | filter : searchText'>
-    {{x}}
-   </h1>
 
 
 
@@ -2522,7 +2502,110 @@ program-65 : Route resolver Example
 	  }
 
 
-  
+
+ 
+Program- Folder Explorer(Folder-Emoji)
+=====================================
+import { CommonModule } from '@angular/common';
+import { Component, Input } from '@angular/core';
+@Component({
+  selector: 'app-folder-explorer',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './folder-explorer.component.html',
+  styleUrl: './folder-explorer.component.css',
+  inputs: ['folderObj']
+})
+export class FolderExplorerComponent {
+  folderObj: any;
+  isExpanded: boolean = false;
+}
+---------------------------
+<div *ngIf="folderObj.isFolder" (click)="isExpanded=!isExpanded" style="cursor:pointer">
+  📁 <span>{{ folderObj.name }}</span>
+</div>
+<div *ngIf="isExpanded" style="padding-left: 20px;">
+  <div *ngFor="let item of folderObj.items">
+    <app-folder-explorer [folderObj]="item"></app-folder-explorer>
+  </div>
+</div>
+<div *ngIf="!folderObj.isFolder">
+  📑 <span>{{ folderObj.name }}</span>
+</div>
+ 
+ 
+ 
+Program: traffic Application
+============================
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+@Component({
+  selector: 'app-traffic-signal',
+  standalone: true,
+  imports: [CommonModule],
+  templateUrl: './traffic-signal.component.html',
+  styleUrl: './traffic-signal.component.css'
+})
+export class TrafficSignalComponent {
+  config: any;
+  colorsArr: string[];
+  selectedColor: string = 'red';
+  timer: any;
+  constructor() {
+    this.config = {
+      "red": { nextColor: 'green', duration: 4000 },
+      "green": { nextColor: 'yellow', duration: 3000 },
+      "yellow": { nextColor: 'red', duration: 1000 }
+    };
+    this.colorsArr = Object.keys(this.config);
+  }
+  ngDoCheck() {
+    const { duration, nextColor } = this.config[this.selectedColor];
+    this.timer = setTimeout(() => {
+      this.selectedColor = nextColor;
+    }, duration)
+  }
+  ngOnDestroy() {
+    clearTimeout(this.timer);
+  }
+}
+
+===============
+<div class="wrapper">
+    <div class='traffic-light-container traffic-light-container--vertical'>
+        <div *ngFor="let color of colorsArr">
+            <div class="traffic-light" [style.background-color]="color === selectedColor ? selectedColor:'' ">
+            </div>
+        </div>
+    </div>
+</div>
+=================
+.wrapper {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+}
+.traffic-light-container {
+    background-color: #000;
+    border-radius: 8px;
+    display: flex;
+    padding: 8px;
+    gap: 8px;
+}
+.traffic-light-container--vertical {
+    flex-direction: column;
+}
+.traffic-light {
+    background-color: #555;
+    border-radius: 50px;
+    height: 50px;
+    width: 50px;
+}
+
+
+ 
 
 Program-66: jasmine karma
 --------------------------
@@ -2646,7 +2729,7 @@ Program:67 ToDo App using NgRx
 		(OR)
    ng add @ngrx/store@latest
 		(OR)
-   ng add @ngrx/store@14
+   ng add @ngrx/store@17
    
 2. Create Folders & Files manually for store , actions, reducers and components
     store-->store.ts       
@@ -2692,13 +2775,15 @@ Program:67 ToDo App using NgRx
 	};
 
 4. create Store using the Reducer (store.ts)
-    import { StoreModule } from '@ngrx/store';
+	import { provideStore } from '@ngrx/store';
 	import { rootReducer } from '../reducers/reducers';
-	export const myStore = StoreModule.forRoot(rootReducer);
+	export const myStore = provideStore(rootReducer);
 	
-5. Provide the store to a module (app.module.ts)
-   import { myStore } from './store/store';
-   imports: [BrowserModule, myStore]
+5. Provide the store (app.config.ts)
+    import { myStore } from './state-management/store/store';
+	export const appConfig: ApplicationConfig = {
+	  providers: [provideRouter(routes), provideAnimationsAsync(), myStore]
+	};
    
 6. add action-creator code in actions.ts
     export function addTodo(text: string) {
