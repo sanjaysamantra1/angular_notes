@@ -547,7 +547,7 @@ Assignment
 2. display list of employees in a table(data comes from an array)
 3. user should be able to delete Employee (ask user confirmation)
 4. view the details of each employee in a modal (bootstrap)
-5. add a new employee to the table
+5. add a new employee to the table (insert a new record to the array)
 6. use sweetAlert to display messages ('Added Successfully')
 
 
@@ -646,22 +646,19 @@ slice:2:-1 means return the items from the 2nd index to one from the end of the 
 
 Custom Pipe
 ===========
-1. create a pipe file (remaining.pipe.ts)
-2. create a class that class should implement PipeTransform Interface
-   decorate that class with @Pipe decorator
-3. override transform() method and write own logic
-4. register that pipe in module(app.module.ts)
-5. add to the declarations:[] in module 
-6. use the pipe in HTML file
-   {{"I am a student" | remaining}}
+1. ng generate pipe remaining
+2. every angular pipe implements PipeTransform
+  class RemainingPipe implements PipeTransform {}
+3. override transform()
    
 
 Assignment
 ==========
 1. Create a custom pipe(ordinal) that displays a cardinal number in ordinal format.
-2. declare an array of employee objects. display them in a table.
+2. create a custom pipe called age which takes a date and returns the age in years.
+3. declare an array of employee objects. display them in a table.
    create a custom pipe that will add 'mr. / miss.' before the employee name.
-3. declare an array of employee objects. display them in a table. 
+4. declare an array of employee objects. display them in a table. 
    add a search-box above the table. create a custom-pipe to filter/search employees data.
 
    
@@ -731,6 +728,19 @@ Q.How can we share data between 2 components (Unrelated Components)
   2. Subject / BehaviourSubject
   
   
+Props Drilling
+==============
+-Prop drilling is basically a situation when the same data is being sent at almost every level due to requirements in the final level.
+-Solution : State management Library (NgRX)
+
+
+inputs:['title']
+set title(){
+	// setter for title input variable
+	// this function gets invoked when a new value is assigned to 'title'
+}
+  
+  
   
 Child to parent
 ===============
@@ -774,7 +784,7 @@ ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - ngOnDestroy. (1+8
 				//logic
 			}
 		}	
-ex- ngOnChange() is a method from onChange interface
+ex- ngOnChanges() is a method from 'OnChanges' interface
 
 
 The hooks/lifecycle methods are executed in this order:
@@ -799,7 +809,25 @@ ngDoCheck()
 -Invoked when the change detector of the given component is invoked. 
 -It allows us to implement our own change detection algorithm for the given component.
 -useful to detect and act upon the changes that can not be detected by Angular on its own.
+-Due to default behavior of angular change detection, ngOnChanges can't detect if someone changes a property of an object or push an item into array ??. So ngDoCheck comes to recuse.
+-Detect deep changes like a property change in object or item is pushed into array even without reference change.
+-By using ngDoCheck and KeyValueDiffer, you can monitor changes in complex objects that might not be caught by Angular's default change detection mechanism.
 
+
+ngAfterContentInit()
+-runs once after the first ngDoCheck().
+-Use ngAfterContentInit to call something once after all of the content has been initialized
+
+ngAfterContentChecked() 
+-is called after every subsequent ngDoCheck
+
+ngAfterViewInit() 
+-is called once after ngAfterContentChecked.
+-ngAfterViewInit() is called after all child components are initialized and checked.
+
+
+ngAfterViewChecked() 
+-is called after every subsequent ngAfterContentChecked.
  
  
 ngOnDestroy()
@@ -822,11 +850,29 @@ after the default change detector has completed one change-check cycle for a com
 N.p-ngDoCheck and ngOnChanges should not be implemented together on the same component
 
 
+
 Angular Change Detection Strategies
 ====================================
 there are 2 change detection strategies: 
 		1. default  (CheckAlways)
 		2. onpush   (CheckOnce)
+		
+Default:
+-------
+-Angular runs change detection on all components when any asynchronous events occur.
+-user events, HTTP requests, timers
+
+OnPush
+------
+-The OnPush strategy can significantly improve performance by reducing the frequency of change detection runs
+- It tells Angular to run change detection for the component only when
+	An @Input property changes due to a reference change.
+	An event originated from the component or one of its children.
+	You manually trigger change detection.
+		
+Benefits of OnPush Change Detection:
+Performance: Reduces the number of change detection cycles, especially beneficial for large applications with many components.
+Predictability: Changes are only detected when input references change or when an event originates from the component, making the component behavior more predictable.
 
 
 @ViewChild & @viewChildren
@@ -872,7 +918,12 @@ Dependency injection
 --------------------
 -Dependency injection (DI), is an important application design pattern. 
 -In Angular, the Dependency Injection framework provides declared dependencies to a class when that class is instantiated.   
-ex: constructor(private http:HttpClient){
+
+ 
+constructor(private myHttp:HttpClient){}
+	OR
+constructor(){
+	 this.myhttp = inject(HttpClient);
 }
   
 
@@ -1983,14 +2034,18 @@ Angular-15
 -Better Stack Traces
 
 
-angular-17
+angular-17 https://www.geeksforgeeks.org/angular-17-whats-new/
 ----------
+-Typescript 5.2
 -Deferrable views
 	@defer {
 	  <large-component />
 	}
 -New built-in control flow,  @if() @else()
--
+-@defer
+-View Transition API
+-Server-Side Rendering
+
 
 
 Update a project from 1 version to another angular version
@@ -2068,6 +2123,8 @@ The ng add command will additionally perform the following configurations:
 
 
 
+
+
 Need Of state management
 ========================
 -For smaller applications, it is fine to use components and services for application state management.
@@ -2082,7 +2139,7 @@ State Management using NGRX
 -NgRx provides a way to maintain data in your Angular application as a single source of truth.
 -Instead of injecting services everywhere and managing communication between them,NgRx manages your application from one singular source.
  
-UI-->Action-->Reducer-->Store(State)--->UI
+UI-->Action-->Reducer-->Store(State)--->selectors--->UI
 
 
 5 parts of NgRx:

@@ -126,10 +126,8 @@ export class AppComponent {
 
 program-8:Two-way data binding
 -------------------------------
-- import { FormsModule }   from '@angular/forms';
-- imports: [
-    BrowserModule, FormsModule
-  ]
+import { FormsModule }   from '@angular/forms';
+imports: [FormsModule]
   
 import { Component } from '@angular/core';
 @Component({
@@ -653,6 +651,22 @@ export class CountPipe implements PipeTransform {
   transform(input){
     var output = 150 - input.length;
     return output;
+  }
+}
+
+
+Custom Pipe - Age
+=================
+import { Pipe, PipeTransform } from '@angular/core';
+@Pipe({
+  name: 'age',
+})
+export class AgePipe implements PipeTransform {
+  transform(value: Date): any {
+     const currentYear = new Date().getFullYear();
+     const dobYear = value.getFullYear();     
+	 const age = currentYear - dobYear;
+     return age + ' years old';
   }
 }
 
@@ -1313,11 +1327,11 @@ import { Observable } from "rxjs";
 @Injectable()
 export class MyInterceptor1 implements HttpInterceptor {
     intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        console.log('My Interceptor-1 called...')
-        const hardCodedToken = "1d38fe-8671-6735-7360-2hjhsjh5";
+        //const myToken = "1d38fe-8671-6735-7360-2hjhsjh5";
+		const myToken = localstorage.getItem('myToken')
         const requestWithToken = req.clone({
             setHeaders: {
-                Authorization: `Bearer ${hardCodedToken}`
+                Authorization: `Bearer ${myToken}`
             }
         });
         return next.handle(requestWithToken);
@@ -1327,7 +1341,6 @@ export class MyInterceptor1 implements HttpInterceptor {
 
 ============
 Add below code in app.config.ts
-
 { provide: HTTP_INTERCEPTORS, useClass: MyInterceptor1, multi: true }
 
 
@@ -1336,34 +1349,49 @@ Add below code in app.config.ts
 
 Program-45 : Retry Interceptor
 ============================
-import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpEvent, HttpResponse, HttpRequest, HttpHandler, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { retry } from 'rxjs/operators';
-@Injectable()
-export class RetryInterceptor implements HttpInterceptor {
-  intercept(httpRequest: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+import { HttpInterceptorFn } from '@angular/common/http';
+export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
     return next.handle(httpRequest).pipe(retry(1));
-  }
 }
 
 
 
-program-46 : Sucess Interceptor
+Loading Interceptor
+====================
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { EMPTY, catchError } from 'rxjs';
+import { loaderService } from '../services/loader.service';
+
+export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
+  const loaderService = inject(loaderService);
+  loaderService.show();
+  
+  return next.handle(request).pipe(
+     finalize(() => loaderService.hide()),
+  );
+}
+
+-------------
+app.config.ts   -->   provideHttpClient(withInterceptors([loadingInterceptor])),
+
+
+
+program-46 : Error Interceptor
 ===============================
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable, tap } from "rxjs";
-@Injectable()
-export class SucessInterceptor implements HttpInterceptor {
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        return next.handle(req).pipe(tap(event=>{
-            if(event instanceof HttpResponse){
-                alert('data fetched successfully!!!');
-            }
-        }))
-    }
-}
+import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { EMPTY, catchError } from 'rxjs';
+import { ToastService } from '../services/toast.service';
+
+export const myErrorInterceptor: HttpInterceptorFn = (req, next) => {
+  const toastService = inject(ToastService);
+  return next(req).pipe(catchError((error) => {
+    toastService.showError(error.message);
+    return EMPTY;
+  }));
+};
+
 
 
 
