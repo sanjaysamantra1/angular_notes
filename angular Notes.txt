@@ -271,7 +271,13 @@ Property: to set an element property to a non-string data value.
 		b. imports: [ BrowserModule,FormsModule]
 	2. in view file use [(ngModel)]='variable'
 		<input type="text" [(ngModel)]='x'>
+		
 
+<input [(ngModel)]="userId" (ngModelChange)="onUserIdChange($event)" />
+
+onUserIdChange(userId: number): void {
+    console.log('Value Changed');
+}
 
 
 Attribute Binding
@@ -539,6 +545,12 @@ How to use SweetAlert
    Swal.fire('Good job!', 'You clicked the button!', 'success');
 
 
+How to use snackbar	
+====================
+1. npm i awesome-snackbar
+2. import Snackbar from 'awesome-snackbar'
+3. new Snackbar('Hello world! ??');
+
 
 
 Assignment
@@ -657,7 +669,7 @@ Assignment
 1. Create a custom pipe(ordinal) that displays a cardinal number in ordinal format.
 2. create a custom pipe called age which takes a date and returns the age in years.
 3. declare an array of employee objects. display them in a table.
-   create a custom pipe that will add 'mr. / miss.' before the employee name.
+   create a custom pipe Salutation that will add 'mr. / miss.' before the employee name.
 4. declare an array of employee objects. display them in a table. 
    add a search-box above the table. create a custom-pipe to filter/search employees data.
 
@@ -818,8 +830,10 @@ ngAfterContentInit()
 -runs once after the first ngDoCheck().
 -Use ngAfterContentInit to call something once after all of the content has been initialized
 
+
 ngAfterContentChecked() 
 -is called after every subsequent ngDoCheck
+
 
 ngAfterViewInit() 
 -is called once after ngAfterContentChecked.
@@ -912,6 +926,18 @@ steps to create and use service
    a. import service to component file
    b. create a referrence variable for that service(inside constructor) / Dependency Injection
    c. using the referrence variale make use of methos and properties from service
+   
+	class MathComponent{
+		constructor(private mathObj : MathService){
+			
+		}
+	}
+			(OR)
+	class MathComponent{
+		constructor(){
+			this.mathObj = Inject(MathService);
+		}
+	}
  
  
 Dependency injection 
@@ -919,21 +945,34 @@ Dependency injection
 -Dependency injection (DI), is an important application design pattern. 
 -In Angular, the Dependency Injection framework provides declared dependencies to a class when that class is instantiated.   
 
- 
 constructor(private myHttp:HttpClient){}
 	OR
 constructor(){
 	 this.myhttp = inject(HttpClient);
 }
+
+
+
+
+Types of Provider 
+======================
+The Angular Dependency Injection provides several types of providers.
+
+1. Class Provider : useClass
+   providers :[{ provide: ProductService, useClass: ProductService }]
+2. Value Provider: useValue
+  providers :[ {provide:'USE_FAKE', useValue: true}]
+  constructor(
+    @Inject('USE_FAKE') public useFake: string
+  ) {}
+3. Factory Provider: useFactory
+
+
+Aliased Class Provider: useExisting
+
   
+https://docs.angular.lat/guide/dependency-injection-providers
 
-
-
-
-Hierarchical Injector
-=====================
-1. ModuleInjector
-2. ElementInjector
 
 
 
@@ -954,9 +993,10 @@ POST - to send data to server  ( sign up )
 	   to fetch data securly    (send params in body not in URL)
 
 PUT - update data/create or replace a resource  
-	  update password/update mobile number 
+	  
 	  
 PATCH - update/modify a resource
+		update password/update mobile number 
 
 DELETE - remove a resource/delete a record from DB 
 		 Delete naukri account
@@ -1030,24 +1070,22 @@ POST   /employees
 PUT    /employees/{id}
 PATCH  /employees/{id}
 DELETE /employees/{id}
+  
 
 
 
-httpClient Service
-------------------
-1. make httpClientModule available to our application
-	a. import { provideHttpClient } from '@angular/common/http';
-	b. add provideHttpClient in providers:[] of app.config.ts
-	   providers: [provideRouter(routes), provideHttpClient()]
+How to use HttpClient 
+======================
+1. add below code in app.config.ts
+   providers: [provideRouter(routes), provideHttpClient()]
 
-2. make httpClient Service available to Service/component
-   a. import httpClient service from '@angular/common/http' in component
-      import { HttpClient } from '@angular/common/http';
-   b. create a referrence variable of httpClient inside the constructor
-      constructor(private httpClient:HttpClient) { }
-   c. using that referrence variable call httpClient methods(GET,POST,PUT,DELETE)
-      
+2. inject HttpClient in custom service
+   constructor(private http: HttpClient) { }
    
+3. using that referrence variable call httpClient methods(GET,POST,PUT,DELETE)   
+ 
+
+
 
 HttpClient vs fetch()
 =====================
@@ -1059,10 +1097,19 @@ HttpClient vs fetch()
 -HttpClient comes with built-in CSRF protection , fetch() doesn't
 -HttpClient has interceptor to Intercept request and response. fetch() doesn't
 
-   
+ 
+
+
+HttpClient with Headers
+=======================
+-Reading the full response(not only the body)
+-httpClient.get(URL , { observe: 'response' })
+ httpClient.get(URL , { observe: 'body' })
+
+ 
 
 models in Angular
------------------
+=================
 -A Model represents the structure of the data object.
 -Handling raw JSON objects is really painful and hard to maintain.
  ex:-Users have a firstName and a lastName.the full name of your user within your templates looks like this:
@@ -1070,19 +1117,23 @@ models in Angular
 	what if customer calls and tells that the order of firstname and lastname should be switched,go through every template and switch the expressions.
 -But if your user is a User object, you can simply implement a function to print the fullname.
  
--Another good reason for using models like this is that we're working with Typescript. We want to know the type of things when we use them and not just define everything as any.
+-Another good reason for using models is type enforce. We want to know the type of things when we use them and not just define everything as any.
 
 -Interfaces are used in Typescript to perform type-checking,Interface cannot be used to instantiate.
 -Classes are used not only for type-checking but also if we need some methods,they are used to instantiate.
 
 
 InterFace As Model: fields mentioned in interface can only be used in view.
+Class As Model: Structure Enforcement + Logic (fullName() , annualSalary())
+
 
 
 Http Interceptor
 ----------------
 -interceptors are used to pre-process and post-process the HTTP request.
 -Used before sending request and after getting response from the server. 
+
+Use Cases:
 -Add an Access Token  or some custom HTTP header for all outgoing HTTP requests.
 -Create a global Error catch incase HTTP Request fails.
 -Create a mock response to test.
@@ -1091,15 +1142,20 @@ Http Interceptor
  before handing the data over to your service/component.
 
 
-Create HTTP Interceptor
------------------------
-1. create a class that should implement HttpInterceptor interface, override intercept() method.
-2. modify the Request, and call next.handle() to pass the modified request.   
-3. Register the interceptor in app.config.ts, add below code in providers:[]
-	providers: [ 
-		provideHttpClient(withInterceptorsFromDi()),
-		{ provide: HTTP_INTERCEPTORS, useClass: MyInterceptor, multi: true }
-	  ]
+How to Use Interceptors
+=======================
+1. Create Interceptor
+	import { HttpInterceptorFn } from '@angular/common/http';
+	export const logInterceptor: HttpInterceptorFn = (req, next) => {
+	  console.log('I am Inetrceptor')
+	  return next(req);
+	};
+2. register the interceptor (app.config.ts)
+  providers: [
+    provideRouter(routes),
+    provideHttpClient(withInterceptors([logInterceptor]))
+  ],
+
 
 
 
@@ -1173,6 +1229,36 @@ Mathematical  		count, max , min , reduce
 
 
 
+
+    // publisher
+    const observable1 = new Observable((publisher) => {
+      publisher.next('AAAAAAAA')
+      publisher.next('BBBBBBBB')
+      publisher.next('CCCCCCCC')
+      publisher.next('DDDDDDDD')
+      publisher.complete();
+    });
+
+    // subscriber
+   this.producer1.subscribe({
+    next: (v) => console.log(v),
+    error: (e) => console.error(e),
+    complete: () => console.info('completed')
+   });
+   
+   
+   
+Digital Clock
+=============
+this.time$ = new Observable<string>(observer => {
+   setInterval(() => observer.next(new Date().toLocaleTimeString()), 1000);
+});
+
+
+
+
+
+
 forkjoin()
 ---------
 -forkJoin is an operator that takes any number of input observables passed as an array of input observables.
@@ -1222,7 +1308,7 @@ switchMap() = map + switch
 ExhaustMap()
 	-Map to inner observable, ignore other values until that observable completes.
 	-the “Do not disturb!” operator.
-	-you have a login screen with a login button, where you map each click to an login ajax request.
+	-we have a login screen with a login button, where you map each click to an login ajax request.
 	-If the user clicks more than once on the login button, it will cause multiple calls to the server.
 	-use exhaustMap to temporarily “disable” the mapping while the first http request is still on the go.
 	-this makes sure you never call the server while the current request is running.
@@ -1243,11 +1329,8 @@ Subject
 -Subjects are like EventEmitters: they maintain a registry of many listeners.
 -Subject is a special type of Observable that allows values to be multicasted to many Observers,While plain Observables are unicast.
 -data can be pushed into a subject and the subject’s subscribers will in turn receive that pushed data.
--Subjects are useful for multicasting or when a source of data is not easily transformed
-into an observable.
 -The real power of subjects comes into play with multicasting, where a subject is passed as the 
-observer to an observable,which will mean that, when the observable emits, the data is multicasted to all of the subject’s
-subscriptions:
+observer to an observable,which will mean that, when the observable emits, the data is multicasted to all of the subject’s subscriptions.
 -The 'asObservable' operator can be used to transform a subject into an observable.
 -A subject can emit data, on top of having the capability to be subscribed to.
 -To feed a new value to the Subject, just call next(theValue), and it will be multicasted to the Observers registered to listen to the Subject.
@@ -1291,7 +1374,7 @@ Subjects (Subject,ReplaySubject,BehaviorSubject)
 Subject		 ---------- Only Upcoming values
 BehaviorSubject-------  one previous value(current/initial) & upcoming values
 ReplaySubject---------  all previous values and upcoming values
-AsyncSubject  --------  latest value when stream gets closed
+AsyncSubject  --------  latest value when stream gets closed (complete)
 
 
 

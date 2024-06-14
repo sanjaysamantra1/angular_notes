@@ -1022,6 +1022,51 @@ export class ChildComponent implements OnChanges, OnInit, DoCheck {
 }
 
 
+Example - ngDoCheck
+======================
+import { Component, DoCheck, KeyValueDiffers, KeyValueDiffer } from '@angular/core';
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+})
+export class AppComponent implements DoCheck {
+  user = { name: 'John Doe' };
+  private userDiffer: KeyValueDiffer<string, any>;
+  changes: string[] = [];
+
+  constructor(private differs: KeyValueDiffers) {
+    this.userDiffer = this.differs.find(this.user).create();
+  }
+  changeProperty() {
+    this.user.name = 'Jane Smith';
+  }
+  ngDoCheck() {
+    const userChanges = this.userDiffer.diff(this.user);
+    if (userChanges) {
+      userChanges.forEachChangedItem(item => {
+        this.changes.push(`Property ${item.key} changed from ${item.previousValue} to ${item.currentValue}`);
+      });
+    }
+  }
+}
+-------------------
+<div>
+  <h2>Change Object Property</h2>
+  <input [(ngModel)]="user.name" placeholder="Enter user name">
+  <button (click)="changeProperty()">Change User Name Programmatically</button>
+</div>
+<div>
+  <h3>Current User Details:</h3>
+  <p>Name: {{ user.name }}</p>
+</div>
+<div>
+  <h3>Changes Detected:</h3>
+  <p *ngFor="let change of changes">{{ change }}</p>
+</div>
+
+
+
+
 
 program-35: @ViewChild and ngAfterViewInit lifecycle hooks
 ----------------------------------------------
@@ -1357,7 +1402,7 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 Loading Interceptor
-====================
+===================
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { EMPTY, catchError } from 'rxjs';
@@ -1367,7 +1412,7 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loaderService = inject(loaderService);
   loaderService.show();
   
-  return next.handle(request).pipe(
+  return next(request).pipe(
      finalize(() => loaderService.hide()),
   );
 }
@@ -1378,7 +1423,7 @@ app.config.ts   -->   provideHttpClient(withInterceptors([loadingInterceptor])),
 
 
 program-46 : Error Interceptor
-===============================
+==============================
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { EMPTY, catchError } from 'rxjs';
@@ -1392,6 +1437,21 @@ export const myErrorInterceptor: HttpInterceptorFn = (req, next) => {
   }));
 };
 
+
+Success Interceptor
+====================
+import { HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { tap } from 'rxjs';
+export const myresponseInterceptor: HttpInterceptorFn = (req, next) => {
+  console.log('Pre interceptor');
+  return next(req).pipe(
+    tap((event: HttpEvent<any>) => {
+      if (event instanceof HttpResponse && event.status === 200) {
+        console.info('Post Interceptor - Sucess');
+      }
+    })
+  );
+};
 
 
 
