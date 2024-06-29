@@ -2062,6 +2062,56 @@ program-57 template driven form Example
 
 
 
+Template Driven form with Validation
+=======================================
+<h1 class="text-center">Template Driven Form</h1>
+
+<form #myForm="ngForm" (submit)="submitMyForm(myForm)">
+    <div>
+        First Name: <input #fname="ngModel" name="firstName" ngModel required minlength="5" />
+
+        <span class="text-danger" *ngIf="fname.hasError('required') && fname.dirty">FirstName is required</span>
+        <span class="text-danger" *ngIf="fname.hasError('minlength') && fname.dirty">FirstName should have minimum 5
+            characters</span>
+    </div>
+    <div>
+        Last Name: <input #lname="ngModel" name="lastName" ngModel required minlength="5" />
+
+        <span class="text-danger" *ngIf="lname?.errors?.['required'] && lname.dirty">lastName is required</span>
+        <span class="text-danger" *ngIf="lname?.errors?.['minlength'] && lname.dirty">minimum 5 chars</span>
+    </div>
+    <div>
+        Email: <input #email="ngModel" name="email" ngModel required email />
+    </div>
+    <fieldset ngModelGroup="address">
+        <div>
+            Street Name: <input #street="ngModel" name="street" ngModel />
+        </div>
+        <div>
+            City: <input #city="ngModel" name="city" ngModel />
+        </div>
+        <div>
+            PIN: <input #pin="ngModel" name="pin" ngModel />
+        </div>
+    </fieldset>
+
+    <button type="submit" [disabled]="myForm.invalid" >Submit</button>
+    <button type="reset">reset</button>
+</form>
+
+<h3>{{myForm.value | json}}</h3>
+
+<h3>{{fname.value}}</h3>
+<div>{{fname.errors | json}}</div>
+<div>{{fname.valid | json}}</div>
+
+<div></div>
+
+
+
+
+
+
 program-58: Template Driven Form with validation
 ---------------------------------------------
 <h1>template driven Form with validation</h1>
@@ -2368,6 +2418,18 @@ email: new FormControl('abcd@gmail.com', [Validators.required, EmailValidator.is
 
 
 
+ageRangeValidator
+=================
+import { AbstractControl, ValidatorFn } from "@angular/forms";
+function ageRangeValidator(min: number, max: number): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: boolean } | null => {
+        if (control.value !== undefined && (isNaN(control.value) || control.value < min || control.value > max)) {
+            return { 'ageRange': true };
+        }
+        return null;
+    };
+}
+
 
 
 program-61: routing
@@ -2464,7 +2526,7 @@ Program-62:Path-Param Example
 1. create productDetailsComponent
    ng g c productDetails
    
-2. add the below code in app-routing.module.ts
+2. add the below code in app.routes.ts
    {
     path: 'productdetails/:id', 
     component: ProductdetailsComponent
@@ -2475,11 +2537,11 @@ Program-62:Path-Param Example
         View Details</button>
 		
 4. add the below code in productdetails.comp.ts
-   constructor(private route: ActivatedRoute) 
+   constructor(private activatedRoute: ActivatedRoute) 
    {
    }
    ngOnInit() {
-    this.route.params.subscribe(params => {
+    this.activatedRoute.params.subscribe(params => {
        this.id = +params['id']; // (+) converts string 'id' to a number
        // In a real app: make Http call to get the details
     });
@@ -2493,7 +2555,7 @@ Program-62:Path-Param Example
 
 program-63 : Query-param example
 --------------------------------
-1. add the below code in app-routing.module.ts
+1. add the below code in app.routes.ts
    {
     path: 'productdetails', 
     component: ProductdetailsComponent
@@ -2519,20 +2581,18 @@ program-63 : Query-param example
 	  
 Program-64 Router Guard
 -----------------------
-@Injectable()
-export class myGuard implements CanActivate {
-   userRole = 'admin';
-   
-    canActivate() {
-        if (this.userRole == 'admin') {
-            return true;
-        }
-        else {
-            alert("you are not allowed to visit this route");
-			return false;
-        }
-    }
-}
+import { CanActivateFn } from '@angular/router';
+export const authGuard: CanActivateFn = (route, state) => {
+  // Inject user service, Read user info from user service
+  const user = { name: 'sanjay', role: 'admin1' };
+  if (user.role === 'admin') {
+    return true;
+  } else {
+    alert('Sorry!!! You dont have access to this page')
+    return false;
+  }
+};
+
 ----------------
 	{
         path: 'product-details',
@@ -2540,6 +2600,19 @@ export class myGuard implements CanActivate {
         canActivate: [myGuard]
     },
 
+
+can-deactivate
+==============
+import { CanDeactivateFn } from '@angular/router';
+export const hasChangesGuard: CanDeactivateFn<unknown> =
+  (component: any, currentRoute, currentState, nextState) => {
+    if (component?.isDirty) {
+      alert('Please save your changes before you leave this route');
+      return false;
+    } else {
+      return true
+    }
+  };
 
  
 
@@ -2845,13 +2918,11 @@ Program:67 ToDo App using NgRx
 		  return state.map((todo) => {
 			return todo.id !== action.payload.id
 			  ? todo
-			  : Object.assign({}, todo, { isCompleted: !todo.isCompleted });
+			  : {...todo,isCompleted:!isCompleted}
 		  });
 		}
 		case 'DELETE_TODO': {
-		  return state.filter((todo) => {
-			return todo.id !== action.payload.id;
-		  });
+		  return state.filter(todo=>todo.id !== action.payload.id);
 		}
 		default: {
 		  return state;
@@ -2946,11 +3017,146 @@ Program:67 ToDo App using NgRx
 
 
 
+Program:68 Counter App using NgRx
+==================================
+1. Install NgRx Store in the project
+   ng add @ngrx/store
+   
+2. Create action File (counter.actions.ts)
+	import { createAction } from '@ngrx/store';
+	export const increment = createAction('[Counter Component] Increment');
+	export const decrement = createAction('[Counter Component] Decrement');
+	export const reset = createAction('[Counter Component] Reset');
+	
+3. Create Reducer File(counter.reducer.ts)
+	import { createReducer, on } from '@ngrx/store';
+	import { increment, decrement, reset } from './counter.actions';
+	export const initialState = 0;
+	export const counterReducer = createReducer(
+		initialState,
+		on(increment, (state) => state + 1),
+		on(decrement, (state) => state - 1),
+		on(reset, (state) => 0)
+	);
+4. Provide the Store (app.config.ts)
+   providers: [
+    provideStore({ count: counterReducer })
+  ]
+
+5. Create Counter Component (counter.component.ts)
+  count$: Observable<number>;
+  constructor(private store: Store<{ count: number }>) {
+    this.count$ = store.select('count');
+    console.log(this.count$)
+  }
+  increment() {
+    this.store.dispatch(increment())
+  }
+  
+6. Counter.component.html
+   <h2>Count value is : {{count$ | async}}</h2>
+   <button (click)="increment()">Increment</button>
 
 
 
+Program:69 - Employee CRUD using NgRx
+=====================================
+1. Install  Store & Effect in the project
+   ng add @ngrx/store
+   ng add @ngrx/effects
+   
+2. Create action File (employee.actions.ts)
+	import { createAction, props } from '@ngrx/store';
+	import { Employee } from '../models/employee';
+	export const fetchEmployees = createAction('[EmployeeList Page] Fetch Employees');
+	export const fetchEmployeesSucess = createAction(
+		'[Employees API] Employees Loaded Successfully',
+		props<{ payload: Employee[] }>()
+	);
+	export const fetchEmployeesError = createAction('[Employees API] Employees Loaded Error');
+	export const deleteEmployee = createAction(
+		'[Employees API] Delete Employee',
+		props<{ id: string }>()
+	);
+	export const addEmployee = createAction(
+		'[Employees API] Add Employee',
+		props<{ employee:Employee }>()
+	);
+	
+3. Create Reducer File(employee.reducer.ts)
+	import { createReducer, on } from '@ngrx/store';
+	import { fetchEmployeesSucess } from './employee.actions';
+	export const initialState = [];
+	export const employeesReducer = createReducer(
+	  initialState,
+	  on(fetchEmployeesSucess, (state, action: any) => {
+		return action.payload;
+	  }),
+	);
 
+4. Create Effect File (employee.effects.ts)
+	import { Injectable } from '@angular/core';
+	import { Actions, createEffect, ofType } from '@ngrx/effects';
+	import { of } from 'rxjs';
+	import { map, exhaustMap, catchError } from 'rxjs/operators';
+	import { EmployeeService } from '../services/employee.service';
+	import { addEmployee, deleteEmployee, fetchEmployees } from './employee.actions';
+	@Injectable()
+	export class EmployeeEffects {
+		loadEmployees$ = createEffect(() => this.actions$.pipe(
+			ofType(fetchEmployees),
+			exhaustMap(() => this.employeeService.fetchAllEmployees()
+				.pipe(
+					map(Employees =>
+						({ type: '[Employees API] Employees Loaded Successfully', payload: Employees })
+					),
+					catchError(() => of({ type: '[Employees API] Employees Loaded Error' }))
+				))
+		));
+		deleteEmployee$ = createEffect(() => this.actions$.pipe(
+			ofType(deleteEmployee),
+			exhaustMap((action: any) => this.employeeService.deleteEmployee(action.id)
+				.pipe(
+					map(Employee => {
+						alert('Employee Deleted Succesfully');
+						return ({ type: '[EmployeeList Page] Fetch Employees' })
+					}),
+					catchError(() => of({ type: '[Employees API] Employee Delete Error' }))
+				))
+		));
+		addEmployee$ = createEffect(() => this.actions$.pipe(
+			ofType(addEmployee),
+			exhaustMap((action: any) => this.employeeService.addEmployee(action.employee)
+				.pipe(
+					map(Employee => {
+						alert('Employee Added Succesfully');
+						return ({ type: '[EmployeeList Page] Fetch Employees' })
+					}),
+					catchError(() => of({ type: '[Employees API] Employee Add Error' }))
+				))
+		));
+		constructor(
+			private actions$: Actions,
+			private employeeService: EmployeeService
+		) { }
+	}
 
+5. Provide the Store & effect(app.config.ts)
+    providers: [
+		provideStore({ employees: employeesReducer }),
+		provideEffects(EmployeeEffects)
+    ]
 
-
-
+6. Add Employee-list and add-employee component
+	  employees$: Observable<Employee[]> = this.store.select(state => state.employees);
+	  constructor(private store: Store<{ employees: Employee[] }>) {
+	  }
+	  ngOnInit() {
+		this.store.dispatch({ type: '[EmployeeList Page] Fetch Employees' });
+	  }
+	  deleteEmp(id: string) {
+		const flag = confirm('Are you sure, You want to delete this record?')
+		if (flag) {
+		  this.store.dispatch(deleteEmployee({ id }));
+		}
+	  }

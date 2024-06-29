@@ -1389,7 +1389,7 @@ Forms in Angular
 
 
 Template Driven Forms Features
----------------------------
+------------------------------
 -Easy to use
 -Suitable for simple scenarios and fails for complex scenarios
 -Two way data binding(using [(NgModel)] syntax)
@@ -1409,7 +1409,7 @@ Model driven forms/Reactive Forms
 -No data binding is done (immutable data model)
 -More component code and less HTML markup
 -Adding elements dynamically
--Easier unit testing(testing validation logic)
+-Better unit testing(testing validation logic)
 -Supports creation of forms with dynamic structure at runtime
 -Uses ReactiveFormsModule
 
@@ -1427,8 +1427,9 @@ ng-untouched: not yet touched
 
 
 Template Driven Form
----------------------
-1. import FormsModule to our module/Component
+--------------------
+1. import FormsModule to our Component
+   imports: [FormsModule]
 
 2. view File-
    a. use ngForm directive with form's template reference variable
@@ -1504,7 +1505,7 @@ Model driven form
 -----------------
 1. import ReactiveFormsModule 
 	a. import { ReactiveFormsModule } from '@angular/forms';
-	b. imports:[BrowserModule,ReactiveFormsModule]  
+	b. imports:[ReactiveFormsModule]  
 	
 2. view - 
 	a. use formGroup with form
@@ -1526,7 +1527,7 @@ FormBuilder
 ===========
 -Angular FormBuilder API makes it easier to build reactive forms.
 -We can easily add the FormGroup, nested FormGroups, FormArrays & FormControls.
--Helps to create Dynamic Form with Dynamic number of fields.
+-Helps to create Dynamic Form with Dynamic number of Forms , Fields.
 
 
 How to use:
@@ -1611,20 +1612,18 @@ routing Program:
 	  { path: '', component: HomeComponent },
 	  { path: '**', component: NotfoundComponent },
 	];
-	@NgModule({
-	  imports: [RouterModule.forRoot(routes)],
-	  exports: [RouterModule]
-	})
-	export class AppRoutingModule { }
+	Note: all these routes:[] are used in app.config.ts
 
-
-3.  Nav-bar.component.html   
+3. use router-outlet
+   <router-outlet>
+   
+   
+4.  Nav-bar.component.html   
    <a class="nav-link" routerLink="home" routerLinkActive="active-link">Home</a>
    <a class="nav-link" routerLink="aboutus">Aboutus</a>
    <a class="nav-link" routerLink="careers">Careers</a>
    
-4. use router-outlet
-   <router-outlet>
+
 
 
 
@@ -1645,6 +1644,18 @@ constructor(private routerObj : Router) { }
     this.routerObj.navigate(['/html'])
   }
 
+
+Navigate Previous / Next Route
+==============================
+1. Inject Location Service  
+   constructor(private location: Location) {
+   }
+2. user location service methods like: back() , historyGo()
+   this.location.back()
+   this.location.forward()
+   this.location.historyGo(-2)
+   this.location.historyGo(2)
+   
 	
   
 Route-Parameter
@@ -1687,13 +1698,13 @@ Protecting routes with guard
 -canActivate : Checks to see if a user can visit a route while navigating to a route
 -canActivateChild : When Angular finds a canActivateChild guard attached to the parent route, it invokes it every time the user tries to navigates to the child route. Hence instead of attaching Guard service every child, you can attach it to the parent route.
 -canDeactivate : Checks to see if a user can exit a route while navigating from a route
--canLoad: Checks to see if a user can route to a module that lazy loaded.
--canMatch: 
+-canMatch: helps in dynamically loading the components of our choice
 
 Note:-canActivate Guard prevents unauthorized user from accessing the route. 
 	But it does not stop the module from being downloaded. 
 	The user can use the chrome developer console to see the source code. 
 	The CanLoad Guard prevents the module from being downloaded.
+
 
 Router-Guard
 ------------
@@ -1717,6 +1728,7 @@ Resolvers
 -resolver is an intermediate code that is executed between clicking the link and loading the component.
 -We can use Angular’s Route Resolver class for fetching the data before your component is loaded.
 -The router waits for the data to be resolved before the route is finally activated.
+-While Swithing from List page to details page
 
  
 Steps to use resolvers
@@ -1748,40 +1760,18 @@ Steps to use resolvers
     });
   }
 
+
+Lazy Loading of components
+==========================
+-Lazy loading is the process of loading components, modules, or other assets of a website as they're required.
+-Eager loading loads all of its components are loaded at once. This means that a lot of unnecessary libraries or modules might be loaded as well.
+-For a small application this would be okay. But as the application grows the load time will increase if everything is loaded at once. Lazy loading allows Angular to load components and modules as and when they're needed.
+
+loadComponent: () =>
+        import('./components/product-list/product-list.component').then((x) => x.ProductListComponent)
+
  
  
-Lazy Loading Of Modules
-=======================
--By default, NgModules are eagerly loaded, which means that ngModules are loaded as soon as the application loads.
--Lazy loading enables to load only the module user is interacting and keep the remaining modules to be loaded at run time on demand.
--Lazy loading helps keep initial bundle sizes smaller,which in turn helps decrease load time
--To lazy load a module we need to use the loadChildren() in the route definition.
-
-step-1: Create the feature module with the CLI, using the --route flag
-        ng g module customer --routing
-
-step-2: Configure the routes.
-       {
-		path: 'customers',
-		loadChildren: () =>
-		  import('./customers/customers.module').then((m) => m.CustomersModule),
-	   }
-        
-ng generate module customers --route customers --module app.module
-ng generate module grocery --route grocery --module app.module
-	
-
-
-
-forRoot()  vs forChild()
-========================
--forRoot() is used with root module(app.module.ts)
- forChild() is used with feature modules(grocery.module.ts)
--The forRoot() method creates an NgModule that contains all the directives, the given routes, and the Router service itself.
--The forChild() method creates an NgModule that contains all the directives and the given routes, but does not include the Router service
-
-
-
 
 
 Angular Preloading Strategy
@@ -1793,7 +1783,10 @@ Angular Preloading Strategy
 -Angular provides two built in strategies out of the box. 
 	1. PreloadAllModules
 	2. NoPreloading
--RouterModule.forRoot(routes, {preloadingStrategy: PreloadAllModules}) 
+-Add this code in app.config.ts 
+  providers: [
+    withPreloading(PreloadAllModules)
+  ],
 
 1.Eagerly Load the modules required at startup. 
  ex: authentication module, core module, shared module etc
@@ -1897,14 +1890,14 @@ web-pack:
 
 > ng serve:
 It Builds and serves the application. rebuilding on file changes.
-	1. It won't create dist folder;
+	1. It doesn't create dist folder;
 	2. generated files will be  stored in the internal memory
 	3. we cann't run in external server.
 
 > ng build:
 compiles an application and stores the generated files in dist folder.
 	1. It creates a dist folder
-	2. generated files will be  stored in dist(that can be moved)
+	2. generated files are be  stored in dist(that can be moved)
 	3. generated dist folder can be placed in any server and application can be run. (tomcat/weblogic)
 
 
@@ -1924,12 +1917,11 @@ Deploy Angular Application in GitHub
 3. ngh --dir dist/angular_april_2023/browser
    go to github website & open your Repository
    Settings Tab --> pages --> you should see the live URL
-   
 
 			(OR)
 1. create an angular project 'project1'
 2. build angular project 'project1'
-   ng build --output-path docs --base-href project1   
+   ng build --output-path docs --base-href /project1/   
 3. create a new github repository 'deploy_angular_in_github'
 4. in your project folder initialize git & link to remote Repository
    git init
@@ -2236,6 +2228,14 @@ A Reducer simply takes the action as an input and returns the new state accordin
 3.Actions : modify the state of the store by using reducers (functions) that enable changes while keeping it immutable
 4.Selectors : Selector is a function used for obtaining a part of the state from the store.
 5.Effects : A mechanism that listens for dispatched actions in an observable stream,processes the server response, and returns new actions either immediately or asynchronously to the reducer to change the state
+  
+  
+Key concepts
+============
+Actions describe unique events that are dispatched from components and services.
+State changes are handled by pure functions called reducers that take the current state and the latest action to compute a new state.
+Selectors are pure functions used to select, derive and compose pieces of state.
+State is accessed with the Store, an observable of state and an observer of actions
   
   
   
