@@ -14,7 +14,7 @@ Angular installation
 		OR
    npm install -g @angular/cli@latest
 		OR
-   npm install -g @angular/cli@11
+   npm install -g @angular/cli@15
 
 5. check if angular CLI  is installed??
    ng v
@@ -101,7 +101,7 @@ Bootstrapping angular Application
 
 1. index.html --> <app-root></app-root> (component)
 2. main.ts   --> bootstrapApplication(AppComponent, appConfig)
-3. app.config.ts --> config information about our application (App level route info)
+3. app.config.ts --> configuration information about our application (Application level route info)
 4. app.component.ts-->app.component.html-->app.component.css
 
 steps to bootstrap the application:
@@ -191,8 +191,8 @@ ng g c demo --dry-run --flat --skip-tests --inline-template --inline-style
 
 g: Generate
 c: Component
---flat : No Sub folders
---no-spec : No test specification file
+--flat : No Sub folder for the component(header/footer)
+--skip-tests : No test specification file
 --inline-template : No Linked Template
 --inline-style : No external CSS file
 --dry-run : Will display the update without execution
@@ -243,9 +243,9 @@ How to Use Bootstrap in Angular
 
 How to Display Images from local folder
 =======================================
-1. place the images inside assests folder
+1. place the images inside 'public' folder
 2. use it in HTML file
-   <img src='assets/images/sachin.jpg' />
+   <img src='sachin.jpg' />
 
 
 
@@ -259,22 +259,22 @@ Databinding
 4.  2-way Binding  [(ngModel)] (2-way) (component<-->view)
 
 
-Note:For 2-way bindning "FormsModule" should be added to our Module
+Note:For 2-way bindning "FormsModule" should be imported
 
 InterPolation: for concatenating strings;Doesn't work with boolean values
 Property: to set an element property to a non-string data value.
 
 
 2-way Binding:
-	1. import FormsModule and add it to our Module(App.module.ts)
+	1. import FormsModule 
 		a. import { FormsModule } from '@angular/forms'
-		b. imports: [ BrowserModule,FormsModule]
+		b. imports: [ FormsModule]
 	2. in view file use [(ngModel)]='variable'
 		<input type="text" [(ngModel)]='x'>
 		
-
+<input type="text" on-change="userIdChanged()"	[(ngModel)]="userId" />
+			(OR)
 <input [(ngModel)]="userId" (ngModelChange)="onUserIdChange($event)" />
-
 onUserIdChange(userId: number): void {
     console.log('Value Changed');
 }
@@ -283,7 +283,15 @@ onUserIdChange(userId: number): void {
 Attribute Binding
 =================
 -attributes are defined by HTML and properties are defined by the DOM.
--Every element doesn't have all the properties those are available as attribute.
+-The attribute’s main role is to initializes the DOM properties. once the DOM initialization complete, the
+attributes job is done.
+-Property values can change, whereas the attribute values don't change.
+
+var value1 = document.getElementById('inputBox1').getAttribute('value');
+var value2 = document.getElementById('inputBox1').value;
+console.log(value1, value2); // type something in the box & run these again
+
+
  <table [width]='myWidth' [attr.height]='myHeight'></table>
  <tr><td [attr.colspan]="1 + 1">One-Two</td></tr>   Correct
  <tr><td [colSpan]="1 + 1">One-Two</td></tr>   Correct
@@ -304,6 +312,14 @@ Template Reference variables
  <input ref-phone placeholder="phone number" />			
 
 
+Assignments: 
+1. Have a paragraph & a toggle button, on click of the button control the visibility(Show/Hide) of the paragraph
+2. Create a text-area with maxLength=100, as the user keeps typing display updated Remaining characters.
+3. Create dropdown with state names, when user changes dropdown value, print the selected dropdown value in a paragraph
+4. have 2 inputBoxes, and a dropdown(+,-,*,/) and perform arithmetic operations
+5. create a input box, toggle the type of that input box to (text/password)
+6. create a counter example with 3 controls(increment,decrement,reset)
+
 
 	
 CSS
@@ -311,7 +327,7 @@ CSS
 1. inline
 2. internal
 3. styles[] in component
-4. styleUrls[] in component
+4. styleUrl in component
 5. styles.css global
 
 Note:- the styles written in component's css file applies only to one component. 
@@ -334,9 +350,10 @@ Be careful with apps that have None components in the application.
 			   1. CSS won't come from main HTML to Component.
 			   2. css will be provided from parent to child component.
 
-ex:- encapsulation: ViewEncapsulation.None
-	 encapsulation: ViewEncapsulation.shadowDOM
-	 encapsulation: ViewEncapsulation.Emulated(default)
+ex:- encapsulation: ViewEncapsulation.Emulated(default) 
+	 encapsulation: ViewEncapsulation.None
+	 encapsulation: ViewEncapsulation.ShadowDom
+	 
 
 Emulated: index HTML--->parent Component (yes)
 		  index HTML-->child component (yes)
@@ -355,13 +372,15 @@ Directives
 **********
 -Directives Enhance the power of HTML elements.
 -Directives add additional behavior to elements in Angular applications.
+-Before Angular 17  (*ngIf , *ngSwitchCase, *ngFor)
+-After angular-17  (@if , @else , @switch , @case , @default , @for, @let)
 
-1. Structural Directives : (*ngIf , *ngSwitchCase, *ngFor)
+1. Structural Directives : 
 	Directive which changes the layout/structure of the DOM.
 	* is used with structural directives.
 	only 1 structural directive can be applied to an element.	
 
-2. Attribute Directives : ([ngStyle],[ngClass],[hidden],[disabled])
+2. Attribute Directives : ([ngStyle],[ngClass])
 	Directive which changes behaviour/appearance of the DOM element.
 	[ ] is used with attribute direcives.
 	many attribute directives can be applied to an element.
@@ -369,14 +388,23 @@ Directives
 Note : Compononent can also be considered as directive, because it powers up the html by creating Custom Element, but the directives cannot be considered as component because it does not have a View (template and templateUrl cannot be used in directives)
 
 
-Angular-17
-==========
+
 @if(!flag){
 	<h1>truuuuuuuuuuuuu</h1>
 }@else{
 	<h1>Falseeeeeeeeeeeeeeeeeeeee</h1>
 }
-----------
+
+
+@if() vs hidden
+===============
+-when @if() condition is false, the element will neither be displayed on the page nor it will be there in the DOM.
+-when [hidden] condition is true the element will not be displayed on the page(display:none) but it will be there in the DOM.
+
+
+
+Switch Case
+===========
 @switch (n) {
     @case (1) { <h1>Monday</h1> }
     @case (2) { <h1>Tuesday</h1> }
@@ -388,12 +416,58 @@ Angular-17
     @default { <h1>Not a Valid number</h1>> }
 }
 
-------------------
-@for (user of users; track user.id) {
-  {{ user.name }}
-} @empty {
-  Empty list of users
-}
+
+
+@for()
+======
+1. for with array , @for with @empty
+	@for(car of cars;track car;let i = $index){
+	  <h4>{{car}}----{{i}}</h4>
+	} @empty {
+	  Empty list of cars
+	}
+2. @for() with String
+   @for(char of str;track char){
+		<div>{{char}}</div>
+   }
+ 
+3. @for with Iterable objects (Map)
+   @for (entry of myMap; track entry){
+       <div>{{entry[0]}} === {{entry[1]}}</div>
+	}
+4. @for() with index
+	@for (item of items; track item; let index = $index) {
+		<li>{{ index }}: {{ item }}</li>
+    }
+   
+
+-Before Angular 17 (index,first,last,even,odd)
+-After Angular 17 ($index,$first,$last,$even,$odd,$count)
+
+
+ngFor trackBy
+-------------
+-trackBy is required. It is used to optimize performance by preventing unnecessary change detection runs when the data changes.
+
+-ngFor by default tracks list items using object identity. This means that if you build a list of new objects from scratch with the exact same values as the previous list and pass this newly built list to ngFor, Angular will not be able to tell that a given list item is already present or not.
+
+-NgForOf needs to uniquely identify items in the iterable to correctly perform DOM updates when items in the iterable are reordered, new items are added, or existing items are removed.
+-In all of these scenarios it is usually desirable to only update the DOM elements associated with the items affected by the change. This behavior is important to:
+
+
+
+
+Migrate from *ngFor to @for()
+=============================
+ng generate @angular/core:control-flow
+
+
+
+Assignment:
+==========
+-Declare an array of users, display users in card & table format. 
+ add a button/switch to toggle betweer table view and card view.
+https://jsonplaceholder.typicode.com/users
 
 
 
@@ -420,36 +494,6 @@ ngClass
 </button>
 
 
-
-*ngIf vs hidden
-----------------
--when *ngIf condition is false the element will neither be displayed on the page nor it will be there in the DOM.
--when [hidden] condition is true the element will not be displayed on the page(display:none) but it will be there in the DOM.
-
-
-ngFor predefined variables
---------------------------
-index
-first
-last
-even
-odd
-
-
-ngFor trackBy
--------------
--ngFor by default tracks list items using object identity. This means that if you build a list of new objects from scratch with the exact same values as the previous list and pass this newly built list to ngFor, Angular will not be able to tell that a given list item is already present or not.
-
--NgForOf needs to uniquely identify items in the iterable to correctly perform DOM updates when items in the iterable are reordered, new items are added, or existing items are removed.
--In all of these scenarios it is usually desirable to only update the DOM elements associated with the items affected by the change. This behavior is important to:
-
-preserve any DOM-specific UI state (like cursor position, focus, text selection) when the iterable is modified
-enable animation of item addition, removal, and iterable reordering
-preserve the value of the <select> element when nested <option> elements are dynamically populated using NgForOf and the bound iterable is updated
-
-
-
-
 Read data from a JSON file 
 ==========================
 1. create a JSON file (employees.json/products.json)
@@ -459,11 +503,19 @@ Read data from a JSON file
 3. import the data & use in component file (products.component.ts)
    import * as data from './products.json';
    
-   myProducts = (data as any).default;  (inside the class)
+   myProducts = (data as any).default;  // inside the class
    
 4. use 'myProducts' in HTML file
    <div *ngFor="let prod of myProducts"> </div>
 
+
+How to use font-awesome
+=======================
+1. ng add @fortawesome/angular-fontawesome
+2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+   import { faStar } from '@fortawesome/free-solid-svg-icons';
+   imports: [FontAwesomeModule]
+3. <fa-icon [icon]="faStar"></fa-icon>
 
 
 
@@ -501,38 +553,18 @@ parent
 
 
 ngxPagination
--------------
+=============
 1. install ngxpagination module
    npm install ngx-pagination 
 
 2. add ngxpaginationModule to our module (app.module.ts)
    import {NgxPaginationModule} from 'ngx-pagination';
-   imports: [BrowserModule, NgxPaginationModule]
+   imports: [ NgxPaginationModule,CommonModule]
    
 3. use the below code in html
 	<div *ngFor="let prod of products| paginate: { itemsPerPage: 4, currentPage: p}">              
 	</div>
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
-
-
-
-ng2searchfilter
----------------
-1. install the library
-   npm i ng2-search-filter
-
-2. add the module to our module
-   import { Ng2SearchPipeModule } from 'ng2-search-filter';
-   imports : [Ng2SearchPipeModule]
-
-3. use the below code in HTML file
-   <input type="search"  [(ngModel)]="searchText">
-	
-   <h1 *ngFor='let x of names | filter : searchText'>
-    {{x}}
-   </h1>
-
-
 
 
 
@@ -546,7 +578,7 @@ How to use SweetAlert
 
 
 How to use snackbar	
-====================
+===================
 1. npm i awesome-snackbar
 2. import Snackbar from 'awesome-snackbar'
 3. new Snackbar('Hello world! ??');
@@ -560,7 +592,7 @@ Assignment
 3. user should be able to delete Employee (ask user confirmation)
 4. view the details of each employee in a modal (bootstrap)
 5. add a new employee to the table (insert a new record to the array)
-6. use sweetAlert to display messages ('Added Successfully')
+   use sweetAlert to display messages ('Added Successfully')
 
 
 
@@ -616,6 +648,11 @@ curreny
   
 Date
 -----
+<h5>{{today | date : 'shortDate'}}</h5>
+<h5>{{today | date : 'mediumDate'}}</h5>
+<h5>{{today | date : 'longDate'}}</h5>
+<h5>{{today | date : 'fullDate'}}</h5>
+
 <h4>{{ today | date: "fullTime":"UTC" }}</h4>
 
 
@@ -644,9 +681,9 @@ Percent Pipe
 
 keyvalue
 --------
-<h3 *ngFor="let entry of user | keyvalue">
-  {{ entry.key }}---{{ entry.value }}
-</h3>
+@for(entry of user | keyvalue;track $index){
+   <h5>{{entry.key}}---{{entry.value}}</h5>
+}
 
 
 slice pipe
@@ -660,8 +697,12 @@ Custom Pipe
 ===========
 1. ng generate pipe remaining
 2. every angular pipe implements PipeTransform
-  class RemainingPipe implements PipeTransform {}
+  class RemainingPipe implements PipeTransform {
+  }
 3. override transform()
+   transform(input: any, maxLength = 100) {
+       return maxLength - input.length;
+   }
    
 
 Assignment
@@ -677,14 +718,16 @@ Assignment
    
 Pure & Impure Pipe
 ------------------
+-By Default every custom pipe we create is pure pipe.
+
 -A pure pipe's transform() is only called when Angular detects a change in the value or the parameters passed to a pipe.
 
 -An impure pipe's transform() is called for every change detection cycle
  no matter whether the value or parameters change.transform() gets called if any variable in the page chages.
 
--If the pipe has internal state (that is, the result depends on state other than its arguments), set pure to false. In this case, the pipe is invoked on each change-detection cycle, even if the arguments have not changed.
+-If the pipe has internal state (that is, the result depends on state other than its arguments), set pure to false. 
+In this case, the pipe is invoked on each change-detection cycle, even if the arguments have not changed.
  
--By Default every custom pipe we create is pure pipe.
 
 -to make a pipe impure
   @Pipe({
@@ -722,7 +765,7 @@ Use custom pipes in component file
 
 
 Component Communication
------------------------
+========================
 parent -->  Child    property Binding []
 	angular-2   @input
 	angular-5   inputs[]
@@ -774,7 +817,7 @@ Child to parent
 
 
 component lifecycle hooks/method 
--------------------------------- 
+=================================
 constructor - ngOnChanges - ngOnInit  - ngDoCheck - ngAfterContentInit - 
 ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - ngOnDestroy. (1+8)
 
@@ -827,15 +870,20 @@ ngDoCheck()
 
 
 ngAfterContentInit()
--runs once after the first ngDoCheck().
+-Invoked after Angular performs any content projection into the components view 
+-Runs only once after the first ngDoCheck().
 -Use ngAfterContentInit to call something once after all of the content has been initialized
 
 
 ngAfterContentChecked() 
+-Invoked each time the content of the given component has been checked by the change detection mechanism of Angular.
+-is called after ngAfterContentInit for the first time.
 -is called after every subsequent ngDoCheck
 
 
 ngAfterViewInit() 
+-Invoked when the component’s view has been fully initialized.
+-this is the best place for DOM manipulation.
 -is called once after ngAfterContentChecked.
 -ngAfterViewInit() is called after all child components are initialized and checked.
 
@@ -848,18 +896,6 @@ ngOnDestroy()
 -This method will be invoked just before Angular destroys the component.
 -Clean up code.  ex:- clearInterval(),clearTimeout(); unsubscribe();
 
-ngAfterContentInit()
-Invoked after Angular performs any content projection into the components view 
-
-ngAfterContentChecked()
-Invoked each time the content of the given component has been checked by the change detection mechanism of Angular.
-
-ngAfterViewInit()
-Invoked when the component’s view has been fully initialized.
-this is the best place for DOM manipulation.
-
-ngAfterViewChecked()
-after the default change detector has completed one change-check cycle for a component's view.
 
 N.p-ngDoCheck and ngOnChanges should not be implemented together on the same component
 
@@ -935,14 +971,14 @@ steps to create and use service
 			(OR)
 	class MathComponent{
 		constructor(){
-			this.mathObj = Inject(MathService);
+			this.mathObj = inject(MathService);
 		}
 	}
  
  
 Dependency injection 
---------------------
--Dependency injection (DI), is an important application design pattern. 
+=====================
+-Dependency injection (DI), is an application design pattern. 
 -In Angular, the Dependency Injection framework provides declared dependencies to a class when that class is instantiated.   
 
 constructor(private myHttp:HttpClient){}
@@ -950,6 +986,15 @@ constructor(private myHttp:HttpClient){}
 constructor(){
 	 this.myhttp = inject(HttpClient);
 }
+
+
+
+Assignment
+==========
+1. create an EmployeeService with an array of employees
+2. inject that servcie in EmployeeComponent
+3. Display List of Employees in a table
+   have 3 buttons - allEmployees , maleEmployees , femaleEmployees
 
 
 
@@ -980,11 +1025,11 @@ https://docs.angular.lat/guide/dependency-injection-providers
 Communicating with backend services using HTTP
 ==============================================
 -frontEnd applications need to communicate with a server to Fetch or Send data.
--Using HttpClientModule & HttpClient an angular application can communicate with server.
+-Using  HttpClient an angular application can communicate with server.
 
 
 HTTP Methods
-------------
+============
 GET - Retrieve a resource/Retrieve data from DB
 	  search
 	  
@@ -1049,7 +1094,8 @@ Fake Online REST API for Testing
 5. https://dummyjson.com/products
 6. https://dummy.restapiexample.com/
 7. https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies
-https://api.publicapis.org/entries
+8. https://api.publicapis.org/entries
+9. https://github.com/geertjanw/ojet-training/blob/master/employeeData.json
 
 
 Create REST API with json-server
@@ -1097,14 +1143,27 @@ HttpClient vs fetch()
 -HttpClient comes with built-in CSRF protection , fetch() doesn't
 -HttpClient has interceptor to Intercept request and response. fetch() doesn't
 
+
+
+Assignment
+===========
+1. Create 1 user CRUD application using HttpClient
+	a. fetch the data and display in a table (json-server)
+	b. create a form, collect form data and make a post call to add that that user
+	c. add 'delete' button against every user, on click 'delete', delete that user
+	d. display 'Loading...' text when data is being fetched
+
+
  
 
 
 HttpClient with Headers
 =======================
 -Reading the full response(not only the body)
--httpClient.get(URL , { observe: 'response' })
- httpClient.get(URL , { observe: 'body' })
+
+ httpClient.get(URL , { observe: 'body' })     (default)
+ httpClient.get(URL , { observe: 'response' })
+ 
 
  
 
@@ -1115,7 +1174,7 @@ models in Angular
  ex:-Users have a firstName and a lastName.the full name of your user within your templates looks like this:
      <li *ngFor="let user of users">{{ user.firstName }} {{ user.lastName }}</li>
 	what if customer calls and tells that the order of firstname and lastname should be switched,go through every template and switch the expressions.
--But if your user is a User object, you can simply implement a function to print the fullname.
+-But if our user is a User object, we can simply implement a function to print the fullname.
  
 -Another good reason for using models is type enforce. We want to know the type of things when we use them and not just define everything as any.
 
@@ -1129,7 +1188,7 @@ Class As Model: Structure Enforcement + Logic (fullName() , annualSalary())
 
 
 Http Interceptor
-----------------
+================
 -interceptors are used to pre-process and post-process the HTTP request.
 -Used before sending request and after getting response from the server. 
 
@@ -1144,7 +1203,7 @@ Use Cases:
 
 How to Use Interceptors
 =======================
-1. Create Interceptor
+1. Create Interceptor ( ng generate interceptor logger)
 	import { HttpInterceptorFn } from '@angular/common/http';
 	export const logInterceptor: HttpInterceptorFn = (req, next) => {
 	  console.log('I am Inetrceptor')
@@ -1205,7 +1264,7 @@ Observables:
 
 
 Hot and Cold Observables
-------------------------
+========================
 -A “hot” Observable may begin emitting items as soon as it is created, and so any observer who later subscribes to that Observable may start observing the sequence somewhere in the middle.
 -A “cold” Observable, waits until an observer subscribes to it before it begins to emit items,such an observer is guaranteed to see the whole sequence from the beginning.
 -Normal Observables are 'cold', Subject,BehaviourSubject,ReplaySubject are 'hot'.
@@ -1323,7 +1382,7 @@ When NOT to use these “Mapping” operators:
 
 		
 Subject
--------
+=======
 -An observable allows us only to subscribe  whereas a subject allows us to both publish and subscribe.
 -A subject allows our services to be used as both a publisher and a subscriber.
 -Subjects are like EventEmitters: they maintain a registry of many listeners.
@@ -1377,6 +1436,49 @@ ReplaySubject---------  all previous values and upcoming values
 AsyncSubject  --------  latest value when stream gets closed (complete)
 
 
+
+What are signals
+================
+-A signal is just a special type of variable that holds a value. it also provides notification when the variable value changes
+-A signal is a wrapper around a value that notifies interested consumers when that value changes. 
+-Signals can contain any value, from primitives to complex data structures.
+-We read a signal's value by calling its getter function, which allows Angular to track where the signal is used.
+-Signals may be either writable or read-only
+-A signal is not a replacement for RxJS and Observables for asynchronous operations, such as http.get
+
+
+Why  Signals
+============
+-When we want our variables to react to changes!
+ ex: When the user updates the quantity, the related variable(price) should react and adjust the price.
+-With signals, our code can be more reactive
+-If a signal is bound in a template, when the signal changes, Angular's change detection automatically updates any view that reads the signal. And the user sees the changed value
+
+
+Writable signals:
+=================
+const count = signal(0);
+
+Use Signal:
+Typescript : console.log('The count is: ' + count());
+HTML:  <h4>count value is {{count()}}</h4>
+
+To change the value of a writable signal:
+	count.set(3);
+		(OR)
+	count.update(value => value + 1); // update the value by using the previous value
+	
+	
+
+Computed signals:
+==================
+-Computed signal are read-only signals that derive their value from other signals. 
+-Computed signals react and recalculate when any of its dependent signals change.
+
+const count: WritableSignal<number> = signal(0);
+const doubleCount: Signal<number> = computed(() => count() * 2);
+
+https://pasquale-favella.github.io/blog/16
 
 
 
@@ -1769,6 +1871,9 @@ Lazy Loading of components
 
 loadComponent: () =>
         import('./components/product-list/product-list.component').then((x) => x.ProductListComponent)
+		
+
+@defer()
 
  
  
@@ -1906,7 +2011,7 @@ compiles an application and stores the generated files in dist folder.
 -Install a server and deploy our project
  1. install a server
 	npm i -g serve 
- 2. go to project folder open command prompt and run the below command
+ 2. go to project folder(dist) open command prompt and run the below command
     'serve'  or  'serve -l 7000'
 
 
@@ -2237,6 +2342,18 @@ State changes are handled by pure functions called reducers that take the curren
 Selectors are pure functions used to select, derive and compose pieces of state.
 State is accessed with the Store, an observable of state and an observer of actions
   
+  
+  
+GraphQL
+=======
+-GraphQL overcomes major shortcomings of REST.
+-A query language for your API.
+-in REST, the client makes an HTTP request and data is sent as an HTTP Response.
+-in GraphQL,the client Requests the data with queries.
+-it allows the client to query only the data that they need.
+
+-The most popular  GraphQL library is Apollo Client.  
+
   
   
 package.json vs package-lock.json

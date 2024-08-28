@@ -1,0 +1,28 @@
+Angular Course Content
+======================
+-Angular Installation
+-Angular CLI
+-Component
+-Databinding (interpolation, property, event,2-way)
+-Template Reference Variable
+-View Encapsulation (Emulated, shadowDOM, none)
+-Inbuilt Directives (@if, @else, @for)
+-Custom Directives
+-Pipes (uppercase, date, number, json)
+-Custom Pipes
+-<ng-content>/ Content projection
+-Component Communication
+-LifeCycle Methods / Hooks
+-Services
+-Dependency Injection
+-HttpClient / AJAX
+-Interceptors
+-Observables (RxJs)
+-Form
+-Routing
+-Lazy Loading
+-NgRx (State management)
+-Build & Deploy
+-Angular Material
+-Unit testing (Jasmine + Karma)
+

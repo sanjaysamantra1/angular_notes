@@ -9,9 +9,9 @@ program-1:Use bootstrap
 
 program-2:display Local image
 -----------------------------
-1. place the images inside assests folder (project1/src/assets)
+1. place the images inside public folder (project1/public/images)
 2. use it in HTML file
-   <img src='assets/images/sachin.jpg' />
+   <img src='images/sachin.jpg' />
   
 	
 	
@@ -101,6 +101,21 @@ export class AppComponent {
     alert("I am f1")
   }
 }
+
+
+
+Program: Dark/Light Mode
+=========================
+toggleMode() {
+    this.flag = !this.flag;
+    if (this.flag) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+}
+
+
 
 
 program-7: Template Reference Variable
@@ -370,7 +385,7 @@ employees = [
     { eId: 104, name: 'geeta', sal: 8000, gender: 'female' },
     { eId: 103, name: 'sameer', sal: 7000, gender: 'male' },
     { eId: 102, name: 'sita', sal: 9000, gender: 'female' },
-	{ eId: 105, name: 'deepak', sal: 8000, gender: 'male' },
+	{ eId: 105, name: 'deepak', sal: 8000, gender: 'male' }
   ];
 
 
@@ -477,11 +492,13 @@ import { Directive, HostBinding, HostListener } from '@angular/core';
   selector: '[numberonly]'
 })
 export class NumberonlyDirective {
-  @HostBinding('style.background-color') myBgColor: string = '';  
-  @HostListener('keyup', ['$event'])
-  handleKeyUp(e: { target: { value: string } }) {
+  @HostBinding('style.background-color')
+  myBgColor: string = '';
+
+  @HostListener('keyup', ['$event.target.value'])
+  handleKeyUp(value: string) {
     let regex = new RegExp(/^[0-9]*$/);
-    if (!regex.test(e.target.value)) {
+    if (!regex.test(value)) {
       this.myBgColor = 'red';
     } else {
       this.myBgColor = 'cyan';
@@ -1366,38 +1383,31 @@ getEmployees(): Observable<Employee[]> {
 	
 Program-44 HTTP Interceptor Example
 ----------------------------------
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from "@angular/common/http";
-import { Injectable } from "@angular/core";
-import { Observable } from "rxjs";
-@Injectable()
-export class MyInterceptor1 implements HttpInterceptor {
-    intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        //const myToken = "1d38fe-8671-6735-7360-2hjhsjh5";
-		const myToken = localstorage.getItem('myToken')
-        const requestWithToken = req.clone({
-            setHeaders: {
-                Authorization: `Bearer ${myToken}`
-            }
-        });
-        return next.handle(requestWithToken);
+import { HttpInterceptorFn } from '@angular/common/http';
+export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  // const myToken = sessionStorage.getItem('myToken');
+  const myToken = 'ABCDEF123456'
+  const requestWithToken = req.clone({
+    setHeaders: {
+      Authorization: `Bearer ${myToken}`
     }
-}
+  });
+  return next(requestWithToken);
+};
 
-
-============
-Add below code in app.config.ts
-{ provide: HTTP_INTERCEPTORS, useClass: MyInterceptor1, multi: true }
 
 
 
 
 
 Program-45 : Retry Interceptor
-============================
+==============================
 import { HttpInterceptorFn } from '@angular/common/http';
-export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
-    return next.handle(httpRequest).pipe(retry(1));
-}
+import { retry } from 'rxjs';
+export const retryInterceptor: HttpInterceptorFn = (req, next) => {
+  return next(req).pipe(retry(1));
+};
+
 
 
 
@@ -1436,6 +1446,7 @@ export const myErrorInterceptor: HttpInterceptorFn = (req, next) => {
     return EMPTY;
   }));
 };
+
 
 
 Success Interceptor
@@ -1678,127 +1689,55 @@ export class TestComponent implements AfterViewInit {
 
 program-52 :  TypeAhead using SwitchMap
 --------------------------------------
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-
-interface PeopleData {
-  name: string;
-  birthYear: string;
-  height: number;
-  weight: number;
-  eyeColor: string;
-}
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Observable, switchMap, map } from 'rxjs';
 
 @Component({
-  selector: 'my-app',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  selector: 'app-observable-demo3',
+  standalone: true,
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './observable-demo3.component.html',
+  styleUrl: './observable-demo3.component.css'
 })
-export class AppComponent implements OnInit {
-  searchResult$: Observable<PeopleData>;
-
-  search = new FormControl();
-
-  searchFormGroup = new FormGroup({
-    search: this.search,
-  });
-
-  constructor(private http: HttpClient) {}
-
+export class ObservableDemo3Component {
+  searchResult$: Observable<any> | undefined;
+  searchForm: any;
+  constructor(private http: HttpClient) {
+    this.searchForm = new FormGroup({
+      searchField: new FormControl()
+    });
+  }
   ngOnInit() {
-    this.searchResult$ = this.search.valueChanges.pipe(
+    this.searchResult$ = this.searchForm.get("searchField").valueChanges.pipe(
       switchMap((term) =>
         this.http.get<any>(`https://swapi.dev/api/people/?search=${term}`)
       ),
-      map((response) =>
-        response.count > 0 ? response.results[0] : { name: 'No results' }
-      ),
-      map(
-        (response) =>
-          ({
-            name: response.name,
-            birthYear: response.birth_year,
-            height: Number(response.height),
-            weight: Number(response.mass),
-            eyeColor: response.eye_color,
-          } as PeopleData)
-      )
-    );
+      map((response: any) =>
+        response.count > 0 ? response.results : []
+    ));
   }
 }
+
 --------------------------------
-<div class="body">
-  <h1>Search for a Star Wars Character</h1>
-  <p>
-    Simply start typing the name of your favorite Star Wars character to see
-    more details about them!
-  </p>
-
-  <div [formGroup]="searchFormGroup">
-    <input formControlName="search" />
-  </div>
-
-  <ng-container *ngIf="searchResult$ | async as person">
-    <table *ngIf="person.name !== 'No results'; else noResults " class="table table-bordered">
-      <tr>
-        <td class="heading">
-          Name
-        </td>
-        <td>
-          {{ person.name }}
-        </td>
-      </tr>
-
-      <tr></tr>
-      <tr>
-        <td class="heading">
-          Birth Year
-        </td>
-        <td>
-          {{ person.birthYear }}
-        </td>
-      </tr>
-
-      <tr></tr>
-      <tr>
-        <td class="heading">
-          Height
-        </td>
-        <td>
-          {{ person.height }} cm
-        </td>
-      </tr>
-
-      <tr></tr>
-      <tr>
-        <td class="heading">
-          Weight
-        </td>
-        <td>
-          {{ person.weight }} kg
-        </td>
-      </tr>
-
-      <tr></tr>
-      <tr>
-        <td class="heading">
-          Eye Color
-        </td>
-        <td>
-          {{ person.eyeColor }}
-        </td>
-      </tr>
-
-      <tr></tr>
+<div class="jumbotron">
+    <h1>Search Something</h1>
+    <form [formGroup]="searchForm">
+        <input formControlName="searchField" />
+    </form>
+    <table class="table bordered">
+        <tbody>
+            @for(user of searchResult$ | async ; track $index;){
+                <tr>
+                    <td>{{user.name}}</td>
+                    <td>{{user.gender}}</td>
+                    <td>{{user.height}}</td>
+                </tr>
+            }
+        </tbody>
     </table>
-
-    <ng-template #noResults>
-      No Results Found
-    </ng-template>
-  </ng-container>
 </div>
 
   
@@ -2011,6 +1950,31 @@ export class TodoListComponent implements OnInit {
 
 
 
+Program: Signal 
+*****************
+export class SignalDemoComponent {
+  num: WritableSignal<number> = signal(0);
+  numSquare: Signal<number> = computed(() => this.num() * this.num());
+
+  increment() {
+    this.num.update((value: number) => value + 1)
+  }
+  decrement() {
+    this.num.update((val: number) => val - 1)
+  }
+  reset() {
+    this.num.set(0);
+  }
+}
+-----------------------
+<h3 class="text-center">Signal Demo</h3>
+<div class="border">
+    <h4>Num value is {{num()}}</h4>
+    <h4>Square value is {{numSquare()}}</h4>
+    <button (click)="decrement()">Decrement</button>
+    <button (click)="reset()" class="m-1">Reset</button>
+    <button (click)="increment()">Increment</button>
+</div>
 
 
 
@@ -3160,3 +3124,38 @@ Program:69 - Employee CRUD using NgRx
 		  this.store.dispatch(deleteEmployee({ id }));
 		}
 	  }
+
+
+Program: angular & GraphQL
+============================
+1. install apollo-angular
+   ng add apollo-angular
+   
+2. above command will generate 'graphql.provider.ts' , add graphql server URL in 'graphql.provider.ts'
+   const uri = 'http://localhost:5000/api/comments'; 
+   
+3. add the below code in component
+  import { Apollo, gql } from 'apollo-angular'; 
+   
+  comments: any;
+  constructor(private readonly apollo: Apollo) { }
+  ngOnInit() {
+    const GET_COMMENTS = gql`
+    query comments {
+      comments {
+        id
+        name
+      }
+    }
+  `;
+    const queryRef = this.apollo.watchQuery<any>({ query: GET_COMMENTS });
+    queryRef.valueChanges.subscribe((response: any) => {
+      this.comments = response.data.comments;
+      console.log(this.comments)
+    });
+  }
+  
+4. use the data in HTML file
+   <div *ngFor="let data of comments">
+    {{data.id}}-{{data.name}}
+  </div>
