@@ -2361,24 +2361,24 @@ export class AppComponent {
 
 
 program-60 Custom Validation
-----------------------------
-import { AbstractControl } from '@angular/forms';
+==============================
 
-export class MyEmailValidator {
-    static isValidEmail(inputBox: AbstractControl) {
-        if (inputBox.value !== 'sanjay@gmail.com') {
-            return { invalidMail: true } //The Control is invalid
+createPasswordStrengthValidator
+---------------------------------
+import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+export function createPasswordStrengthValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+        const value = control.value;
+        if (!value) {
+            return null;
         }
-        return null; //The control is valid
+        const hasUpperCase = /[A-Z]+/.test(value);
+        const hasLowerCase = /[a-z]+/.test(value);
+        const hasNumeric = /[0-9]+/.test(value);
+        const passwordValid = hasUpperCase && hasLowerCase && hasNumeric;
+        return !passwordValid ? { passwordStrength: true } : null;
     }
 }
-
-
-********
-email: new FormControl('abcd@gmail.com', [Validators.required, EmailValidator.isValidEmail]),
-********
-<span *ngIf='registrationForm.controls.email.hasError("invalidMail")'>
-        invalid email</span>
 
 
 
@@ -2393,6 +2393,32 @@ function ageRangeValidator(min: number, max: number): ValidatorFn {
         return null;
     };
 }
+
+
+Async validator
+================
+userService
+-----------
+findUserByEmail(email: string) {
+    return this.http.get(`https://jsonplaceholder.typicode.com/users?email=${email}`)
+  }
+
+
+UserExistsValidator.ts
+----------------------
+import { inject } from "@angular/core";
+import { AbstractControl, AsyncValidatorFn } from "@angular/forms";
+import { map } from "rxjs";
+import { UserService } from "../services/user.service";
+export function userExistsValidator(): AsyncValidatorFn {
+    const userService = inject(UserService);
+    return (control: AbstractControl) => {
+        return userService.findUserByEmail(control.value).pipe(
+            map((user: any) => user.length ? { userExists: true } : null)
+        );
+    }
+}
+
 
 
 
@@ -2519,7 +2545,7 @@ Program-62:Path-Param Example
 
 program-63 : Query-param example
 --------------------------------
-1. add the below code in app.routes.ts
+1. create a new route and add in route configuration
    {
     path: 'productdetails', 
     component: ProductdetailsComponent

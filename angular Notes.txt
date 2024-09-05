@@ -14,7 +14,7 @@ Angular installation
 		OR
    npm install -g @angular/cli@latest
 		OR
-   npm install -g @angular/cli@15
+   npm install -g @angular/cli@17
 
 5. check if angular CLI  is installed??
    ng v
@@ -933,7 +933,19 @@ Predictability: Changes are only detected when input references change or when a
 -@ViewChildren decorator returns the list of different native DOM elements in the form of QueryList, which contains the set of elements.
 -if we want to access multiple child references, then we have to use @ViewChildren.
 
-	
+
+
+
+
+Programmatically rendering components
+======================================
+-There are two main ways to dynamically render a component: 
+	1. in Template File : NgComponentOutlet
+	2. in TypeScript : ViewContainerRef	
+https://angular.dev/guide/components/programmatic-rendering
+
+
+
 	
 
 Angular Services
@@ -1457,26 +1469,69 @@ Why  Signals
 
 Writable signals:
 =================
-const count = signal(0);
+Declare Signal:
+	count = signal(0);
 
 Use Signal:
-Typescript : console.log('The count is: ' + count());
-HTML:  <h4>count value is {{count()}}</h4>
+-Typescript : console.log('The count is: ' + count());
+-HTML:  <h4>count value is {{count()}}</h4>
 
 To change the value of a writable signal:
 	count.set(3);
 		(OR)
 	count.update(value => value + 1); // update the value by using the previous value
 	
+To Check if a variable is signal or not:
+let flag = isSignal(this.count)
+
+	
 	
 
 Computed signals:
 ==================
--Computed signal are read-only signals that derive their value from other signals. 
+-Computed signals are read-only signals that derive their value from other signals. 
+-Computed signals are not writable signals. compilation error is thrown if we try to write value
 -Computed signals react and recalculate when any of its dependent signals change.
+-Computed signals are lazily evaluated : computed function does not run to calculate its value until it is read 
+-Computed signals are memoized : calculated value is cached, and if you read again, it will return the cached value without recalculating.
 
 const count: WritableSignal<number> = signal(0);
 const doubleCount: Signal<number> = computed(() => count() * 2);
+
+
+Effects
+=======
+-Signals are useful because they notify interested consumers when they change. 
+-An effect is an operation that runs whenever one or more signal values change.
+ effect(() => {
+  console.log(`The current count is: ${count()}`);
+  
+  return ()=>{} // cleanup code
+ });
+-Effects always run at least once. When an effect runs, it tracks any signal value reads.
+-Whenever any of these signal values change, the effect runs again.
+-Similar to computed signals, effects keep track of their dependencies.
+-Effects always execute asynchronously, during the change detection process
+
+Use cases for effects:
+-Keeping data in sync with window.localstorage
+-Avoid using effects for propagation of state changes, Instead, use computed signals to model state that depends on other state
+
+@Component()
+export class EffectiveCounterComponent {
+  readonly count = signal(0);
+  private loggingEffect = effect(() => {
+    console.log(`The count is: ${this.count()}`);
+  });
+}
+
+
+Destroying effects:
+-When you create an effect, it is automatically destroyed when its enclosing context is destroyed
+-effects created within components are destroyed when the component is destroyed
+
+
+
 
 https://pasquale-favella.github.io/blog/16
 
@@ -1508,7 +1563,6 @@ Model driven forms/Reactive Forms
 ---------------------------------
 -More flexible
 -Handles any complex scenarios
--No data binding is done (immutable data model)
 -More component code and less HTML markup
 -Adding elements dynamically
 -Better unit testing(testing validation logic)
@@ -1557,7 +1611,8 @@ FormControl
 -----------
 -we can get access to the FormControl instance by assigning ngModel to the element.
  <input type="text" name="firstname" #fname="ngModel" ngModel>
--the variable #fname holds the reference to the firstname FormControl. We can then access the properties of FormControl like value, valid, isvalid, touched etc.
+-the variable #fname holds the reference to the firstname FormControl. 
+ We can then access the properties of FormControl, like: value, valid, invalid, touched etc.
   <h3>{{fname.value}}</h1>
  
  
@@ -1609,7 +1664,7 @@ Model driven form
 	a. import { ReactiveFormsModule } from '@angular/forms';
 	b. imports:[ReactiveFormsModule]  
 	
-2. view - 
+2. view 
 	a. use formGroup with form
 		<form [formGroup]="registerForm"> </form>
 	b. use formControlName with every form field
@@ -1625,31 +1680,53 @@ Model driven form
 
 
 
-FormBuilder
-===========
--Angular FormBuilder API makes it easier to build reactive forms.
--We can easily add the FormGroup, nested FormGroups, FormArrays & FormControls.
--Helps to create Dynamic Form with Dynamic number of Forms , Fields.
-
-
-How to use:
------------
-1. inject FormBuilder into our component class
-    constructor(private formBuilder: FormBuilder) {
-	}
-2. this.contactForm = this.formBuilder.group({
-   firstname: ['']
-   })
-
-
-
-	
 Validate a form on change/blur/submit
 --------------------------------------
 lastname: new FormControl("tendulkar",
       { validators: [Validators.required], updateOn: "blur" }
     )	
 new FormGroup({fName:new FormControl()}, { updateOn: 'submit' })
+
+
+
+
+FormBuilder
+===========
+-Angular FormBuilder API makes it easier to build reactive forms.
+-We can easily add the FormGroup, nested FormGroups, FormArrays & FormControls.
+-Provides factory methods like .group() , .array() which simplify form creation
+
+
+without FormBuilder
+===================
+loginForm = new FormGroup({
+	  email: new FormControl('')
+	  password: new FormControl('')
+});
+
+
+With FormBuilder
+================
+1. inject FormBuilder into our component class
+    constructor(private formBuilder: FormBuilder) {
+	}
+2. loginForm = this.formBuilder.group({
+	  email: [''],
+	  password: ['']
+	});
+
+
+SetValue and PatchValue
+=======================
+SetValue: 
+-It accepts an object that matches the structure of the FormGroup with control names as key.
+-we need all control data to match the structure and then bind the data to the form
+ex: this.myForm.setValue({fName:'abc',lName:'pqr',email:'',})
+
+PatchValue: 
+-It accepts an object and does its best to match the values. 
+-It can accept partial form group structure.
+ex: this.myForm.patchValue({name:'UpdatedName'})
 	
 	
 	
@@ -1798,7 +1875,7 @@ Login component
 Protecting routes with guard
 ----------------------------
 -canActivate : Checks to see if a user can visit a route while navigating to a route
--canActivateChild : When Angular finds a canActivateChild guard attached to the parent route, it invokes it every time the user tries to navigates to the child route. Hence instead of attaching Guard service every child, you can attach it to the parent route.
+-canActivateChild : When Angular finds a canActivateChild guard attached to the parent route, it invokes it every time the user tries to navigates to the child route. Hence instead of attaching Guard service in every child, we can attach it to the parent route.
 -canDeactivate : Checks to see if a user can exit a route while navigating from a route
 -canMatch: helps in dynamically loading the components of our choice
 
@@ -1828,7 +1905,7 @@ Resolvers
 -Angular Resolver is used for pre-fetching some of the data when the user is navigating from one route to another. 
 -It can be defined as a smooth approach for enhancing user experience by loading data before the user navigates to a particular component.
 -resolver is an intermediate code that is executed between clicking the link and loading the component.
--We can use Angular’s Route Resolver class for fetching the data before your component is loaded.
+-We can use Angular’s Route Resolver class for fetching the data before our component is loaded.
 -The router waits for the data to be resolved before the route is finally activated.
 -While Swithing from List page to details page
 
@@ -1866,14 +1943,37 @@ Steps to use resolvers
 Lazy Loading of components
 ==========================
 -Lazy loading is the process of loading components, modules, or other assets of a website as they're required.
--Eager loading loads all of its components are loaded at once. This means that a lot of unnecessary libraries or modules might be loaded as well.
--For a small application this would be okay. But as the application grows the load time will increase if everything is loaded at once. Lazy loading allows Angular to load components and modules as and when they're needed.
+-Eager loading loads all of its components at once. This means that a lot of unnecessary libraries or modules might be loaded as well.
+-For a small application this would be okay. But as the application grows the load time will increase if everything is loaded at once. 
+-Lazy loading allows Angular to load components and modules as and when they're needed.
 
+{ 
+path: 'products',
 loadComponent: () =>
-        import('./components/product-list/product-list.component').then((x) => x.ProductListComponent)
+            import('./components/product-list/product-list.component').then((x) => x.ProductListComponent)
+}
 		
 
+
 @defer()
+========
+-to reduce the initial bundle size of our application.
+-The content of the main @defer block is lazily loaded.
+-any component that is written inside @defer, a separate CHUNK file gets created
+-@defer blocks have several sub blocks to allow you to gracefully handle different stages in the deferred loading process.
+-@placeholder is an optional block that declares content to show before the defer block is triggered.
+  @placeholder (minimum 500ms)
+-@loading block is an optional block that allows you to declare content that will be shown during the loading of any deferred dependencies
+ex: @loading (after 100ms; minimum 1s)
+-@error block allows you to declare content that will be shown if deferred loading fails.
+ 
+
+
+@defer {
+<large-component />
+} @placeholder (minimum 500ms) {
+<p>Placeholder content</p>
+}
 
  
  
@@ -2008,15 +2108,16 @@ compiles an application and stores the generated files in dist folder.
 
 
 
--Install a server and deploy our project
+-Install a Local server and deploy our project
  1. install a server
 	npm i -g serve 
- 2. go to project folder(dist) open command prompt and run the below command
+ 2. go to project folder(dist/project1) open command prompt and run the below command
     'serve'  or  'serve -l 7000'
 
 
 Deploy Angular Application in GitHub
 ====================================
+   git checkout -b mybranch1
 1. npm install -g angular-cli-ghpages
 2. ng build --base-href angular_april_2023
 3. ngh --dir dist/angular_april_2023/browser
@@ -2024,20 +2125,23 @@ Deploy Angular Application in GitHub
    Settings Tab --> pages --> you should see the live URL
 
 			(OR)
-1. create an angular project 'project1'
-2. build angular project 'project1'
-   ng build --output-path docs --base-href /project1/   
-3. create a new github repository 'deploy_angular_in_github'
-4. in your project folder initialize git & link to remote Repository
+1. Create a GitHub repository for your project.   
+2. Configure git in your local project
    git init
    git add .
    git commit -m "first commit"
    git branch -M main
    git remote add origin https://github.com/sanjaysamantra1/deploy_angular_in_github.git
-   git push -u origin main   
-5. go to github website & open your Repository
-   Settings Tab --> pages --> branch(main) -->  docs  --> save
-   wait for 2-3 mins project will be deployed, and live url will be seen 
+   git push -u origin main
+3. create a new branch for deployment
+   git checkout -b mybranch1
+4. Build your project using the GitHub project name
+   ng build --output-path docs --base-href /project1/  
+5. When the build is complete, make a copy of docs/index.html and name it docs/404.html
+6. Commit your changes and push the code to branch
+7. go to github website & open your Repository
+   Settings Tab --> pages --> branch(main/branch1) -->  root/docs  --> save
+   wait for 1 min project will be deployed, and live url will be seen 
 
 
   
@@ -2449,3 +2553,4 @@ ng add @angular-eslint/schematics@14
 Reference
 =========
 https://testbook.com/interview/angular-architecture-interview-questions
+https://desireinfotech.biz/assets/download/Angular-Course.pdf
