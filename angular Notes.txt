@@ -60,8 +60,7 @@ vscode extensions
 
 Angular
 =======
--Angular is a platform and framework for building single-page client applications
- using HTML and TypeScript.
+-Angular is a platform and framework for building single-page client applications using HTML and TypeScript.
 -A framework is a set of helper functions,tools and rules that help us to build our application.
 -Angular is a collection of well-integrated libraries that cover a wide variety of features including routing,forms management, client-server communication, and more
 -Angular is a suite of developer tools to help us develop, build, test, and update our code. (Angular CLI)
@@ -137,7 +136,8 @@ important properties of module are:
 
 Component
 =========
--Components are the most basic UI building block of an Angular app. An Angular app contains a tree of Angular components.
+-Components are the most basic UI building block of an Angular app. 
+-An Angular app contains a tree of Angular components.
 -Each component defines a class that contains application data and logic, and is associated with an HTML template that defines a view to be displayed.
 -@Component() decorator identifies the class immediately below it as a component, and provides the template and related component-specific metadata.
 
@@ -148,8 +148,8 @@ https://angular.io/api/core/Component#description
 selector:      Ex: 'app-header'
 template:      `<div>This is header Component</div>`
 templateUrl:   './header.component.html'
-styles:  	   ['.class1{color:red}']
-styleUrls:     ['./header.component.css']
+style:  	   ['.class1{color:red}']
+styleUrl:     ['./header.component.css']
 encapsulation: ViewEncapsulation.ShadowDom
 providers:     [Services]
 changeDetection:ChangeDetectionStrategy.OnPush
@@ -255,11 +255,14 @@ Databinding
 
 1.  interpolation  	 {{ }} (1-way)   (component-->view)
 2.  property Binding  [ ]  (1-way)   (component-->view)
+	bind-property (bind-innerHTML)
 3.  Event Binding     ( )  (1-way)   (view-->component)
+	(click)   /  on-click
 4.  2-way Binding  [(ngModel)] (2-way) (component<-->view)
-
-
-Note:For 2-way bindning "FormsModule" should be imported
+    bindon-ngModel
+    Note:For 2-way bindning "FormsModule" should be imported
+	
+	
 
 InterPolation: for concatenating strings;Doesn't work with boolean values
 Property: to set an element property to a non-string data value.
@@ -280,8 +283,12 @@ onUserIdChange(userId: number): void {
 }
 
 
+
+
 Attribute Binding
 =================
+-Attribute Binding is needed while working with HTML attributes that do not have corresponding DOM properties, such as colspan, aria-* , data-* attributes
+
 -attributes are defined by HTML and properties are defined by the DOM.
 -The attribute’s main role is to initializes the DOM properties. once the DOM initialization complete, the
 attributes job is done.
@@ -290,6 +297,10 @@ attributes job is done.
 var value1 = document.getElementById('inputBox1').getAttribute('value');
 var value2 = document.getElementById('inputBox1').value;
 console.log(value1, value2); // type something in the box & run these again
+ 
+ 
+ <button [attr.aria-label]="ariaLabel">Click me</button>
+ there is no equivalent DOM property for aria-label
 
 
  <table [width]='myWidth' [attr.height]='myHeight'></table>
@@ -304,8 +315,10 @@ Note: 'colspan' is attribute whereAs 'colSpan' is property.
 
 Template Reference variables
 ============================
--Template variables help us to use data from one part of a template in another part of the template.
--With template variables,we can perform tasks such as respond to user input or fine tune your application's forms.
+-allows to reference DOM elements present in the template
+-access and manipulate DOM elements, child components, or directives
+-access in the template without directly accessing them in the TypeScript code.
+-They are only accessible within the same template.
 -In the template, we use the hash symbol, # or 'ref' to declare a template variable.
  <input #phone placeholder="phone number" />
 				OR
@@ -327,7 +340,7 @@ CSS
 1. inline
 2. internal
 3. styles[] in component
-4. styleUrl in component
+4. styleUrl / styleUrls in component
 5. styles.css global
 
 Note:- the styles written in component's css file applies only to one component. 
@@ -358,7 +371,7 @@ ex:- encapsulation: ViewEncapsulation.Emulated(default)
 Emulated: index HTML--->parent Component (yes)
 		  index HTML-->child component (yes)
 		  Parent(Emulated) --> child(Emulated) (No)
-ShadowDom: index HTML--->parent Component (No)
+ShadowDom: index HTML--->parent Component(shadowDOM) (No)
 		   index HTML-->child component (No)
 		   Parent (shadowDOM) --> child(Emulated) (Yes)		   
 		   Parent (shadowDOM) --> child(ShadowDom) (No)		   
@@ -398,8 +411,8 @@ Note : Compononent can also be considered as directive, because it powers up the
 
 @if() vs hidden
 ===============
--when @if() condition is false, the element will neither be displayed on the page nor it will be there in the DOM.
--when [hidden] condition is true the element will not be displayed on the page(display:none) but it will be there in the DOM.
+-when @if() condition is false, the element will neither be displayed on the page/screen nor it will be there in the DOM.
+-when [hidden] condition is true, the element will not be displayed on the page/screen(display:none) but it will be there in the DOM.
 
 
 
@@ -457,8 +470,8 @@ ngFor trackBy
 
 
 
-Migrate from *ngFor to @for()
-=============================
+Migrate from old syntax to new syntax
+=====================================
 ng generate @angular/core:control-flow
 
 
@@ -466,7 +479,7 @@ ng generate @angular/core:control-flow
 Assignment:
 ==========
 -Declare an array of users, display users in card & table format. 
- add a button/switch to toggle betweer table view and card view.
+ add a button/switch to toggle between table view and card view.
 https://jsonplaceholder.typicode.com/users
 
 
@@ -482,9 +495,20 @@ ngStyle
 <p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
 
 
+
 ngClass
 =======
 -ngClass is used to apply css classes conditionally
+
+-Add/Remove Single Class : 
+	<div [ngClass]="{'active': isActive}">
+	<div [class.active]="isActive">
+-Multiple Conditional Classes : 
+	<div [ngClass]="{'active': isActive, 'disabled': isDisabled}">
+-Array of Classes: 
+	<div [ngClass]="['class1', 'class2', isActive ? 'active' : 'inactive']">
+-Combining Object and Array : 
+	<div [ngClass]="['common-class', { 'active': isActive, 'disabled': isDisabled }]">
 
 <p [class.myClass]='flag'> Add a class to an element </p>
 <p [ngClass]="myClasses"> Add Multiple classes to an element </p>
@@ -494,9 +518,11 @@ ngClass
 </button>
 
 
+
+
 Read data from a JSON file 
 ==========================
-1. create a JSON file (employees.json/products.json)
+1. create a JSON file (employees.json/products.json/users.json)
    [ {},{},{} ]
 2. in tsconfig.json add the below option  under 'compilerOptions'
     "resolveJsonModule": true,
@@ -512,6 +538,9 @@ Read data from a JSON file
 How to use font-awesome
 =======================
 1. ng add @fortawesome/angular-fontawesome
+			(OR)
+   npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
+
 2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
    import { faStar } from '@fortawesome/free-solid-svg-icons';
    imports: [FontAwesomeModule]
@@ -581,7 +610,10 @@ How to use snackbar
 ===================
 1. npm i awesome-snackbar
 2. import Snackbar from 'awesome-snackbar'
-3. new Snackbar('Hello world! ??');
+3. new Snackbar('Helloooo, Good Morning', { position: 'top-center', theme: 'light', timeout: 2000 });
+
+https://snackbar.awesome-components.com/
+https://www.npmjs.com/package/ngx-toastr
 
 
 
@@ -603,9 +635,8 @@ Custom Directives
 -@Directive decorator is used to create a custom Directive.
 -directives won't have templates, whereas components have templates.
 
--@HostBinding allows to set properties on the element that hosts the directive, 
--@HostListener allows to listen for events on the host element.
-
+-@HostBinding  -  Set properties on the host element, 
+-@HostListener  - listen events on the host element.
 
 
 Component vs Directive
@@ -688,9 +719,10 @@ keyvalue
 
 slice pipe
 -----------
-slice:1:3 means return the items from the 1st to the 3rd index inclusive (indexes start at 0).
-slice:2 means return the items from the 2nd index to the end of the array.
-slice:2:-1 means return the items from the 2nd index to one from the end of the array.
+-slice pipe can be used with array and string
+<h4>{{cars | slice : 2 : 4}}</h4>
+<h4>{{myName | slice : 2 : 4}}</h4>
+<h4>{{myName | slice : 2 : -1}}</h4>
 
 
 Custom Pipe
@@ -708,6 +740,7 @@ Custom Pipe
 Assignment
 ==========
 1. Create a custom pipe(ordinal) that displays a cardinal number in ordinal format.
+   input : 21,22,23,24  output : 21st, 22nd , 23rd, 24th
 2. create a custom pipe called age which takes a date and returns the age in years.
 3. declare an array of employee objects. display them in a table.
    create a custom pipe Salutation that will add 'mr. / miss.' before the employee name.
@@ -725,7 +758,7 @@ Pure & Impure Pipe
 -An impure pipe's transform() is called for every change detection cycle
  no matter whether the value or parameters change.transform() gets called if any variable in the page chages.
 
--If the pipe has internal state (that is, the result depends on state other than its arguments), set pure to false. 
+-If the pipe has internal state (result depends on state other than its arguments), set pure to false. 
 In this case, the pipe is invoked on each change-detection cycle, even if the arguments have not changed.
  
 
@@ -765,14 +798,14 @@ Use custom pipes in component file
 
 
 Component Communication
-========================
-parent -->  Child    property Binding []
-	angular-2   @input
-	angular-5   inputs[]
+=======================
+parent -->  Child    
+	property Binding []
+	@input() / inputs:[]
 	
-child -->  parent   event Binding ()
-	angular-2   @output
-	angular-5   outputs[]
+child -->  parent   
+	event Binding ()
+	@output  / outputs:[]
 	
 Sibling -->  child1--> parent -->child2
 			 
@@ -852,6 +885,7 @@ constructor()
 ngOnChanges()
 -ngOnchanges() will not be invoked if the component doesn't have inputs:[]
 -Invoked every time there is a change in one of the input properties of the component.
+-inside ngOnchanges() we can access previous and current value of a variable.
 
 
 ngOnInit()
@@ -960,8 +994,7 @@ Angular Services
 
 -create a service using angular CLI
  ng generate service myService
-		OR
- ng g s myService
+		
 
 
 steps to create and use service
@@ -1004,9 +1037,21 @@ constructor(){
 Assignment
 ==========
 1. create an EmployeeService with an array of employees
-2. inject that servcie in EmployeeComponent
+2. inject that service in EmployeeComponent
 3. Display List of Employees in a table
    have 3 buttons - allEmployees , maleEmployees , femaleEmployees
+
+
+
+
+ViewContainerRef.createComponent()
+==================================
+-to load components dynamically rather than declaring them statically in the template.
+-useful when the component to be displayed depends on some user interaction, configuration, or data that isn't known at compile time.
+-It eliminates the need for the ComponentFactoryResolver
+
+
+
 
 
 
@@ -1133,14 +1178,20 @@ DELETE /employees/{id}
 
 
 How to use HttpClient 
-======================
-1. add below code in app.config.ts
-   providers: [provideRouter(routes), provideHttpClient()]
+=====================
+1. add provideHttpClient() in app.config.ts
+   providers: [
+	   provideRouter(routes), 
+	   provideHttpClient()
+   ]
 
-2. inject HttpClient in custom service
+2. inject HttpClient in custom service / Component
    constructor(private http: HttpClient) { }
    
-3. using that referrence variable call httpClient methods(GET,POST,PUT,DELETE)   
+3. using that referrence variable call httpClient methods(GET,POST,PUT,PATCH,DELETE)
+	this.httpClient.get(this.users_url).subscribe(response => {
+      console.log(response);
+    })   
  
 
 
@@ -1158,17 +1209,15 @@ HttpClient vs fetch()
 
 
 Assignment
-===========
+==========
 1. Create 1 user CRUD application using HttpClient
 	a. fetch the data and display in a table (json-server)
-	b. create a form, collect form data and make a post call to add that that user
+	b. create a form, collect form data and make a post call to add a new user
 	c. add 'delete' button against every user, on click 'delete', delete that user
 	d. display 'Loading...' text when data is being fetched
 
 
  
-
-
 HttpClient with Headers
 =======================
 -Reading the full response(not only the body)
@@ -1274,15 +1323,6 @@ Observables:
 5. subscribe()
 
 
-
-Hot and Cold Observables
-========================
--A “hot” Observable may begin emitting items as soon as it is created, and so any observer who later subscribes to that Observable may start observing the sequence somewhere in the middle.
--A “cold” Observable, waits until an observer subscribes to it before it begins to emit items,such an observer is guaranteed to see the whole sequence from the beginning.
--Normal Observables are 'cold', Subject,BehaviourSubject,ReplaySubject are 'hot'.
-
-
-
 RxJS
 ====
 -RxJS is a library for composing asynchronous and event-based programs by using observable sequences.
@@ -1372,24 +1412,27 @@ switchMap() = map + switch
 	-Switching to the Most Recent Observable & cancelling previous observables.
 	-SwitchMap emits items only from the most recent inner Observable.
 	-SwitchMap cancels previous inner Observables when a new inner Observable appears. 
-	-A very common use case for switchMap is a search Typeahead.where you are no longer concerned with the response of the previous request when a new input arrives.
+	-A very common use case for switchMap is a search Typeahead.
+	 where you are no longer concerned with the response of the previous request when a new input arrives.
 	-If only one inner subscription should be active at a time, try switchMap
 
    
 ExhaustMap()
 	-Map to inner observable, ignore other values until that observable completes.
-	-the “Do not disturb!” operator.
-	-we have a login screen with a login button, where you map each click to an login ajax request.
+	-“Do not disturb!” operator.
+	-we have a login screen with a login button, where each click is mapped to 1 login request.
 	-If the user clicks more than once on the login button, it will cause multiple calls to the server.
 	-use exhaustMap to temporarily “disable” the mapping while the first http request is still on the go.
 	-this makes sure you never call the server while the current request is running.
 
 
-When NOT to use these “Mapping” operators:
--------------------------------------------
-1. If we re not mapping anything, there is no reason to use any of them.
-2. If we are mapping, but not returning an Observable from the map function, 
- there is no reason to use them.
+
+
+Hot and Cold Observables
+========================
+-A “hot” Observable may begin emitting items as soon as it is created, and so any observer who later subscribes to that Observable may start observing the sequence somewhere in the middle.
+-A “cold” Observable, waits until an observer subscribes to it before it begins to emit items,such an observer is guaranteed to see the whole sequence from the beginning.
+-Normal Observables are 'cold', Subject,BehaviourSubject,ReplaySubject are 'hot'.
 
 
 		
@@ -1451,12 +1494,17 @@ AsyncSubject  --------  latest value when stream gets closed (complete)
 
 What are signals
 ================
--A signal is just a special type of variable that holds a value. it also provides notification when the variable value changes
+-A signal is a special type of variable that holds a value. it also provides notification when the variable value changes
 -A signal is a wrapper around a value that notifies interested consumers when that value changes. 
 -Signals can contain any value, from primitives to complex data structures.
 -We read a signal's value by calling its getter function, which allows Angular to track where the signal is used.
 -Signals may be either writable or read-only
 -A signal is not a replacement for RxJS and Observables for asynchronous operations, such as http.get
+
+
+Disadvantage of Change Detection
+================================
+-A change detection cycle runs very frequently even when something has not changed in the angular app. this can impact performance of angular application.
 
 
 Why  Signals
@@ -1467,30 +1515,34 @@ Why  Signals
 -If a signal is bound in a template, when the signal changes, Angular's change detection automatically updates any view that reads the signal. And the user sees the changed value
 
 
-Writable signals:
-=================
 Declare Signal:
-	count = signal(0);
+num: Signal<number> = signal(0);
 
 Use Signal:
 -Typescript : console.log('The count is: ' + count());
 -HTML:  <h4>count value is {{count()}}</h4>
 
+Check if Signal: 
+let flag = isSignal(this.count);
+
+	
+
+Writable signals:
+set(): Replaces the entire value.
+update(): Modifies the value based on its current state.
+mutate(): used to modify mutable values(array/objects)
+
 To change the value of a writable signal:
-	count.set(3);
+	count.set(3);  // when new value is not dependent op previous value
 		(OR)
 	count.update(value => value + 1); // update the value by using the previous value
 	
-To Check if a variable is signal or not:
-let flag = isSignal(this.count)
 
-	
-	
 
 Computed signals:
-==================
--Computed signals are read-only signals that derive their value from other signals. 
--Computed signals are not writable signals. compilation error is thrown if we try to write value
+================
+-Computed signals are read-only signals that derive/compute their value from other signals. 
+-Computed signals are not writable signals. compilation error is thrown if we try to write value.
 -Computed signals react and recalculate when any of its dependent signals change.
 -Computed signals are lazily evaluated : computed function does not run to calculate its value until it is read 
 -Computed signals are memoized : calculated value is cached, and if you read again, it will return the cached value without recalculating.
@@ -1668,7 +1720,7 @@ Model driven form
 	a. use formGroup with form
 		<form [formGroup]="registerForm"> </form>
 	b. use formControlName with every form field
-		<input type="text" formControlName="firstname">
+		<input formControlName="firstname">
 	c. use formGroupName to group multiple form fields.
 	    <fieldset formGroupName="address">...</fieldset>
 
@@ -1791,19 +1843,35 @@ routing Program:
 	  { path: '', component: HomeComponent },
 	  { path: '**', component: NotfoundComponent },
 	];
-	Note: all these routes:[] are used in app.config.ts
 
-3. use router-outlet
-   <router-outlet>
+Note: all these routes:[] are used in app.config.ts
+     provideRouter(routes)
+
+3. use router-outlet in HTML & import 'RouterOutlet' in Typescript file
+    <router-outlet></router-outlet>
    
    
-4.  Nav-bar.component.html   
+4.  Add below code in Nav-bar.component.html  & import 'RouterLink' in Typescript file
    <a class="nav-link" routerLink="home" routerLinkActive="active-link">Home</a>
    <a class="nav-link" routerLink="aboutus">Aboutus</a>
    <a class="nav-link" routerLink="careers">Careers</a>
    
 
 
+RouterOutlet
+============
+-Acts as a placeholder that Angular dynamically fills based on the current router state.
+-Each outlet can have a unique name, determined by the optional name attribute. The name cannot be set or changed dynamically. If not set, default value is "primary"
+  <router-outlet></router-outlet>
+  <router-outlet name='left'></router-outlet>
+  <router-outlet name='right'></router-outlet>
+-{path: <base-path>, component: <component>, outlet: <target_outlet_name>}
+<router-outlet
+  (activate)='onActivate($event)'
+  (deactivate)='onDeactivate($event)'
+  (attach)='onAttach($event)'
+  (detach)='onDetach($event)'></router-outlet>
+  
 
 
 Active-Route
@@ -2446,6 +2514,12 @@ State changes are handled by pure functions called reducers that take the curren
 Selectors are pure functions used to select, derive and compose pieces of state.
 State is accessed with the Store, an observable of state and an observer of actions
   
+  
+Environments
+============
+https://angular.dev/tools/cli/environments
+
+
   
   
 GraphQL

@@ -39,9 +39,7 @@ export class AppComponent {
 
 program-4:interpolation vs property binding
 -------------------------------------------
-->to set an element property to a non-string data value, 
-we must use property binding not interpolation
-
+->to set an element property to a non-string data value, property binding should be used and not interpolation binding
 
 import { Component } from '@angular/core';
 @Component({
@@ -61,8 +59,7 @@ isDisabled: boolean = false;
 
 program-5:interpolation vs property binding
 -------------------------------------------
-->when we need to concatenate strings we have to use 
-interpolation instead property binding
+->for String Concatination, interpolation binding should be used insteadof property binding
 
 import { Component } frpom '@angular/core';
 @Component({
@@ -104,8 +101,8 @@ export class AppComponent {
 
 
 
-Program: Dark/Light Mode
-=========================
+Program-7: Dark/Light Mode
+==========================
 toggleMode() {
     this.flag = !this.flag;
     if (this.flag) {
@@ -118,8 +115,8 @@ toggleMode() {
 
 
 
-program-7: Template Reference Variable
---------------------------------------
+program-8: Template Reference Variable
+=======================================
 import { Component } from '@angular/core';
 @Component({
     selector: 'my-app',
@@ -139,9 +136,9 @@ export class AppComponent {
 }
 
 
-program-8:Two-way data binding
--------------------------------
-import { FormsModule }   from '@angular/forms';
+program-9 : Two-way data binding
+===============================
+import { FormsModule } from '@angular/forms';
 imports: [FormsModule]
   
 import { Component } from '@angular/core';
@@ -481,6 +478,35 @@ Program-17 : Pagination
 
 
 
+Program : star Rating
+=======================
+  rating: number = 3;
+  maxStars: number = 5;
+  stars: boolean[] = [];
+  ngOnInit() {
+    this.stars = Array(this.maxStars).fill(false);
+  }
+  rate(stars: number) {
+    this.rating = stars;
+  }
+--------------------------------
+<div class="star-rating">
+    @for( star of stars; let i = $index;track $index){
+        <span (click)="rate(i + 1)" class="star" [class.filled]="i < rating">
+            ★
+        </span>
+    }
+</div>
+--------------------------
+.star {
+    font-size: 2rem;
+    cursor: pointer;
+    color: grey;
+}
+.star.filled {
+    color: gold;
+} 
+
 
 
   
@@ -568,6 +594,36 @@ export class CountDirective {
     console.log(`Number of times clicked ${this.numberOfClicks++}`);
   }
 }
+
+
+Program: Tooltip Directive
+==========================
+import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
+@Directive({
+  selector: '[appTooltip]'
+})
+export class TooltipDirective {
+  @Input() tooltipText: string;
+  tooltipElement: HTMLElement;
+
+  constructor(private el: ElementRef, private renderer: Renderer2) {}
+
+  @HostListener('mouseenter') onMouseEnter() {
+    this.tooltipElement = this.renderer.createElement('span');
+    const text = this.renderer.createText(this.tooltipText);
+    this.renderer.appendChild(this.tooltipElement, text);
+    this.renderer.appendChild(this.el.nativeElement, this.tooltipElement);
+    this.renderer.addClass(this.tooltipElement, 'tooltip');
+  }
+
+  @HostListener('mouseleave') onMouseLeave() {
+    this.renderer.removeChild(this.el.nativeElement, this.tooltipElement);
+  }
+}
+
+<button appTooltip="Save your changes">Save</button>
+
+
 
 
 
@@ -691,7 +747,7 @@ export class AgePipe implements PipeTransform {
 
 
 program-27: Custom Pipe(Truncate)
----------------------------------------
+----------------------------------
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'truncate'
@@ -1051,11 +1107,11 @@ export class AppComponent implements DoCheck {
   private userDiffer: KeyValueDiffer<string, any>;
   changes: string[] = [];
 
-  constructor(private differs: KeyValueDiffers) {
-    this.userDiffer = this.differs.find(this.user).create();
+  changeUserData(newName: string) {
+    this.user.name = newName;
   }
-  changeProperty() {
-    this.user.name = 'Jane Smith';
+  constructor(private keyValueDiffers: KeyValueDiffers) {
+    this.userDiffer = this.keyValueDiffers.find(this.user).create();
   }
   ngDoCheck() {
     const userChanges = this.userDiffer.diff(this.user);
@@ -1065,7 +1121,7 @@ export class AppComponent implements DoCheck {
       });
     }
   }
-}
+ 
 -------------------
 <div>
   <h2>Change Object Property</h2>
@@ -1348,10 +1404,10 @@ export class AppComponent {
 Program:43 Model Class
 -----------------------------
 export class Employee {
-  private id: number;
-  private firstName: string;
-  private lastName: string;
-  private sal: number;
+  id: number;
+  firstName: string;
+  lastName: string;
+  sal: number;
 
   constructor(id: number, firstName: string, lastName: string, sal: number) {
     this.id = id;
@@ -1382,7 +1438,7 @@ getEmployees(): Observable<Employee[]> {
 
 	
 Program-44 HTTP Interceptor Example
-----------------------------------
+------------------------------------
 import { HttpInterceptorFn } from '@angular/common/http';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // const myToken = sessionStorage.getItem('myToken');
@@ -1422,13 +1478,10 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loaderService = inject(loaderService);
   loaderService.show();
   
-  return next(request).pipe(
+  return next(req).pipe(
      finalize(() => loaderService.hide()),
   );
 }
-
--------------
-app.config.ts   -->   provideHttpClient(withInterceptors([loadingInterceptor])),
 
 
 
@@ -1449,20 +1502,6 @@ export const myErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 
-Success Interceptor
-====================
-import { HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
-import { tap } from 'rxjs';
-export const myresponseInterceptor: HttpInterceptorFn = (req, next) => {
-  console.log('Pre interceptor');
-  return next(req).pipe(
-    tap((event: HttpEvent<any>) => {
-      if (event instanceof HttpResponse && event.status === 200) {
-        console.info('Post Interceptor - Sucess');
-      }
-    })
-  );
-};
 
 
 
@@ -1623,14 +1662,11 @@ export class TestComponent implements AfterViewInit {
   });
 
   //with mergeMap()
-  usersPublisher = of(1, 2, 3, 4);
-  usersSubscriber2 = this.usersPublisher.pipe(
-      mergeMap((user) => {
-        const url =`https://jsonplaceholder.typicode.com/users/${user}`;
-        return this.httpClient.get(url); //inner observable
-      })
-    ).subscribe((userData) => {
-      console.log(userData);
+  let userPublisher = of(1, 2, 3, 4, 5);
+    userPublisher.pipe(mergeMap(userId => {
+      return this.httpClient.get(`https://fakestoreapi.com/carts/${userId}`)
+    })).subscribe(cartResponse => {
+      console.log(cartResponse)
     });
                    
 
@@ -1750,6 +1786,28 @@ program : 53- exhaustMap Example
       exhaustMap(() => this.httpClient.get('https://fakestoreapi.com/products'))
     );
     result.subscribe((x) => console.log(x));
+  }
+  
+  
+ program : 54 - distinctUntilChanged Example
+----------------------------
+ distinctUntilChangedDemo() {
+    let userIds = of(1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3);
+    userIds.pipe(distinctUntilChanged()).subscribe((res) => {
+      console.log(res);
+    })
+  }
+  
+ distinctUntilChangedWithComparator() {
+    let user1 = { name: 'sanjay' }
+    let user2 = { name: 'sanjay' }
+    let user3 = { name: 'akash' }
+    let user4 = { name: 'deepak' }
+    let user5 = { name: 'deepak' }
+    let users = from([user1, user2, user3, user4, user5]);
+
+    users.pipe(distinctUntilChanged((prev, curr) => prev.name == curr.name))
+      .subscribe(val => console.log(val));
   }
   
   
@@ -1954,13 +2012,16 @@ Program: Signal
 *****************
 export class SignalDemoComponent {
   num: WritableSignal<number> = signal(0);
+  messages: WritableSignal<string[]> = signal([]);
   numSquare: Signal<number> = computed(() => this.num() * this.num());
 
   increment() {
     this.num.update((value: number) => value + 1)
+	this.messages.mutate(messages => messages.push(`Value of Num is: ${this.num()}`));
   }
   decrement() {
-    this.num.update((val: number) => val - 1)
+    this.num.update((val: number) => val - 1);
+	this.messages.mutate(messages => messages.pop());
   }
   reset() {
     this.num.set(0);
@@ -1974,7 +2035,29 @@ export class SignalDemoComponent {
     <button (click)="decrement()">Decrement</button>
     <button (click)="reset()" class="m-1">Reset</button>
     <button (click)="increment()">Increment</button>
+	<hr/>
+	 @for(msg of messages();track $index){
+		<div>{{msg}}</div>
+     }
 </div>
+
+
+
+
+Program: effects
+=================
+const userId = signal(1);
+effect(() => {
+  const id = userId();
+  fetchUserData(id);
+});
+
+function fetchUserData(id: number) {
+  console.log(`Fetching data for user with ID: ${id}`);
+}
+userId.set(2);  // Console: "Fetching data for user with ID: 2"
+
+
 
 
 
@@ -3008,7 +3091,7 @@ Program:67 ToDo App using NgRx
 
 
 Program:68 Counter App using NgRx
-==================================
+=================================
 1. Install NgRx Store in the project
    ng add @ngrx/store
    
