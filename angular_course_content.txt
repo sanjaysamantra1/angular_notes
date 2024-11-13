@@ -18,6 +18,7 @@ Angular Course Content
 -HttpClient / AJAX
 -Interceptors
 -Observables (RxJs)
+-Signals
 -Form
 -Routing
 -Lazy Loading
