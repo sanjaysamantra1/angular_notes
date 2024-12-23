@@ -7,19 +7,20 @@ Angular Course Content
 -Template Reference Variable
 -View Encapsulation (Emulated, shadowDOM, none)
 -Inbuilt Directives (@if, @else, @for)
--Custom Directives
+-Custom Directives (Renderer , @HostBinding, @HostListener)
 -Pipes (uppercase, date, number, json)
 -Custom Pipes
 -<ng-content>/ Content projection
--Component Communication
+-Component Communication  (inputs:[], outputs:[])
 -LifeCycle Methods / Hooks
 -Services
 -Dependency Injection
 -HttpClient / AJAX
 -Interceptors
 -Observables (RxJs)
+-Subject , BehaviourSubject, ReplaySubject
 -Signals
--Form
+-Form (Template Driven , Reactive Form)
 -Routing
 -Lazy Loading
 -NgRx (State management)
