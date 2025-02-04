@@ -13,7 +13,8 @@ program-2:display Local image
 2. use it in HTML file
    <img src='images/sachin.jpg' />
   
-	
+
+
 	
 program-3:interpolation and property binding
 ----------------------------------------
@@ -101,6 +102,18 @@ export class AppComponent {
 
 
 
+Property-Binding vs Attribute-Binding
+=====================================
+-Attributes exist in the HTML markup. Attribute values are static and are not updated dynamically
+-Properties exist on the DOM nodes in real-time. Any changes to myName in the component will be reflected in the input.
+
+<input type="text" [value]="myName" />
+<input type="text" [attr.value]="myName" />
+<button class="btn btn-primary" (click)="myName='Rahul'">Change Name</button>
+
+
+
+
 Program-7: Dark/Light Mode
 ==========================
 toggleMode() {
@@ -173,6 +186,7 @@ Program-9:  View Encapsulation
     .hello {
       font-size: 40px;
       border: 5px solid red;
+	  
     }
   </style>
 </head>
@@ -227,25 +241,13 @@ Age: <input ref-age><br><br>
 
 
 
-program-11: *ngIf-else directive
+program-11: If-else directive
 ----------------------------------
-import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-root',
-  template: `
-  <div *ngIf="x%2 == 0; else odd">
-    {{x}} is an even number
-  </div>
-
-  <ng-template #odd>
-    {{x}} is an odd number
-  </ng-template>    
-  `
-})
-export class AppComponent {
-  x: number = 6;
-}
+    @if(num%2 == 0){
+        <h4>{{num}} is Even </h4>
+    }@else{
+        <h4>{{num}} is Odd </h4>
+    }
 
 ----------OR---------
 import { Component } from '@angular/core';
@@ -282,16 +284,16 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   template: `
-  <h1 [ngSwitch]="x">
-    <p *ngSwitchCase="1">Monday</p>
-    <p *ngSwitchCase="2">Tuesday</p>
-    <p *ngSwitchCase="3">Wednesday</p>
-    <p *ngSwitchCase="4">Thursday</p>
-    <p *ngSwitchCase="5">Friday</p>
-    <p *ngSwitchCase="6">Saturday</p>
-    <p *ngSwitchCase="0">Sunday</p>
-    <p *ngSwitchDefault>Not a valid number</p>
-  </h1>   
+	@switch (num) {
+        @case (1) { <h1>Monday</h1> }
+        @case (2) { <h1>Tuesday</h1> }
+        @case (3) { <h1>Wednesday</h1> }
+        @case (4) { <h1>Thursday</h1> }
+        @case (5) { <h1>Friday</h1> }
+        @case (6) { <h1>Saturday</h1> }
+        @case (7) { <h1>Sunday</h1> }
+        @default { <h1>Not a Valid number</h1>> }
+    }  
   `
 })
 export class AppComponent {
@@ -378,12 +380,12 @@ program-15: ng-container Example
 </ng-container>
 
 employees = [
-    { eId: 101, name: 'sanjay', sal: 5000, gender: 'male' },
-    { eId: 104, name: 'geeta', sal: 8000, gender: 'female' },
-    { eId: 103, name: 'sameer', sal: 7000, gender: 'male' },
-    { eId: 102, name: 'sita', sal: 9000, gender: 'female' },
-	{ eId: 105, name: 'deepak', sal: 8000, gender: 'male' }
-  ];
+    { "eId": 101, "name": "sanjay", "sal": 5000, "gender": "male" },
+    { "eId": 104, "name": "geeta", "sal": 8000, "gender": "female" },
+    { "eId": 103, "name": "sameer", "sal": 7000, "gender": "male" },
+    { "eId": 102, "name": "sita", "sal": 9000, "gender": "female" },
+	{ "eId": 105, "name": "deepak", "sal": 8000, "gender": "male" }
+];
 
 
 
@@ -465,15 +467,15 @@ export class AppComponent {
 
 Program-17 : Pagination
 -----------------------
-1. Install Pagination Library
+1. Install Pagination Library using the below command
 	npm i ngx-pagination
 	
 2. Add pagination module 
 	import { NgxPaginationModule } from 'ngx-pagination';
-	 imports: [ BrowserModule, NgxPaginationModule]
+	imports: [ BrowserModule, NgxPaginationModule]
 	 
 3. in HTML file add the below line 
-    <li *ngFor="let item of collection | paginate: { itemsPerPage: 10, currentPage: p }"> ... </li>               
+    @for(user of users | paginate: { itemsPerPage: 4, currentPage: p };track $index)
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
 
 
@@ -603,8 +605,9 @@ import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/
   selector: '[appTooltip]'
 })
 export class TooltipDirective {
-  @Input() tooltipText: string;
-  tooltipElement: HTMLElement;
+  @Input()
+  tooltipText!: string;
+  tooltipElement!: HTMLElement;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 
@@ -736,10 +739,11 @@ import { Pipe, PipeTransform } from '@angular/core';
 })
 export class AgePipe implements PipeTransform {
   transform(value: Date): any {
-     const currentYear = new Date().getFullYear();
-     const dobYear = value.getFullYear();     
-	 const age = currentYear - dobYear;
-     return age + ' years old';
+    if(!value) return '';
+    const currentYear = new Date().getFullYear();
+    const dobYear = new Date(value).getFullYear();
+    const age = currentYear - dobYear;
+    return age + ' years old';
   }
 }
 
@@ -969,6 +973,45 @@ export class ChildComponent {
 }
 
 
+Flipkart Categories
+====================
+allCategories = [
+    { label: 'Grocery', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/29327f40e9c4d26b.png?q=100' },
+    { label: 'Mobile', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/22fddf3c7da4c4f4.png?q=100' },
+    { label: 'Fashion', img_url: 'https://rukminim2.flixcart.com/fk-p-flap/72/72/image/0d75b34f7d8fbcb3.png?q=100' },
+    { label: 'Electronics', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/69c6589653afdb9a.png?q=100' },
+    { label: 'Home & Furniture', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/ab7e2b022a4587dd.jpg?q=100' },
+    { label: 'Appliances', img_url: 'https://rukminim2.flixcart.com/fk-p-flap/72/72/image/0139228b2f7eb413.jpg?q=100' },
+    { label: 'Travel', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/71050627a56b4693.png?q=100' },
+    { label: 'Beauty & Toys', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/dff3f7adcf3a90c6.png?q=100' },
+    { label: 'Two Wheeler', img_url: 'https://rukminim2.flixcart.com/fk-p-flap/72/72/image/05d708653beff580.png?q=100' },
+  ]
+  
+<div class="container">
+    <div class="row">
+        @for(categoryObj of allCategories;track $index){
+           <div class="col">
+                <app-category [categoryObj]="categoryObj"></app-category>
+           </div>
+        }
+    </div>
+</div>
+
+<div class="category text-center">
+    <img src={{categoryObj.img_url}} alt="">
+    <div>{{categoryObj.label}}</div>
+</div>
+
+.category img{
+    width:65px;
+    height:65px;
+}
+.category div{
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
 
 
 program-33 : life cycle hooks all methods
@@ -1126,7 +1169,7 @@ export class AppComponent implements DoCheck {
 <div>
   <h2>Change Object Property</h2>
   <input [(ngModel)]="user.name" placeholder="Enter user name">
-  <button (click)="changeProperty()">Change User Name Programmatically</button>
+  <button (click)="changeUserData()">Change User Name Programmatically</button>
 </div>
 <div>
   <h3>Current User Details:</h3>
@@ -1207,6 +1250,67 @@ ngAfterViewInit() {
 
 
 
+Renderer2
+==========
+import { Component, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
+@Component({
+  selector: 'app-example',
+  template: `<div #myDiv>Content here</div>`,
+})
+export class ExampleComponent implements AfterViewInit {
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
+  ngAfterViewInit(): void {
+    const div = this.el.nativeElement.querySelector('div');
+
+    // Add a CSS class
+    this.renderer.addClass(div, 'highlight');
+
+    // Set a style property
+    this.renderer.setStyle(div, 'color', 'blue');
+
+    // Add an attribute
+    this.renderer.setAttribute(div, 'role', 'button');
+
+    // Listen to an event
+    this.renderer.listen(div, 'click', () => {
+      console.log('Div clicked!');
+    });
+  }
+}
+
+
+
+
+Program : ViewContainerRef.createComponent()
+=============================================
+<!-- app.component.html -->
+<div>
+  <h1>Dynamic Component Example</h1>
+  <button (click)="loadDynamicComponent()">Load Dynamic Component</button>
+  <ng-container #dynamicContainer></ng-container>
+</div>
+
+// app.component.ts
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
+import { DynamicComponent } from './dynamic.component';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+})
+export class AppComponent {
+  @ViewChild('dynamicContainer', { read: ViewContainerRef, static: true }) container!: ViewContainerRef;
+
+  loadDynamicComponent() {
+    // Clear any previously inserted components
+    this.container.clear();
+
+    // Dynamically create and insert the component
+    this.container.createComponent(DynamicComponent);
+  }
+}
+
+
 program-38: create a math Services
 ------------------------------
 import { Injectable } from '@angular/core';
@@ -1249,6 +1353,8 @@ export class AppComponent {
         this.divResult = obj.div(a,b);
     }
 }
+
+
 
 
 
@@ -1471,7 +1577,7 @@ Loading Interceptor
 ===================
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
-import { EMPTY, catchError } from 'rxjs';
+import { finalize } from 'rxjs';
 import { loaderService } from '../services/loader.service';
 
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
@@ -1789,8 +1895,8 @@ program : 53- exhaustMap Example
   }
   
   
- program : 54 - distinctUntilChanged Example
-----------------------------
+program : 54 - distinctUntilChanged Example
+---------------------------------------
  distinctUntilChangedDemo() {
     let userIds = of(1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3);
     userIds.pipe(distinctUntilChanged()).subscribe((res) => {
@@ -1873,9 +1979,11 @@ export class RxjsComponent implements OnInit {
 ---------
 <p>rxjs works!</p>
 <table border=2 width=50% align=center>
-    <tr *ngFor='let msg of messages'>
-        <td>{{msg.text}}</td>
+  @for (msg of messages; track msg) {
+    <tr>
+      <td>{{msg.text}}</td>
     </tr>
+  }
 </table>
 --------------
 import { Component, OnInit } from '@angular/core';
@@ -1968,11 +2076,11 @@ import { TodoService } from '../todo.service';
   `,
 })
 export class TodoAddComponent implements OnInit {
-	  constructor(private todoService: TodoService) {}
-	  ngOnInit(): void {}
-	  addToDo(todoText: string) {
-		this.todoService.create({ id: 3, value: todoText });
-	  }
+  constructor(private todoService: TodoService) {}
+  ngOnInit(): void {}
+  addNewTodo(todoText: string) {
+    this.todoService.create({ id: 3, value: todoText });
+  }
 }
 
 
@@ -2013,18 +2121,21 @@ Program: Signal
 export class SignalDemoComponent {
   num: WritableSignal<number> = signal(0);
   messages: WritableSignal<string[]> = signal([]);
+  numDouble: Signal<number> = computed(() => this.num() * 2);
   numSquare: Signal<number> = computed(() => this.num() * this.num());
 
   increment() {
     this.num.update((value: number) => value + 1)
-	this.messages.mutate(messages => messages.push(`Value of Num is: ${this.num()}`));
+    this.messages.set([...this.messages(), `Value of Num is: ${this.num()}`]);
   }
   decrement() {
     this.num.update((val: number) => val - 1);
-	this.messages.mutate(messages => messages.pop());
+    this.messages().pop()
+    this.messages.set([... this.messages()]);
   }
   reset() {
     this.num.set(0);
+    this.messages.set([]);
   }
 }
 -----------------------
@@ -2046,16 +2157,28 @@ export class SignalDemoComponent {
 
 Program: effects
 =================
-const userId = signal(1);
-effect(() => {
-  const id = userId();
-  fetchUserData(id);
-});
-
-function fetchUserData(id: number) {
-  console.log(`Fetching data for user with ID: ${id}`);
-}
-userId.set(2);  // Console: "Fetching data for user with ID: 2"
+userId = signal(1);
+  userData: any;
+  userDetailsEffect = effect(() => {
+    const id = this.userId();
+    this.fetchUserDetails(id);
+  });
+  destroyEffect() {
+    this.userDetailsEffect.destroy()
+  }
+  constructor(private httpClient: HttpClient) {
+  }
+  ngOnInit() {
+    this.fetchUserDetails(this.userId());
+  }
+  fetchUserDetails(id: number) {
+    this.httpClient.get(`https://jsonplaceholder.typicode.com/users/${id}`).subscribe(response => {
+      this.userData = response;
+    })
+  }
+  incrementUserId() {
+    this.userId.update(val => val + 1);
+  }
 
 
 
@@ -2444,7 +2567,7 @@ export class AppComponent {
 
 
 program-60 Custom Validation
-==============================
+============================
 
 createPasswordStrengthValidator
 ---------------------------------
@@ -2755,17 +2878,25 @@ export class FolderExplorerComponent {
   isExpanded: boolean = false;
 }
 ---------------------------
-<div *ngIf="folderObj.isFolder" (click)="isExpanded=!isExpanded" style="cursor:pointer">
-  📁 <span>{{ folderObj.name }}</span>
-</div>
-<div *ngIf="isExpanded" style="padding-left: 20px;">
-  <div *ngFor="let item of folderObj.items">
-    <app-folder-explorer [folderObj]="item"></app-folder-explorer>
+@if (folderObj.isFolder) {
+  <div (click)="isExpanded=!isExpanded" style="cursor:pointer">
+    📁 <span>{{ folderObj.name }}</span>
   </div>
-</div>
-<div *ngIf="!folderObj.isFolder">
-  📑 <span>{{ folderObj.name }}</span>
-</div>
+  @if (isExpanded) {
+    <div style="padding-left: 20px;">
+      @for (item of folderObj.items; track item) {
+        <div>
+          <app-folder [folderObj]="item"></app-folder>
+        </div>
+      }
+    </div>
+  }
+}@else{
+    <div>
+        📑 <span>{{ folderObj.name }}</span>
+      </div>
+}
+
  
  
  
@@ -2806,12 +2937,12 @@ export class TrafficSignalComponent {
 
 ===============
 <div class="wrapper">
-    <div class='traffic-light-container traffic-light-container--vertical'>
-        <div *ngFor="let color of colorsArr">
-            <div class="traffic-light" [style.background-color]="color === selectedColor ? selectedColor:'' ">
-            </div>
+  <div class='traffic-light-container traffic-light-container--vertical'>
+    @for (color of colorsArr; track color) {
+        <div class="traffic-light" [style.background-color]="color === selectedColor ? selectedColor:'' ">
         </div>
-    </div>
+    }
+  </div>
 </div>
 =================
 .wrapper {
@@ -2893,204 +3024,155 @@ export class JasmineComponent implements OnInit {
 }
 
 
+Testing Service with HttpClient
+===============================
+import { TestBed } from '@angular/core/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
+import { UserService } from './user.service';
 
-Testing HttpClient
-==================
-import {
-  ComponentFixture,
-  TestBed,
-  async,
-  inject,
-} from '@angular/core/testing';
+describe('UserService', () => {
+  let service: UserService;
+  let httpTestingController: HttpTestingController;
 
-import { UsersComponent } from './users.component';
-import { UsersService } from 'src/app/services/users.service';
-import { HttpClientModule } from '@angular/common/http';
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+      ]
+    });
+    service = TestBed.inject(UserService);
+    httpTestingController = TestBed.inject(HttpTestingController);
+  });
+  afterEach(() => {
+    // Ensure no outstanding requests
+    httpTestingController.verify();
+  });
+
+  it('user service should be created', () => {
+    expect(service).toBeTruthy();
+  });
+  it('should fetch data using GET request', () => {
+    const mockUsers = [{ id: 1, name: 'aaa', sal: 5000 }]
+    service.getAllUsers().subscribe((data) => {
+      expect(data).toEqual(mockUsers);
+    });
+    // Expect the GET request
+    const req = httpTestingController.expectOne('https://jsonplaceholder.typicode.com/users');
+    expect(req.request.method).toBe('GET');
+    // Respond with mock data
+    req.flush(mockUsers);
+  });
+});
+
+
+
+Testing Component with HttpClient
+==================================
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { UserListComponent } from './user-list.component';
+import { provideHttpClient } from '@angular/common/http';
+import { UserService } from '../../services/user.service';
 import { of } from 'rxjs';
+describe('UserListComponent', () => {
+  let component: UserListComponent;
+  let fixture: ComponentFixture<UserListComponent>;
+  let userService : UserService;
 
-describe('UsersComponent', () => {
-  let component: UsersComponent;
-  let fixture: ComponentFixture<UsersComponent>;
-  let usersService: UsersService;
-
-  beforeEach(async () => {
+  beforeEach(async () => { 
     await TestBed.configureTestingModule({
-      declarations: [UsersComponent],
-      providers: [UsersService],
-      imports: [HttpClientModule],
-    }).compileComponents();
+      imports: [UserListComponent],
+      providers: [
+        provideHttpClient(),
+        UserService
+      ]
+    })
+      .compileComponents();
 
-    fixture = TestBed.createComponent(UsersComponent);
+    fixture = TestBed.createComponent(UserListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    userService = TestBed.inject(UserService)
   });
-  beforeEach(inject([UsersService], (s: UsersService) => {
-    usersService = s;
-  }));
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-  it('should test addition method', () => {
-    expect(component.addition(2, 3)).toBe(5);
-  });
-
-  it('should call getUsers and return list of users', async(() => {
+ 
+  it('should verify getAllUsers', () => {
     const mockresponse: any[] = [{}, {}];
-    spyOn(usersService, 'fetchAllUsers').and.returnValue(of(mockresponse));
+    spyOn(userService, 'getAllUsers').and.returnValue(of(mockresponse));
     component.fetchUsers();
     fixture.detectChanges();
     expect(component.users.length).toBe(2);
-  }));
-  it('should call fetchUserById and return list of users', async(() => {
-    const mockresponse2 = { id: 1, name: 'sanjay' };
-    spyOn(usersService, 'fetchUserById').and.returnValue(of(mockresponse2));
-    component.fetchUserById(1);
-    fixture.detectChanges();
-    expect(component.user).toEqual(mockresponse2);
-  }));
+  });
+});
+
+
+Stub & Spy Demo
+===============
+class WeatherService {
+  getTemperature(city) {
+    // Simulate an API call
+    throw new Error("Real API call not implemented");
+  }
+}
+class WeatherProcessor {
+  constructor(weatherService) {
+    this.weatherService = weatherService;
+  }
+  isHot(city) {
+    const temperature = this.weatherService.getTemperature(city);
+    return temperature > 30; // Hot if temperature > 30°C
+  }
+}
+------------------------
+describe("WeatherProcessor", function () {
+  let weatherService, weatherProcessor;
+
+  beforeEach(function () {
+    weatherService = new WeatherService();
+    weatherProcessor = new WeatherProcessor(weatherService);
+  });
+
+  it("should determine if the weather is hot using a stubbed temperature", function () {
+    // Stub the getTemperature method
+    spyOn(weatherService, "getTemperature").and.returnValue(35);
+
+    const result = weatherProcessor.isHot("New York");
+    
+    // Verify results
+    expect(weatherService.getTemperature).toHaveBeenCalledWith("New York");
+    expect(result).toBe(true); // 35 > 30, so it's hot
+  });
+
+  it("should determine if the weather is not hot using a stubbed temperature", function () {
+    // Stub the getTemperature method
+    spyOn(weatherService, "getTemperature").and.returnValue(20);
+
+    const result = weatherProcessor.isHot("London");
+    
+    // Verify results
+    expect(weatherService.getTemperature).toHaveBeenCalledWith("London");
+    expect(result).toBe(false); // 20 < 30, so it's not hot
+  });
+
+  it("should track how many times getTemperature is called", function () {
+    // Spy on the getTemperature method without changing behavior
+    spyOn(weatherService, "getTemperature").and.callFake(() => 25);
+
+    weatherProcessor.isHot("Paris");
+    weatherProcessor.isHot("Berlin");
+    
+    // Verify spy tracking
+    expect(weatherService.getTemperature).toHaveBeenCalledTimes(2);
+    expect(weatherService.getTemperature).toHaveBeenCalledWith("Paris");
+    expect(weatherService.getTemperature).toHaveBeenCalledWith("Berlin");
+  });
 });
 
 
 
 
 
-
-Program:67 ToDo App using NgRx
-==============================
-1. Install NgRx Store in the project
-   ng add @ngrx/store
-		(OR)
-   ng add @ngrx/store@latest
-		(OR)
-   ng add @ngrx/store@17
-   
-2. Create Folders & Files manually for store , actions, reducers and components
-    store-->store.ts       
-	actions-->actions.ts
-	reducers-->reducers.ts
-	components--> todoList , addTodo (ng g c todolist, ng g c addtodo)
-
-3. Add below Reducer Code in Reducers.ts
-
-	const initialState = [
-	  { id: 1, text: 'ToDo 1', isCompleted: true },
-	  { id: 2, text: 'ToDo 2', isCompleted: false },
-	];
-	function todosReducer(state = initialState, action: any): any {
-	  switch (action.type) {
-		case 'ADD_TODO': {
-		  const newToDo = {
-			id: state.length + 1,
-			text: action.payload.text,
-			isCompleted: false,
-		  };
-		  return [...state, newToDo];
-		}
-		case 'TOGGLE_TODO': {
-		  return state.map((todo) => {
-			return todo.id !== action.payload.id
-			  ? todo
-			  : {...todo,isCompleted:!isCompleted}
-		  });
-		}
-		case 'DELETE_TODO': {
-		  return state.filter(todo=>todo.id !== action.payload.id);
-		}
-		default: {
-		  return state;
-		}
-	  }
-	}
-	export const rootReducer = {
-	  todosReducer
-	};
-
-4. create Store using the Reducer (store.ts)
-	import { provideStore } from '@ngrx/store';
-	import { rootReducer } from '../reducers/reducers';
-	export const myStore = provideStore(rootReducer);
-	
-5. Provide the store (app.config.ts)
-    import { myStore } from './state-management/store/store';
-	export const appConfig: ApplicationConfig = {
-	  providers: [provideRouter(routes), provideAnimationsAsync(), myStore]
-	};
-   
-6. add action-creator code in actions.ts
-    export function addTodo(text: string) {
-	  return {
-		type: 'ADD_TODO',
-		payload: { text },
-	  };
-	}
-	export function deleteTodo(id: number) {
-	  return {
-		type: 'DELETE_TODO',
-		payload: { id },
-	  };
-	}
-	export function toggleToDo(id: number) {
-	  return {
-		type: 'TOGGLE_TODO',
-		payload: { id },
-	  };
-	}
-
-7. todo-list component.ts
-    import { Component, OnInit } from '@angular/core';
-	import { Store } from '@ngrx/store';
-	import { deleteTodo, toggleToDo } from '../actions/actions';
-	@Component({
-	  selector: 'app-todolist',
-	  templateUrl: './todolist.component.html',
-	  styleUrls: ['./todolist.component.css'],
-	})
-	export class TodolistComponent implements OnInit {
-	  allToDos: any;
-	  constructor(private store: Store) {}
-	  ngOnInit(): void {
-		this.store.subscribe((state: any) => {
-		  console.log('state', state);
-		  this.allToDos = state.todosReducer;
-		});
-	  }
-	  deleteMyTodo(id: number) {
-		const actionObj = deleteTodo(id);
-		this.store.dispatch(actionObj);
-	  }
-	  toggleMyTodo(id: number) {
-		const actionObj = toggleToDo(id);
-		this.store.dispatch(actionObj);
-	  }
-	}
- 
-8. add-todo.component.ts
-    import { Component, OnInit } from '@angular/core';
-	import { Store } from '@ngrx/store';
-	import { addTodo } from '../actions/actions';
-	@Component({
-	  selector: 'app-add-todo',
-	  templateUrl: './add-todo.component.html',
-	  styleUrls: ['./add-todo.component.css'],
-	})
-	export class AddTodoComponent implements OnInit {
-	  constructor(private store: Store) {}
-	  ngOnInit(): void {}
-	  addNewTodo(text: string) {
-		const actionObj = addTodo(text); // action creator
-		this.store.dispatch(actionObj);
-	  }
-	}
-			  
-9. in app.component.html add the below code
-   <app-todolist></app-todolist>
-   <app-add-todo></app-add-todo>
-
-
-
-
-Program:68 Counter App using NgRx
+Program:67 Counter App using NgRx
 =================================
 1. Install NgRx Store in the project
    ng add @ngrx/store
@@ -3111,7 +3193,7 @@ Program:68 Counter App using NgRx
 		on(decrement, (state) => state - 1),
 		on(reset, (state) => 0)
 	);
-4. Provide the Store (app.config.ts)
+4. Provide the Store to the whole application(app.config.ts)
    providers: [
     provideStore({ count: counterReducer })
   ]
@@ -3130,6 +3212,75 @@ Program:68 Counter App using NgRx
    <h2>Count value is : {{count$ | async}}</h2>
    <button (click)="increment()">Increment</button>
 
+
+
+Program:68 ToDo App using NgRx
+==============================
+1. Install NgRx Store in the project
+   ng add @ngrx/store
+   
+2. Create action File (todo.actions.ts)
+	import { createAction, props } from '@ngrx/store';
+	import { Todo } from '../../models/todo';
+	export const addTodo = createAction('Add Todo', props<{ payload: Todo }>());
+	export const deleteTodo = createAction('Delete Todo', props<{ id: number }>());
+	export const toggleTodo = createAction('Toggle Todo', props<{ id: number }>());
+
+3. Create Reducer File(todo.reducer.ts)
+	import { createReducer, on } from '@ngrx/store';
+	import { addTodo, deleteTodo, toggleTodo } from '../actions/todo.actions';
+	export const initialState = [
+		{ id: 1, text: 'Learn javascript', isCompleted: true },
+		{ id: 2, text: 'Go to Gym', isCompleted: false },
+		{ id: 3, text: 'Buy Grocery', isCompleted: false },
+	];
+	export const todoReducer = createReducer(
+		initialState,
+		on(addTodo, (state, action: any) => {
+			return [...state, action.payload]
+		}),
+		on(deleteTodo, (state, action: any) => {
+			return state.filter(todo => todo.id != action.id);
+		}),
+		on(toggleTodo, (state, action: any) => {
+			return state.map((todo) => {
+				return todo.id !== action.id
+					? todo
+					: { ...todo, isCompleted: !todo.isCompleted }
+			});
+		})
+	);
+4. Provide the Store to the whole application(app.config.ts)
+   providers: [
+    provideStore({ todoArr:todoReducer })
+  ]
+
+5. Create ToDoCrud Component (todocrud.component.ts)
+  todoArr: any;
+  constructor(private store: Store<any>) {
+    this.store.select('todoArr').subscribe(storeData => {
+      this.todoArr = storeData;
+    })
+  }
+  deleteMyTodo(id: number) {
+    this.store.dispatch(deleteTodo({ id: id }));
+  }
+  toggleMyTodo(id: number) {
+    this.store.dispatch(toggleTodo({ id: id }));
+  }
+  
+6. todocrud.component.html
+   <ol>
+    @for(todo of todoArr;track $index){
+    <li class="my-2">
+        <span [ngClass]="{'strikethrough': todo.isCompleted}">{{todo.text}} &nbsp; {{todo.isCompleted}} &nbsp;</span>
+        <button class="btn btn-danger" (click)="deleteMyTodo(todo.id)">Delete</button>
+        <button class="btn btn-secondary mx-1" (click)="toggleMyTodo(todo.id)">Toggle</button>
+    </li>
+    }
+</ol>
+   
+   
 
 
 Program:69 - Employee CRUD using NgRx
@@ -3176,6 +3327,10 @@ Program:69 - Employee CRUD using NgRx
 	import { addEmployee, deleteEmployee, fetchEmployees } from './employee.actions';
 	@Injectable()
 	export class EmployeeEffects {
+		constructor(
+			private actions$: Actions,
+			private employeeService: EmployeeService
+		) { }
 		loadEmployees$ = createEffect(() => this.actions$.pipe(
 			ofType(fetchEmployees),
 			exhaustMap(() => this.employeeService.fetchAllEmployees()
@@ -3208,10 +3363,7 @@ Program:69 - Employee CRUD using NgRx
 					catchError(() => of({ type: '[Employees API] Employee Add Error' }))
 				))
 		));
-		constructor(
-			private actions$: Actions,
-			private employeeService: EmployeeService
-		) { }
+		
 	}
 
 5. Provide the Store & effect(app.config.ts)
@@ -3226,6 +3378,7 @@ Program:69 - Employee CRUD using NgRx
 	  }
 	  ngOnInit() {
 		this.store.dispatch({ type: '[EmployeeList Page] Fetch Employees' });
+		// this.store.dispatch(fetchEmployees());
 	  }
 	  deleteEmp(id: string) {
 		const flag = confirm('Are you sure, You want to delete this record?')
@@ -3240,8 +3393,8 @@ Program: angular & GraphQL
 1. install apollo-angular
    ng add apollo-angular
    
-2. above command will generate 'graphql.provider.ts' , add graphql server URL in 'graphql.provider.ts'
-   const uri = 'http://localhost:5000/api/comments'; 
+2. in app.config.ts add backend URL
+   uri: 'http://localhost:5000/',
    
 3. add the below code in component
   import { Apollo, gql } from 'apollo-angular'; 
@@ -3268,3 +3421,28 @@ Program: angular & GraphQL
    <div *ngFor="let data of comments">
     {{data.id}}-{{data.name}}
   </div>
+  
+  
+Cypress Testing
+=================
+describe('My First Test', () => {
+  it('Visits the initial project page', () => {
+    cy.visit('/')
+    cy.contains('Databinding Component')
+    cy.title().should('eq', 'AngularProjectOct2024');
+    cy.get('#box1').should('exist');
+    cy.get('#box2').should('exist');
+    cy.get('#box3').should('not.exist');
+  })
+  it('Should verify addition functionality', () => {
+    cy.visit('/')
+    cy.get('#box1').type('10');
+    cy.get('#box2').type('20');
+    cy.get('#addition').click();
+    cy.contains('Addition of 10 & 20 is 30')
+    cy.get('#box1').type('0');
+    cy.get('#box2').type('0');
+    cy.get('#addition').click();
+    cy.contains('Addition of 100 & 200 is 300')
+  })
+})

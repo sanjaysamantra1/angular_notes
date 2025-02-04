@@ -17,7 +17,8 @@ Angular installation
    npm install -g @angular/cli@17
 
 5. check if angular CLI  is installed??
-   ng v
+   ng v  
+   npx ng v
    ng help
 
 6. create a new angular project (go to the folder where project needs to be created)
@@ -56,6 +57,16 @@ vscode extensions
 3. code spell checker
 4. gitlens
 5. vscode-icons
+6. thunderclient
+
+
+Chrome Extensions
+=================
+1. Mobile Simulator
+2. Angular DevTools
+3. Redux DevTools
+4. JsOn Viewer
+
 
 
 Angular
@@ -237,7 +248,8 @@ How to Use Bootstrap in Angular
 1. npm install  bootstrap
 2. add the below line in 'styles.css'
 	@import 'bootstrap/dist/css/bootstrap.css'
-3. add 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' in 'angular.json'     projects->architect->build->scripts array
+3. add 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' in 'angular.json'     
+      projects->architect->build->scripts array
 
 
 
@@ -262,8 +274,6 @@ Databinding
     bindon-ngModel
     Note:For 2-way bindning "FormsModule" should be imported
 	
-	
-
 InterPolation: for concatenating strings;Doesn't work with boolean values
 Property: to set an element property to a non-string data value.
 
@@ -275,7 +285,7 @@ Property: to set an element property to a non-string data value.
 	2. in view file use [(ngModel)]='variable'
 		<input type="text" [(ngModel)]='x'>
 		
-<input type="text" on-change="userIdChanged()"	[(ngModel)]="userId" />
+<input type="text" on-keyup="userIdChanged()"	[(ngModel)]="userId" />
 			(OR)
 <input [(ngModel)]="userId" (ngModelChange)="onUserIdChange($event)" />
 onUserIdChange(userId: number): void {
@@ -293,11 +303,11 @@ Attribute Binding
 -The attribute’s main role is to initializes the DOM properties. once the DOM initialization complete, the
 attributes job is done.
 -Property values can change, whereas the attribute values don't change.
+-Property Reflects real-time state changes, whereas Attribute Doesn't change dynamically after creation.
 
 var value1 = document.getElementById('inputBox1').getAttribute('value');
 var value2 = document.getElementById('inputBox1').value;
 console.log(value1, value2); // type something in the box & run these again
- 
  
  <button [attr.aria-label]="ariaLabel">Click me</button>
  there is no equivalent DOM property for aria-label
@@ -311,6 +321,25 @@ console.log(value1, value2); // type something in the box & run these again
 Note: 'colspan' is attribute whereAs 'colSpan' is property. 
 
 
+Variables in templates
+======================
+-Angular has two types of variable declarations in templates: 
+	1. local template variables 
+	2. template reference variables.
+	
+Local template variables with @let
+==================================
+@let syntax allows to define a local variable and re-use it across a template.
+@let cannot be reassigned after declaration
+Angular automatically keeps the variable's value up-to-date with the given expression
+@let declarations cannot be accessed by parent views or siblings
+
+
+@let name = user.name;
+@let greeting = 'Hello, ' + name;
+@let data = data$ | async;
+@let pi = 3.1459;
+@let coordinates = {x: 50, y: 100};
 
 
 Template Reference variables
@@ -325,6 +354,8 @@ Template Reference variables
  <input ref-phone placeholder="phone number" />			
 
 
+
+
 Assignments: 
 1. Have a paragraph & a toggle button, on click of the button control the visibility(Show/Hide) of the paragraph
 2. Create a text-area with maxLength=100, as the user keeps typing display updated Remaining characters.
@@ -332,6 +363,7 @@ Assignments:
 4. have 2 inputBoxes, and a dropdown(+,-,*,/) and perform arithmetic operations
 5. create a input box, toggle the type of that input box to (text/password)
 6. create a counter example with 3 controls(increment,decrement,reset)
+7. Have a toggle button and control Dark/Light theme of a page.
 
 
 	
@@ -340,6 +372,7 @@ CSS
 1. inline
 2. internal
 3. styles[] in component
+   styles: ['h1 { color:red; }']
 4. styleUrl / styleUrls in component
 5. styles.css global
 
@@ -364,8 +397,8 @@ Be careful with apps that have None components in the application.
 			   2. css will be provided from parent to child component.
 
 ex:- encapsulation: ViewEncapsulation.Emulated(default) 
-	 encapsulation: ViewEncapsulation.None
 	 encapsulation: ViewEncapsulation.ShadowDom
+	 encapsulation: ViewEncapsulation.None
 	 
 
 Emulated: index HTML--->parent Component (yes)
@@ -470,8 +503,8 @@ ngFor trackBy
 
 
 
-Migrate from old syntax to new syntax
-=====================================
+Migrate/convert from old syntax to new syntax
+=============================================
 ng generate @angular/core:control-flow
 
 
@@ -491,7 +524,7 @@ ngStyle
 <p [style.color]="num % 2 == 0 ? 'blue' : 'red'"> Add a style </p>
 <p [style.fontSize.px]='48'> Add style with unit </p>
 <p [style.background-color]=" flag?'green':'blue' "> Add style conditionally </p>
-<p [ngStyle]="myStyles"> NgStyle for multiple values </p>
+<p [ngStyle]="condition ? myStyle1 : myStyle2"> NgStyle for multiple values </p>
 <p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
 
 
@@ -516,35 +549,6 @@ ngClass
 <button class="btn" [ngClass]="flag ? 'btn-success' : 'btn-danger'">
 	Class Binding example
 </button>
-
-
-
-
-Read data from a JSON file 
-==========================
-1. create a JSON file (employees.json/products.json/users.json)
-   [ {},{},{} ]
-2. in tsconfig.json add the below option  under 'compilerOptions'
-    "resolveJsonModule": true,
-3. import the data & use in component file (products.component.ts)
-   import * as data from './products.json';
-   
-   myProducts = (data as any).default;  // inside the class
-   
-4. use 'myProducts' in HTML file
-   <div *ngFor="let prod of myProducts"> </div>
-
-
-How to use font-awesome
-=======================
-1. ng add @fortawesome/angular-fontawesome
-			(OR)
-   npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
-
-2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-   import { faStar } from '@fortawesome/free-solid-svg-icons';
-   imports: [FontAwesomeModule]
-3. <fa-icon [icon]="faStar"></fa-icon>
 
 
 
@@ -581,23 +585,61 @@ parent
 <h1 id="div1">Registration Form</h1>
 
 
+
+Read data from a JSON file 
+==========================
+1. create a JSON file (employees.json/products.json/users.json)
+   [ {},{},{} ]
+2. in tsconfig.json add the below option  under 'compilerOptions'
+    "resolveJsonModule": true,
+3. import the data & use in component file (products.component.ts)
+   import * as data from './products.json';
+   
+   myProducts = (data as any).default;  // inside the class
+   
+4. use 'myProducts' in HTML file
+   <div *ngFor="let prod of myProducts"> </div>
+
+
+How to use font-awesome (https://fontawesome.com/v4/icons/)
+=======================
+1. ng add @fortawesome/angular-fontawesome
+			(OR)
+   npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
+
+2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+   import { faStar } from '@fortawesome/free-solid-svg-icons';
+   imports: [FontAwesomeModule]
+3. <fa-icon [icon]="faStar"></fa-icon>
+
+
+
 ngxPagination
 =============
 1. install ngxpagination module
    npm install ngx-pagination 
 
-2. add ngxpaginationModule to our module (app.module.ts)
+2. add ngxpaginationModule to our component
    import {NgxPaginationModule} from 'ngx-pagination';
    imports: [ NgxPaginationModule,CommonModule]
    
 3. use the below code in html
-	<div *ngFor="let prod of products| paginate: { itemsPerPage: 4, currentPage: p}">              
-	</div>
+	 @for(user of users | paginate: { itemsPerPage: 4, currentPage: p};track $index){
+	 }
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
 
 
 
-How to use SweetAlert	
+Assignment:
+-Read data from a static array and display list of products
+  https://fakestoreapi.com/products
+-implement pagination
+-implement search functionality (Search By Title)
+-implement sort functionality (Price Asc, Price desc)
+
+
+
+How to use SweetAlert (https://sweetalert2.github.io/)
 =====================	
 1. npm i sweetalert2	
 2. import sweet-Alert in your component
@@ -622,7 +664,7 @@ Assignment
 1. create 1 EmployeeCRUD component
 2. display list of employees in a table(data comes from an array)
 3. user should be able to delete Employee (ask user confirmation)
-4. view the details of each employee in a modal (bootstrap)
+4. view the details of each employee in a modal (bootstrap Modal)
 5. add a new employee to the table (insert a new record to the array)
    use sweetAlert to display messages ('Added Successfully')
 
@@ -635,14 +677,19 @@ Custom Directives
 -@Directive decorator is used to create a custom Directive.
 -directives won't have templates, whereas components have templates.
 
--@HostBinding  -  Set properties on the host element, 
--@HostListener  - listen events on the host element.
+-@HostBinding  -  when a directive wants to Set any property on the host element.
+-@HostListener  - when a directive wants to listen events from the host element.
 
 
 Component vs Directive
 ----------------------
 -Component has View/Template  where as Directives won't have View/Template.
 -Components are used to create UI widgets , Directives are used to add behavior to an existing DOM element.
+
+
+Custom Directive Assignment
+============================
+1. create a custom directive (zoomout) which scales the element by 150%.
 
 
 	
@@ -728,7 +775,7 @@ slice pipe
 Custom Pipe
 ===========
 1. ng generate pipe remaining
-2. every angular pipe implements PipeTransform
+2. every angular pipe implements PipeTransform Interface
   class RemainingPipe implements PipeTransform {
   }
 3. override transform()
@@ -739,12 +786,17 @@ Custom Pipe
 
 Assignment
 ==========
-1. Create a custom pipe(ordinal) that displays a cardinal number in ordinal format.
+1. Create a custom pipe(ordinal) which takes a number as input and returns in ordinal format
    input : 21,22,23,24  output : 21st, 22nd , 23rd, 24th
-2. create a custom pipe called age which takes a date and returns the age in years.
-3. declare an array of employee objects. display them in a table.
+2. create a custom pipe(Roman) which takes a number as input and returns its equivalent roman value
+   input :  4     
+   output : IV  
+3. create a custom pipe called 'age' which takes a date as input and returns the age in years.
+   input : 04-06-2020
+   output : 4 years old
+4. declare an array of employee objects. display them in a table.
    create a custom pipe Salutation that will add 'mr. / miss.' before the employee name.
-4. declare an array of employee objects. display them in a table. 
+5. declare an array of employee objects. display them in a table. 
    add a search-box above the table. create a custom-pipe to filter/search employees data.
 
    
@@ -757,11 +809,10 @@ Pure & Impure Pipe
 
 -An impure pipe's transform() is called for every change detection cycle
  no matter whether the value or parameters change.transform() gets called if any variable in the page chages.
-
+ 
 -If the pipe has internal state (result depends on state other than its arguments), set pure to false. 
 In this case, the pipe is invoked on each change-detection cycle, even if the arguments have not changed.
  
-
 -to make a pipe impure
   @Pipe({
 		name : 'account',
@@ -800,7 +851,7 @@ Use custom pipes in component file
 Component Communication
 =======================
 parent -->  Child    
-	property Binding []
+	property Binding []  
 	@input() / inputs:[]
 	
 child -->  parent   
@@ -850,9 +901,12 @@ Child to parent
 
 
 component lifecycle hooks/method 
-=================================
+================================
 constructor - ngOnChanges - ngOnInit  - ngDoCheck - ngAfterContentInit - 
 ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - ngOnDestroy. (1+8)
+
+afterNextRender(() => {
+});
 
  
 3 steps to use lifecycle hooks, they are:
@@ -890,7 +944,7 @@ ngOnChanges()
 
 ngOnInit()
 -Invoked for every component when a component gets Initialized.
--This hook is called only once after the first ngOnChanges.not after every ngOnchanges()
+-This hook is called only once, after the first ngOnChanges.not after every ngOnchanges()
 -Time Consuming Logic goes here. Ex:- API Call
 
 
@@ -905,7 +959,7 @@ ngDoCheck()
 
 ngAfterContentInit()
 -Invoked after Angular performs any content projection into the components view 
--Runs only once after the first ngDoCheck().
+-Runs only once after the first ngDoCheck()
 -Use ngAfterContentInit to call something once after all of the content has been initialized
 
 
@@ -927,7 +981,7 @@ ngAfterViewChecked()
  
  
 ngOnDestroy()
--This method will be invoked just before Angular destroys the component.
+-This method is invoked just before Angular destroys the component.
 -Clean up code.  ex:- clearInterval(),clearTimeout(); unsubscribe();
 
 
@@ -959,10 +1013,21 @@ Performance: Reduces the number of change detection cycles, especially beneficia
 Predictability: Changes are only detected when input references change or when an event originates from the component, making the component behavior more predictable.
 
 
+
+
+
+Renderer2
+=========
+Renderer2 is a service provided by Angular that allows you to interact with the DOM in a platform-agnostic and safe way. It is often used to:
+	a. Create or modify DOM elements.
+	b. Add or remove attributes, classes, or styles.
+	c. Handle events.
+	
+
 @ViewChild & @viewChildren
 ==========================
 -@ViewChild decorator is used to query a single DOM element from the DOM tree and manipulate it.
-	1. To get access to a child component from parent component class.
+	1. To get access to a child component from parent component class. or vice-versa
 	2. To get access to the DOM elements
 -@ViewChildren decorator returns the list of different native DOM elements in the form of QueryList, which contains the set of elements.
 -if we want to access multiple child references, then we have to use @ViewChildren.
@@ -1038,8 +1103,9 @@ Assignment
 ==========
 1. create an EmployeeService with an array of employees
 2. inject that service in EmployeeComponent
-3. Display List of Employees in a table
-   have 3 buttons - allEmployees , maleEmployees , femaleEmployees
+3. Display List of Employees in a table / Card
+   have a dropdown with 3 values- allEmployees , maleEmployees , femaleEmployees
+   based on the dropdown value selected, employee data should be shown
 
 
 
@@ -1082,7 +1148,7 @@ https://docs.angular.lat/guide/dependency-injection-providers
 Communicating with backend services using HTTP
 ==============================================
 -frontEnd applications need to communicate with a server to Fetch or Send data.
--Using  HttpClient an angular application can communicate with server.
+-Using HttpClient an angular application can communicate with server.
 
 
 HTTP Methods
@@ -1095,8 +1161,7 @@ POST - to send data to server  ( sign up )
 	   to fetch data securly    (send params in body not in URL)
 
 PUT - update data/create or replace a resource  
-	  
-	  
+	    
 PATCH - update/modify a resource
 		update password/update mobile number 
 
@@ -1162,7 +1227,7 @@ https://medium.com/@devmrin/create-a-rest-api-json-server-in-less-than-1-minute-
 1.Install json-server (not necessarily inside angular project, run the below command in cmd)
 	npm install -g json-server
 2.create a json file with some data(not necessarily inside an angular project)
-    employees.json (filename can be anything.json)
+    employees.json (filename can be anything.json) (copy con employees.json)
 3.start json server(go to the folder where json file is present,run the below command in cmd)
    json-server --watch employees.json
    
@@ -1182,7 +1247,7 @@ How to use HttpClient
 1. add provideHttpClient() in app.config.ts
    providers: [
 	   provideRouter(routes), 
-	   provideHttpClient()
+	   provideHttpClient() // Configures Angular's HttpClient service to be available for injection.
    ]
 
 2. inject HttpClient in custom service / Component
@@ -1214,15 +1279,17 @@ Assignment
 	a. fetch the data and display in a table (json-server)
 	b. create a form, collect form data and make a post call to add a new user
 	c. add 'delete' button against every user, on click 'delete', delete that user
-	d. display 'Loading...' text when data is being fetched
+	d. display 'Loading...' text/Image when data is being fetched
+	e. implement update functionality to update the data
+	f. write all the logics in a service for code reusability
 
 
  
 HttpClient with Headers
 =======================
 -Reading the full response(not only the body)
-
- httpClient.get(URL , { observe: 'body' })     (default)
+ httpClient.get(URL)	//  { observe: 'body' } (default)
+ httpClient.get(URL , { observe: 'body' })     
  httpClient.get(URL , { observe: 'response' })
  
 
@@ -1232,7 +1299,7 @@ models in Angular
 =================
 -A Model represents the structure of the data object.
 -Handling raw JSON objects is really painful and hard to maintain.
- ex:-Users have a firstName and a lastName.the full name of your user within your templates looks like this:
+ ex:-Users have a firstName and a lastName.the full name of the user within the templates looks like this:
      <li *ngFor="let user of users">{{ user.firstName }} {{ user.lastName }}</li>
 	what if customer calls and tells that the order of firstname and lastname should be switched,go through every template and switch the expressions.
 -But if our user is a User object, we can simply implement a function to print the fullname.
@@ -1254,7 +1321,7 @@ Http Interceptor
 -Used before sending request and after getting response from the server. 
 
 Use Cases:
--Add an Access Token  or some custom HTTP header for all outgoing HTTP requests.
+-Add an Access Token or some custom HTTP header for all outgoing HTTP requests.
 -Create a global Error catch incase HTTP Request fails.
 -Create a mock response to test.
 -Log all HTTP activity in the console.
@@ -1304,7 +1371,7 @@ Promise vs Observables
 -Promise return all the data at once, where as observable return multiple values over a period of time.
 -promise is not lazy. observable is lazy(observable is not called until we subscribe to the observable)
 -promise is not cancellable, where as observable can be cancelled using unsubscribe()
--Promise doesn't have operators, observable has different operators (map,filter,reduce,retry,tap)
+-Promise doesn't have operators, observable has different operators (map,filter,reduce,retry,tap,catchError)
  
 Promises:
 -----------
@@ -1377,7 +1444,10 @@ forkjoin()
 -One common use case is if you wish to issue multiple requests on page load (or some other event) and only want to take action when a response has been received for all. this is similar to Promise.all()
 
 
-
+movies - [ 1,2,3,4,5]
+		1 - imdb API
+		2 - imdb API
+		
 
 map() vs mergemap() vs concatmap() vs switchmap():
 --------------------------------------------------
@@ -1413,7 +1483,7 @@ switchMap() = map + switch
 	-SwitchMap emits items only from the most recent inner Observable.
 	-SwitchMap cancels previous inner Observables when a new inner Observable appears. 
 	-A very common use case for switchMap is a search Typeahead.
-	 where you are no longer concerned with the response of the previous request when a new input arrives.
+	 where we are no longer concerned with the response of the previous request when a new input arrives.
 	-If only one inner subscription should be active at a time, try switchMap
 
    
@@ -1430,8 +1500,8 @@ ExhaustMap()
 
 Hot and Cold Observables
 ========================
--A “hot” Observable may begin emitting items as soon as it is created, and so any observer who later subscribes to that Observable may start observing the sequence somewhere in the middle.
--A “cold” Observable, waits until an observer subscribes to it before it begins to emit items,such an observer is guaranteed to see the whole sequence from the beginning.
+-A “hot” Observable begins emitting items as soon as it is created, and so any observer who later subscribes to that Observable may start observing the sequence somewhere in the middle.
+-A “cold” Observable, waits until an observer/consumer subscribes to it before it begins to emit items,such an observer is guaranteed to see the whole sequence from the beginning.
 -Normal Observables are 'cold', Subject,BehaviourSubject,ReplaySubject are 'hot'.
 
 
@@ -1478,7 +1548,7 @@ Observables
 
 Subjects (Subject,ReplaySubject,BehaviorSubject)
 ================================================
-1. They are hot: code gets executed and value gets broadcasted even if there is no observer.
+1. They are hot: code gets executed and value gets broadcasted even if there is no observer/consumer/subscriber.
 2. Shares data: Same data gets shared between all observers.
 3. bi-directional: Observer/subscriber can assign value to observable.
 
@@ -1489,6 +1559,12 @@ Subject		 ---------- Only Upcoming values
 BehaviorSubject-------  one previous value(current/initial) & upcoming values
 ReplaySubject---------  all previous values and upcoming values
 AsyncSubject  --------  latest value when stream gets closed (complete)
+
+
+
+Assignment
+==========
+create 1 employee crud application using 'subject' 
 
 
 
@@ -1507,12 +1583,16 @@ Disadvantage of Change Detection
 -A change detection cycle runs very frequently even when something has not changed in the angular app. this can impact performance of angular application.
 
 
-Why  Signals
-============
--When we want our variables to react to changes!
- ex: When the user updates the quantity, the related variable(price) should react and adjust the price.
--With signals, our code can be more reactive
--If a signal is bound in a template, when the signal changes, Angular's change detection automatically updates any view that reads the signal. And the user sees the changed value
+When to use Signals:
+===================
+Simple state management: 
+	For managing individual values that change over time, like counters, user input, or flags.
+Derived state: 
+	to calculate values based on other value.
+	When the user updates the quantity, the related variable(price) should react and adjust the price.
+Side effects: 
+	To trigger actions like API calls or DOM updates when a signal changes.
+
 
 
 Declare Signal:
@@ -1530,7 +1610,7 @@ let flag = isSignal(this.count);
 Writable signals:
 set(): Replaces the entire value.
 update(): Modifies the value based on its current state.
-mutate(): used to modify mutable values(array/objects)
+mutate(): used to modify mutable values(array/objects) (Deprecated)
 
 To change the value of a writable signal:
 	count.set(3);  // when new value is not dependent op previous value
@@ -1555,7 +1635,7 @@ Effects
 =======
 -Signals are useful because they notify interested consumers when they change. 
 -An effect is an operation that runs whenever one or more signal values change.
- effect(() => {
+ someEffect = effect(() => {
   console.log(`The current count is: ${count()}`);
   
   return ()=>{} // cleanup code
@@ -1564,6 +1644,7 @@ Effects
 -Whenever any of these signal values change, the effect runs again.
 -Similar to computed signals, effects keep track of their dependencies.
 -Effects always execute asynchronously, during the change detection process
+-effect() can only be used within an injection context such as a constructor
 
 Use cases for effects:
 -Keeping data in sync with window.localstorage
@@ -1572,20 +1653,20 @@ Use cases for effects:
 @Component()
 export class EffectiveCounterComponent {
   readonly count = signal(0);
-  private loggingEffect = effect(() => {
-    console.log(`The count is: ${this.count()}`);
-  });
+	  private loggingEffect = effect(() => {
+		console.log(`The count is: ${this.count()}`);
+	  });
 }
 
 
 Destroying effects:
--When you create an effect, it is automatically destroyed when its enclosing context is destroyed
--effects created within components are destroyed when the component is destroyed
-
-
-
+-When we create an effect, it is automatically destroyed when its enclosing context is destroyed.
+-effects created within components are destroyed when the component is destroyed.
+-Effects return an EffectRef that can be used to destroy them manually, by calling the .destroy() method.
+  ex: this.loggingEffect.destroy()
 
 https://pasquale-favella.github.io/blog/16
+
 
 
 
@@ -1603,7 +1684,6 @@ Template Driven Forms Features
 -Suitable for simple scenarios and fails for complex scenarios
 -Two way data binding(using [(NgModel)] syntax)
 -Minimal component code and more HTML Code
--Automatic track of the form and its data(handled by Angular)
 -FormsModule needs to be imported
 
 -Unit testing is a challenge(testing validation logic)
@@ -1639,7 +1719,7 @@ Template Driven Form
 1. import FormsModule to our Component
    imports: [FormsModule]
 
-2. view File-
+2. view/HTML File-
    a. use ngForm directive with form's template reference variable
       <form #myForm="ngForm" ></form>
 	  
@@ -1685,6 +1765,7 @@ Reset the form
 --------------
 <button type="reset">reset</button>
 	(OR)
+<form #myForm="ngForm" (reset)="reset(myForm)">
 reset(myForm :NgForm) {
   console.log('Do Something...');
   myForm.resetForm();
@@ -1733,7 +1814,7 @@ Model driven form
 
 
 Validate a form on change/blur/submit
---------------------------------------
+-------------------------------------
 lastname: new FormControl("tendulkar",
       { validators: [Validators.required], updateOn: "blur" }
     )	
@@ -1773,14 +1854,15 @@ SetValue and PatchValue
 SetValue: 
 -It accepts an object that matches the structure of the FormGroup with control names as key.
 -we need all control data to match the structure and then bind the data to the form
-ex: this.myForm.setValue({fName:'abc',lName:'pqr',email:'',})
+ex: this.myForm.setValue({fName:'abc',lName:'pqr',email:''})
 
 PatchValue: 
 -It accepts an object and does its best to match the values. 
 -It can accept partial form group structure.
 ex: this.myForm.patchValue({name:'UpdatedName'})
 	
-	
+
+
 	
 	
 Routing
@@ -1788,8 +1870,7 @@ Routing
 -Single-Page Applications (SPAs) are Web apps that load a single HTML page and 
 dynamically update that page as the user interacts with the application.
 -Complete page reload doesn't happen. only a portion of a page gets loaded.
-
-Every time a link is clicked or the browser URL changes, Angular router makes sure our application reacts accordingly.
+-Every time a link is clicked or the browser URL changes, Angular router makes sure our application reacts accordingly.
 
 To accomplish that, Angular router performs the following 7 steps in order:
 PRIGRAM
@@ -1876,7 +1957,6 @@ RouterOutlet
 
 Active-Route
 ------------
-<a routerLink="/" routerLinkActive="active">Home</a>
 <a routerLink="careers" routerLinkActive="active">careers</a>
 
 
@@ -1895,6 +1975,7 @@ constructor(private routerObj : Router) { }
 Navigate Previous / Next Route
 ==============================
 1. Inject Location Service  
+   import { Location } from '@angular/common';
    constructor(private location: Location) {
    }
 2. user location service methods like: back() , historyGo()
@@ -1918,7 +1999,9 @@ Route-Parameter
 
 nested/Child Routing
 ====================
--A child route is basically a route within a route. For example, there can be multiple components within a single Login route:
+-A child route is basically a route within a route. 
+
+-Ex: there can be multiple components within a single Login route:
 Forgot Password component
 Signup component
 Login component
@@ -2025,7 +2108,7 @@ loadComponent: () =>
 
 @defer()
 ========
--to reduce the initial bundle size of our application.
+-To reduce the initial bundle size of our application.
 -The content of the main @defer block is lazily loaded.
 -any component that is written inside @defer, a separate CHUNK file gets created
 -@defer blocks have several sub blocks to allow you to gracefully handle different stages in the deferred loading process.
@@ -2038,9 +2121,9 @@ ex: @loading (after 100ms; minimum 1s)
 
 
 @defer {
-<large-component />
+  <large-component />
 } @placeholder (minimum 500ms) {
-<p>Placeholder content</p>
+  <p>Placeholder content</p>
 }
 
  
@@ -2138,18 +2221,19 @@ AOT
 files
 -----
 Main.js : it contains all our application code. 
-		  (components,pipes,services,directives)
+		  (components,pipes,services,directives,guards,resolvers)
+		  
+scripts.js: It contains the scripts you declare in the scripts section of your angular.json file.
 		
 runtime.js: it contains all the web-pack configuration details.
 
 polyfills.js: it contains the code which make sure our application
 			  runs in all browsers.
-			 
-styles.js: it contains all the application styles.
 
 vendor.js: it contains all the 3rd party library deatils.
 			(bootstrap,d3chart,ngx-pagination,ng2-search,sweetalert2)
-scripts.js: It contains the scripts you declare in the scripts section of your angular.json file.
+			
+styles.css   application css
 
 lazy-loaded  components  (chunk-ABCDEF.js)
 
@@ -2183,12 +2267,16 @@ compiles an application and stores the generated files in dist folder.
     'serve'  or  'serve -l 7000'
 
 
+
+https://angular.dev/tools/cli/deployment
+
 Deploy Angular Application in GitHub
 ====================================
    git checkout -b mybranch1
-1. npm install -g angular-cli-ghpages
-2. ng build --base-href angular_april_2023
-3. ngh --dir dist/angular_april_2023/browser
+1. 	 (OR)
+   ng add angular-cli-ghpages
+2. ng build --base-href angular_project_nov_2024
+3. ngh --dir dist/angular_project_nov_2024/browser
    go to github website & open your Repository
    Settings Tab --> pages --> you should see the live URL
 
@@ -2219,7 +2307,7 @@ Unit Testing Using Jasmine and karma
 -The purpose is to validate that each unit of the software code performs as expected. 
 -Unit Testing is done during the development (coding phase) of an application by the developers. 
 -Unit Tests isolate a section of code and verify its correctness. 
--A unit may be an individual function ,block, component, pipe , or object.
+-A unit may be an individual function ,block, component, pipe , or directive.
  
 
 -jasmine is framework for testing javascript code.
@@ -2239,11 +2327,11 @@ expect(app.add(2,3)).toBe(5);
 
 Matchers
 --------
-toBe();
+toBe();       // Primitives
 not.toBe();
 toBeDefined();
 not.toBeDefined();
-toEqual();
+toEqual();			 // objects /arrays
 toBeTruthy();  
 toBeFalsy();  
 toBeGreaterThan();
@@ -2262,6 +2350,101 @@ fdescribe() - focused describe. If it exists, jasmine will run only fdescribe sp
 xdescribe() - disabled describe. It will never be executed.
 fit() - focused it()
 xit() - disabled it()
+
+
+Spy & Stub
+==========
+Spy: Used to track calls to a function without altering its actual behavior.
+	 spyOn(obj, 'greet'); // spy
+Stub: Used to replace the function's implementation to control its behavior during testing.
+     spyOn(obj, 'greet').and.returnValue("Stubbed greeting!"); // stub
+
+
+Stub
+====
+-stub is a function/object that replaces the actual behavior of a unit with a fixed response.
+-stub avoids calling the real implementation by overriding the original function with our custom implementation.
+-Allows to control the function behavior entirely.
+	Replaces the original function with:
+		A return value.
+		A fake implementation.
+-ex: if we are testing a function that writes a value to the database, we should write a stub that avoids the db interaction but returns a successful result.
+
+function saveUser(userData, userModel) { 
+  let result = userModel.create(userData)
+  return result;
+}
+
+makeStub(userModel, 'create', () => {
+  return true;
+})
+
+it("should return TRUE when the query succeeds", () => {
+  let result = saveUser({
+    name: "Fernando",
+    password: "1234"
+  }, userModel)
+  result.should.be.true
+})
+
+
+Spy
+===
+-A spy is a tool used to observe and monitor the behavior of an existing function. 
+-It allows to track if a function is called, how many times it’s called, with what arguments, and other behaviors. 
+-it does not modify the original function unless explicitly configured to do so.
+
+spyOn(someObj, 'func').and.returnValue(42);
+spyOn(someObj, 'func').withArgs(2, 3).and.returnValue(5);
+
+
+// app.js 
+const app = {
+  processData: (data) => {
+    console.log('Processing data:', data);
+    return data.length;
+  },
+  fetchData: () => {
+    const data = ['item1', 'item2', 'item3'];
+    return app.processData(data);
+  },
+};
+module.exports = app;
+
+// app.spec.js 
+const app = require('./app');
+describe('fetchData functionality', () => {
+  it('should call processData with the correct data', () => {
+    // Spy on processData,  callThrough() ensures the original implementation still runs
+    spyOn(app, 'processData').and.callThrough();
+
+    // Call fetchData
+    const result = app.fetchData();
+
+    // Assertions
+    expect(app.processData).toHaveBeenCalled(); // Verify processData was called
+    expect(app.processData).toHaveBeenCalledWith(['item1', 'item2', 'item3']); // Verify correct arguments
+    expect(result).toBe(3); // Verify the return value
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+Cypress for e2e Testing
+========================
+1. ng e2e  (OR)  npm i cypress --save-dev	  
+2. npx cypress open
+  
+  
+
 
 
 
@@ -2294,7 +2477,7 @@ Angular-4
 
 
 Angular-5
-----------
+---------
 -Build Optimizer
 -inputs:[],outputs:[] instead of @input,@output
 -HttpClient instead of Http
@@ -2394,16 +2577,29 @@ angular-17 https://www.geeksforgeeks.org/angular-17-whats-new/
 	  <large-component />
 	}
 -New built-in control flow,  @if() @else()
--@defer
 -View Transition API
 -Server-Side Rendering
+
+
+angular-18
+----------
+-New official documentation website
+ angular.io  -->  https://angular.dev/tutorials/learn-angular
+-Stable @defer()
+-Material 3 graduated to stable in v18
+-TypeScript 5.4
+-redirects as functions
+ {path:'',reDirectTo:'/home'}
+ {path:'',reDirectTo:()=>{}}
+-Signal APIs
+-output()
+  new EventEmitter()  -->  new Output()  
 
 
 
 Update a project from 1 version to another angular version
 ==========================================================
-https://angular.io/guide/update-to-latest-version
-https://update.angular.io/
+https://angular.dev/update-guide
 
 
 
@@ -2475,6 +2671,10 @@ The ng add command will additionally perform the following configurations:
 
 
 
+Props Drilling
+==============
+-Prop drilling is basically a situation when the same data is being sent at almost every level due to requirements in the final level.
+-Solution : State management Library (NgRX)
 
 
 Need Of state management
@@ -2488,7 +2688,7 @@ State Management using NGRX
 ===========================
 -It helps developers build large-scale applications with heavy data communications while sustaining high application performance.
 
--NgRx provides a way to maintain data in your Angular application as a single source of truth.
+-NgRx provides a way to maintain data in our Angular application as a single source of truth.
 -Instead of injecting services everywhere and managing communication between them,NgRx manages your application from one singular source.
  
 UI-->Action-->Reducer-->Store(State)--->selectors--->UI
@@ -2532,6 +2732,43 @@ GraphQL
 
 -The most popular  GraphQL library is Apollo Client.  
 
+
+
+
+Server-side rendering
+=====================
+-Server-Side Rendering involves rendering web pages on the server and sending fully rendered HTML to the client’s browser.
+-This contrasts with traditional client-side rendering, where the browser fetches raw HTML and JavaScript, then constructs the DOM (Document Object Model) and renders the page.
+
+Benefits:
+-faster initial page loads
+-Better SEO
+-slow internet connections
+
+Enable SSR:
+	ng new project1 --ssr 		 (To create a new project with SSR)
+	ng add @angular/ssr  (To add SSR to an existing project) 
+		(OR)
+	ng add @nguniversal/express-engine
+	
+Note : it the above command fails : delete package-lock.json,node_modules & try again
+	
+ng build 		    # This will build both the client and server bundles.
+npm run serve:ssr   # This will serve your app on http://localhost:4000
+
+
+Verify SSR:
+Open your browser and visit http://localhost:4000. 
+You should see the pre-rendered HTML in the page source.
+
+
+Pre-rendered HTML: 
+-When we view the page source (right-click > "View Page Source"), we see HTML content instead of just the Angular tags like <app-root>.
+Dynamic Functionality: 
+-Angular will take over once the client-side JavaScript is downloaded, and the app will behave like a normal SPA.
+  
+  
+  
   
   
 package.json vs package-lock.json
@@ -2609,8 +2846,15 @@ CORS
 
 APP_INITIALIZER
 ===============
+-The APP_INITIALIZER token in Angular allows to execute some logic or load data during the application's initialization phase, before the app becomes usable. 
+-This is useful for tasks like fetching configuration data, initializing services, or running custom setup logic.
 -The provided functions are injected at application startup and executed during app initialization.
 -If any of these functions returns a Promise or an Observable, initialization does not complete until the Promise is resolved or the Observable is completed.
+-This ensures your application starts only after essential setup is complete!
+-Used for below use cases
+	Fetching remote configurations.
+	Authenticating a user via token.
+	Initializing feature flags or other global state.
 
 
 
