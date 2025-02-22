@@ -2,14 +2,14 @@ program-1:Use bootstrap
 -----------------------
 1. npm install bootstrap
 2. add the below line in 'styles.css'
-	@import 'bootstrap/dist/css/bootstrap.css'
+	@import 'bootstrap/dist/css/bootstrap.css';
 3. add "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" in angular.json
    projects ->architect->build->scripts:[]  
 
 
 program-2:display Local image
 -----------------------------
-1. place the images inside public folder (project1/public/images)
+1. place the images inside 'public' folder (project1/public/images)
 2. use it in HTML file
    <img src='images/sachin.jpg' />
   
@@ -102,8 +102,8 @@ export class AppComponent {
 
 
 
-Property-Binding vs Attribute-Binding
-=====================================
+program-7:Property-Binding vs Attribute-Binding
+===============================================
 -Attributes exist in the HTML markup. Attribute values are static and are not updated dynamically
 -Properties exist on the DOM nodes in real-time. Any changes to myName in the component will be reflected in the input.
 
@@ -114,8 +114,8 @@ Property-Binding vs Attribute-Binding
 
 
 
-Program-7: Dark/Light Mode
-==========================
+Program-8:Dark/Light Mode
+=========================
 toggleMode() {
     this.flag = !this.flag;
     if (this.flag) {
@@ -128,8 +128,8 @@ toggleMode() {
 
 
 
-program-8: Template Reference Variable
-=======================================
+program-9:Template Reference Variable
+=====================================
 import { Component } from '@angular/core';
 @Component({
     selector: 'my-app',
@@ -149,7 +149,7 @@ export class AppComponent {
 }
 
 
-program-9 : Two-way data binding
+program-10 : Two-way data binding
 ===============================
 import { FormsModule } from '@angular/forms';
 imports: [FormsModule]
@@ -170,7 +170,7 @@ export class AppComponent {
 
 
 
-Program-9:  View Encapsulation
+Program-11: View Encapsulation
 -----------------------------
 <!doctype html>
 <html lang="en">
@@ -210,8 +210,8 @@ export class AppComponent {
 }
 
 
-program-10:Template Reference Variable @viewChild
------------------------------
+program-12:Template Reference Variable @viewChild
+==================================================
 import { Component, ViewChild } from '@angular/core';
 
 @Component({
@@ -233,16 +233,14 @@ export class AppComponent {
 }
 *******************
 <h1>Using Template Reference variable in component file</h1>
-
 Name: <input #name><br><br>
 Age: <input ref-age><br><br>
-
 <button (click)='showData()'>get Date</button>
 
 
 
-program-11: If-else directive
-----------------------------------
+program-13: Conditional Display Using @if()
+===========================================
     @if(num%2 == 0){
         <h4>{{num}} is Even </h4>
     }@else{
@@ -278,8 +276,8 @@ export class AppComponent {
 
 
 
-program-12: ngswitch directive
-----------------------------------
+program-14: ngswitch directive
+==================================
 import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
@@ -303,8 +301,8 @@ export class AppComponent {
 
 
 
-program-13:class binding
-------------------------
+program-15:class binding
+==============================
 import { Component } from '@angular/core';
 
 @Component({
@@ -336,8 +334,8 @@ export class AppComponent {
 
 
 
-program-14:style binding
-------------------------
+program-16:style binding
+===================================
 import { Component } from '@angular/core';
 
 @Component({
@@ -1579,7 +1577,6 @@ import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
 import { loaderService } from '../services/loader.service';
-
 export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
   const loaderService = inject(loaderService);
   loaderService.show();
@@ -1588,6 +1585,26 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
      finalize(() => loaderService.hide()),
   );
 }
+
+
+loader.service.ts
+==================
+import { Injectable } from '@angular/core';
+import { BehaviorSubject } from 'rxjs';
+@Injectable({
+  providedIn: 'root'
+})
+export class LoadingService {
+  private loadingSubject = new BehaviorSubject<boolean>(false);
+  loading$ = this.loadingSubject.asObservable();
+  show() {
+    this.loadingSubject.next(true);
+  }
+  hide() {
+    this.loadingSubject.next(false);
+  }
+}
+
 
 
 
@@ -2167,9 +2184,6 @@ userId = signal(1);
     this.userDetailsEffect.destroy()
   }
   constructor(private httpClient: HttpClient) {
-  }
-  ngOnInit() {
-    this.fetchUserDetails(this.userId());
   }
   fetchUserDetails(id: number) {
     this.httpClient.get(`https://jsonplaceholder.typicode.com/users/${id}`).subscribe(response => {
@@ -2789,7 +2803,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   }
 };
 
-----------------
+
 	{
         path: 'product-details',
         component: ProductDetailsComponent,
@@ -3256,11 +3270,9 @@ Program:68 ToDo App using NgRx
   ]
 
 5. Create ToDoCrud Component (todocrud.component.ts)
-  todoArr: any;
-  constructor(private store: Store<any>) {
-    this.store.select('todoArr').subscribe(storeData => {
-      this.todoArr = storeData;
-    })
+  todos$: Observable<any> | undefined;
+  constructor(private store: Store) {
+    this.todos$ = this.store.select((state: any) => state.todoArr);
   }
   deleteMyTodo(id: number) {
     this.store.dispatch(deleteTodo({ id: id }));
@@ -3327,42 +3339,46 @@ Program:69 - Employee CRUD using NgRx
 	import { addEmployee, deleteEmployee, fetchEmployees } from './employee.actions';
 	@Injectable()
 	export class EmployeeEffects {
+		loadEmployees$: any;
+		deleteEmployee$: any;
+		addEmployee$: any;
 		constructor(
 			private actions$: Actions,
 			private employeeService: EmployeeService
-		) { }
-		loadEmployees$ = createEffect(() => this.actions$.pipe(
-			ofType(fetchEmployees),
-			exhaustMap(() => this.employeeService.fetchAllEmployees()
-				.pipe(
-					map(Employees =>
-						({ type: '[Employees API] Employees Loaded Successfully', payload: Employees })
-					),
-					catchError(() => of({ type: '[Employees API] Employees Loaded Error' }))
-				))
-		));
-		deleteEmployee$ = createEffect(() => this.actions$.pipe(
-			ofType(deleteEmployee),
-			exhaustMap((action: any) => this.employeeService.deleteEmployee(action.id)
-				.pipe(
-					map(Employee => {
-						alert('Employee Deleted Succesfully');
-						return ({ type: '[EmployeeList Page] Fetch Employees' })
-					}),
-					catchError(() => of({ type: '[Employees API] Employee Delete Error' }))
-				))
-		));
-		addEmployee$ = createEffect(() => this.actions$.pipe(
-			ofType(addEmployee),
-			exhaustMap((action: any) => this.employeeService.addEmployee(action.employee)
-				.pipe(
-					map(Employee => {
-						alert('Employee Added Succesfully');
-						return ({ type: '[EmployeeList Page] Fetch Employees' })
-					}),
-					catchError(() => of({ type: '[Employees API] Employee Add Error' }))
-				))
-		));
+		) {
+        this.loadEmployees$ = createEffect(() => this.actions$.pipe(
+            ofType(fetchEmployees),
+            exhaustMap(() => this.employeeService.fetchAllEmployees()
+                .pipe(
+                    map(Employees =>
+                        ({ type: '[Employees API] Employees Loaded Successfully', payload: Employees })
+                    ),
+                    catchError(() => of({ type: '[Employees API] Employees Loaded Error' }))
+                ))
+        ));
+        this.deleteEmployee$ = createEffect(() => this.actions$.pipe(
+            ofType(deleteEmployee),
+            exhaustMap((action: any) => this.employeeService.deleteEmployee(action.id)
+                .pipe(
+                    map(Employee => {
+                        alert('Employee Deleted Succesfully');
+                        return ({ type: '[EmployeeList Page] Fetch Employees' })
+                    }),
+                    catchError(() => of({ type: '[Employees API] Employee Delete Error' }))
+                ))
+        ));
+        this.addEmployee$ = createEffect(() => this.actions$.pipe(
+            ofType(addEmployee),
+            exhaustMap((action: any) => this.employeeService.addEmployee(action.employee)
+                .pipe(
+                    map(Employee => {
+                        alert('Employee Added Succesfully');
+                        return ({ type: '[EmployeeList Page] Fetch Employees' })
+                    }),
+                    catchError(() => of({ type: '[Employees API] Employee Add Error' }))
+                ))
+        ));
+    }
 		
 	}
 
@@ -3446,3 +3462,61 @@ describe('My First Test', () => {
     cy.contains('Addition of 100 & 200 is 300')
   })
 })
+
+
+App_Initializer 
+===============
+1. Create a Configuration Service
+import { Injectable } from '@angular/core';
+@Injectable({
+  providedIn: 'root',
+})
+export class ConfigService {
+  private config: any;
+  constructor() {}
+  loadConfig(): Promise<void> {
+    // Simulate an async operation like an HTTP request
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.config = { apiUrl: 'https://api.example.com', featureFlag: true };
+        console.log('Configuration loaded:', this.config);
+        resolve();
+      }, 1000);
+    });
+  }
+  getConfig(): any {
+    return this.config;
+  }
+}
+
+2. Use APP_INITIALIZER to Load Config (app.config.ts)
+  providers: [
+    ConfigService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [ConfigService],
+      multi: true
+    }
+  ]
+
+3. Access Config in Your Components
+import { Component, OnInit } from '@angular/core';
+import { ConfigService } from './services/config.service';
+
+@Component({
+  selector: 'app-root',
+  template: `
+    <h1>Angular 19 APP_INITIALIZER Example</h1>
+    <p>Check the console for loaded configuration!</p>
+  `,
+})
+export class AppComponent implements OnInit {
+  constructor(private configService: ConfigService) {}
+
+  ngOnInit(): void {
+    const config = this.configService.getConfig();
+    console.log('Config in component:', config);
+  }
+}
+

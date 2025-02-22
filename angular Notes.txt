@@ -3,7 +3,7 @@ Angular installation
 1. download Nodejs and install 
    https://nodejs.org/en/download/
 
-2. check nodejs is installed 
+2. check nodejs is installed	 
    node -v (in command prompt)
 
 3. check if NPM is installed (NPM-Node Package Manager)
@@ -296,7 +296,7 @@ onUserIdChange(userId: number): void {
 
 
 Attribute Binding
-=================
+================= 
 -Attribute Binding is needed while working with HTML attributes that do not have corresponding DOM properties, such as colspan, aria-* , data-* attributes
 
 -attributes are defined by HTML and properties are defined by the DOM.
@@ -334,7 +334,6 @@ Local template variables with @let
 Angular automatically keeps the variable's value up-to-date with the given expression
 @let declarations cannot be accessed by parent views or siblings
 
-
 @let name = user.name;
 @let greeting = 'Hello, ' + name;
 @let data = data$ | async;
@@ -369,8 +368,8 @@ Assignments:
 	
 CSS
 ****
-1. inline
-2. internal
+1. inline 		(style attribute)
+2. internal		(style element/tag)
 3. styles[] in component
    styles: ['h1 { color:red; }']
 4. styleUrl / styleUrls in component
@@ -424,7 +423,7 @@ Directives
 1. Structural Directives : 
 	Directive which changes the layout/structure of the DOM.
 	* is used with structural directives.
-	only 1 structural directive can be applied to an element.	
+	only 1 structural directive can be applied to an element.
 
 2. Attribute Directives : ([ngStyle],[ngClass])
 	Directive which changes behaviour/appearance of the DOM element.
@@ -478,7 +477,7 @@ Switch Case
    }
  
 3. @for with Iterable objects (Map)
-   @for (entry of myMap; track entry){
+   @for (entry of myMap; track $index){
        <div>{{entry[0]}} === {{entry[1]}}</div>
 	}
 4. @for() with index
@@ -497,8 +496,8 @@ ngFor trackBy
 
 -ngFor by default tracks list items using object identity. This means that if you build a list of new objects from scratch with the exact same values as the previous list and pass this newly built list to ngFor, Angular will not be able to tell that a given list item is already present or not.
 
--NgForOf needs to uniquely identify items in the iterable to correctly perform DOM updates when items in the iterable are reordered, new items are added, or existing items are removed.
--In all of these scenarios it is usually desirable to only update the DOM elements associated with the items affected by the change. This behavior is important to:
+-NgFor needs to uniquely identify items in the iterable to correctly perform DOM updates when items in the iterable are reordered, new items are added, or existing items are removed.
+-In all of these scenarios it is usually desirable to only update the DOM elements associated with the items affected by the change
 
 
 
@@ -513,7 +512,7 @@ Assignment:
 ==========
 -Declare an array of users, display users in card & table format. 
  add a button/switch to toggle between table view and card view.
-https://jsonplaceholder.typicode.com/users
+ https://jsonplaceholder.typicode.com/users
 
 
 
@@ -598,17 +597,36 @@ Read data from a JSON file
    myProducts = (data as any).default;  // inside the class
    
 4. use 'myProducts' in HTML file
-   <div *ngFor="let prod of myProducts"> </div>
+   @for(product of productsArr;track product.id){
+	<div></div>
+   }
+   
+   
+Read Data from a typescript file
+=================================
+1. create a typeascript file and export the data (employees.ts/products.ts)
+   let productDate = [ {},{},{} ];
+   export default productData;
+2. import the data & use in component file (products.component.ts)
+   import productData from './products_data';  
+   productsArr = productData;  // inside the class
+3. use 'myProducts' in HTML file
+   @for(product of productsArr;track product.id){
+	<div></div>
+   }
+   
+   
 
 
 How to use font-awesome (https://fontawesome.com/v4/icons/)
 =======================
 1. ng add @fortawesome/angular-fontawesome
 			(OR)
-   npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons
-
+   npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core 
+   npm install @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons
+   
 2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-   import { faStar } from '@fortawesome/free-solid-svg-icons';
+   import { faStar } from '@fortawesome/free-solid-svg-icons'; / import { faStar } from '@fortawesome/free-regular-svg-icons';
    imports: [FontAwesomeModule]
 3. <fa-icon [icon]="faStar"></fa-icon>
 
@@ -631,7 +649,7 @@ ngxPagination
 
 
 Assignment:
--Read data from a static array and display list of products
+-Read data from a static array and display list of products in cards
   https://fakestoreapi.com/products
 -implement pagination
 -implement search functionality (Search By Title)
@@ -642,7 +660,7 @@ Assignment:
 How to use SweetAlert (https://sweetalert2.github.io/)
 =====================	
 1. npm i sweetalert2	
-2. import sweet-Alert in your component
+2. import sweet-Alert in our component
    import Swal from 'sweetalert2'	
 3. on button click call a function, which has the below code	
    Swal.fire('Good job!', 'You clicked the button!', 'success');
@@ -652,7 +670,9 @@ How to use snackbar
 ===================
 1. npm i awesome-snackbar
 2. import Snackbar from 'awesome-snackbar'
-3. new Snackbar('Helloooo, Good Morning', { position: 'top-center', theme: 'light', timeout: 2000 });
+3. new Snackbar('Helloooo, Good Morning',
+      { position: 'top-center', theme: 'light', timeout: 5000, actionText: 'X' }
+    );
 
 https://snackbar.awesome-components.com/
 https://www.npmjs.com/package/ngx-toastr
@@ -666,7 +686,7 @@ Assignment
 3. user should be able to delete Employee (ask user confirmation)
 4. view the details of each employee in a modal (bootstrap Modal)
 5. add a new employee to the table (insert a new record to the array)
-   use sweetAlert to display messages ('Added Successfully')
+   use SnackBar to display message ('EmployAdded Successfully')
 
 
 
@@ -677,8 +697,8 @@ Custom Directives
 -@Directive decorator is used to create a custom Directive.
 -directives won't have templates, whereas components have templates.
 
--@HostBinding  -  when a directive wants to Set any property on the host element.
--@HostListener  - when a directive wants to listen events from the host element.
+-@HostBinding  -  Set a property on the host element.
+-@HostListener  - Listen events from the host element.
 
 
 Component vs Directive
@@ -2870,5 +2890,10 @@ ng add @angular-eslint/schematics@14
 
 Reference
 =========
+https://angular.dev/
+https://angular.dev/tutorials
+https://angular.dev/tools/cli
+https://angular.dev/tools/language-service
+https://angular.dev/tools/devtools
 https://testbook.com/interview/angular-architecture-interview-questions
 https://desireinfotech.biz/assets/download/Angular-Course.pdf
