@@ -335,7 +335,7 @@ export class AppComponent {
 
 
 program-16:style binding
-===================================
+========================
 import { Component } from '@angular/core';
 
 @Component({
@@ -363,115 +363,62 @@ export class AppComponent {
 }
 
 
-program-15: ng-container Example
------------------------------
-<!-- adds unnecessary divs -->
-<div *ngFor='let emp of employees'>
-    <div *ngIf='emp.sal>7000'>
-        {{emp | json}}
-    </div>
-</div>
-*********************************************
-<ng-container *ngFor='let emp of employees'>
-    <div *ngIf='emp.sal>7000'>           
-    </div>
-</ng-container>
 
-employees = [
-    { "eId": 101, "name": "sanjay", "sal": 5000, "gender": "male" },
-    { "eId": 104, "name": "geeta", "sal": 8000, "gender": "female" },
-    { "eId": 103, "name": "sameer", "sal": 7000, "gender": "male" },
-    { "eId": 102, "name": "sita", "sal": 9000, "gender": "female" },
-	{ "eId": 105, "name": "deepak", "sal": 8000, "gender": "male" }
-];
-
-
-
-students:any[] = []
-
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Roll</th>
-            <th>Name</th>
-            <th>Mark</th>
-        </tr>
-    </thead>
-    <tbody>
-        <ng-container *ngIf="students.length>0;else noRecord">
-            <tr *ngFor="let std of students;let i=index">
-                <td>{{std?.roll}}</td>
-                <td>{{std?.name}}</td>
-                <td>{{std?.mark}}</td>
-            </tr>
-        </ng-container>
-    </tbody>
-</table>
-<ng-template #noRecord>
-    <tr colspan="2" align="center">
-        No record Found
-    </tr>
-</ng-template>
-
-
-
-program-16: ngFor directive with trackBy
---------------------------------------
+program-17: ngFor directive with trackBy
+=========================================
 import { Component } from '@angular/core';
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html'
 })
 export class AppComponent {
-  employees: any[];
-
-  constructor() {
+   employees = [
+    { "eId": 101, "name": "sanjay", "sal": 5000, "gender": "male" },
+    { "eId": 104, "name": "geeta", "sal": 8000, "gender": "female" },
+    { "eId": 103, "name": "sameer", "sal": 7000, "gender": "male" },
+    { "eId": 102, "name": "sita", "sal": 9000, "gender": "female" },
+    { "eId": 105, "name": "deepak", "sal": 8000, "gender": "male" }
+  ];
+  updateEmployeeData() {
     this.employees = [
-      { eId: 101, name: "sanjay", sal: 5000 },
-      { eId: 104, name: "deepak", sal: 8000 },
-      { eId: 103, name: "sameer", sal: 7000 },
-      { eId: 102, name: "manoj", sal: 9000 }
-    ]
-  }
-  getNewEmployees() {
-    this.employees = [
-      { eId: 101, name: "sanjay", sal: 5000 },
-      { eId: 104, name: "deepak", sal: 8000 },
-      { eId: 103, name: "sameer", sal: 7000 },
-      { eId: 102, name: "manoj", sal: 9000 },
-      { eId: 106, name: "rajeev", sal: 9000 }
-    ]
-  }
-
-  trackByEmpId(employee: any) {
-    return employee.eId;
+      { "eId": 101, "name": "sanjay", "sal": 5000, "gender": "male" },
+      { "eId": 104, "name": "geeta", "sal": 8000, "gender": "female" },
+      { "eId": 103, "name": "sameer", "sal": 7000, "gender": "male" },
+      { "eId": 102, "name": "sita", "sal": 9000, "gender": "female" },
+      { "eId": 105, "name": "deepak", "sal": 8500, "gender": "male" }
+    ];
   }
 }
 ************************
-<table border=5 align=center width=50%>
-    <tr>
-        <th>EmpId</th>
-        <th>name</th>
-        <th>salary</th>
-    </tr>
-    <tr *ngFor="let emp of employees;trackBy:trackByEmpId">
-        <td>{{emp.eId}}</td>
-        <td>{{emp.name}}</td>
-        <td>{{emp.sal}}</td>
-    </tr>
-</table>
-<button (click)="getNewEmployees()">Refresh Data</button>
+<div class="row">
+        <table class="table table-bordered table-striped">
+            <tbody>
+                @for(employee of employees;track employee.eId){
+                <tr>
+                    <td>{{$index+1}}</td>
+                    <td>{{employee.eId}}</td>
+                    <td>{{employee.name}}</td>
+                    <td>{{employee.gender}}</td>
+                    <td>{{employee.sal}}</td>
+                    <td>{{$first}}</td>
+                    <td>{{$last}}</td>
+                    <td>{{$even}}</td>
+                    <td>{{$odd}}</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+ <button class="btn btn-primary" (click)="updateEmployeeData()">Click Me</button>
 
 
-Program-17 : Pagination
------------------------
+Program-18 : Pagination
+==========================
 1. Install Pagination Library using the below command
-	npm i ngx-pagination
-	
+	npm i ngx-pagination	
 2. Add pagination module 
 	import { NgxPaginationModule } from 'ngx-pagination';
-	imports: [ BrowserModule, NgxPaginationModule]
-	 
+	imports: [ BrowserModule, NgxPaginationModule]	 
 3. in HTML file add the below line 
     @for(user of users | paginate: { itemsPerPage: 4, currentPage: p };track $index)
     <pagination-controls (pageChange)="p = $event"></pagination-controls>
@@ -562,6 +509,23 @@ export class HighlightDirective {
 ---------------------------------
 <span appHighlight>this is a paragraph</span>
 
+
+Program-19: Custom Directive - Zoomin
+======================================
+import { Directive, ElementRef, HostListener } from '@angular/core';
+@Directive({
+  selector: '[zoomin]'
+})
+export class ZoominDirective {
+  constructor(private ele: ElementRef) { }
+  @HostListener('mouseenter') onMouseEnter() {
+    this.ele.nativeElement.style.transform = 'scale(100%,120%)'
+  }
+  @HostListener('mouseleave') onMouseLeave() {
+    this.ele.nativeElement.style.transform = 'scale(100%)'
+  }
+}
+
  
 
 Program-20: Custom Directive - Back Button
@@ -582,18 +546,6 @@ export class BackButtonDirective {
   }
 }
 
-
-
-Program-21: Custom Directive - Count Click
-===========================================
-@Directive({ selector: 'button[counting]' })
-export class CountDirective {
-  numberOfClicks = 0;
-  @HostListener('click')
-  onClick() {
-    console.log(`Number of times clicked ${this.numberOfClicks++}`);
-  }
-}
 
 
 Program: Tooltip Directive
@@ -629,7 +581,7 @@ export class TooltipDirective {
 
 
 Program-22 How to use Modal
-=========================
+===========================
 1. npm i bootstrap
 2. Add the below TS code
   selectedEmployee:any;
@@ -669,29 +621,7 @@ Program-22 How to use Modal
   
   
   
-program-23 (Decimal Pipe/number)
-----------------------------
-<h1> {{ 2585285762678 | number }} </h1>
-<h1> {{ 258.5285762678 | number }} </h1>
-<h1> {{25.5285762678 | number:'3.2-4'}}</h1>
-<h1> {{25.5 | number:'3.2-4'}}</h1>
 
-format '3.2-5'
-***************
-minIntegerDigits = 3 
-minFractionDigits = 2 
-maxFractionDigits = 5 
-
-
-program-24 (Date Pipe)
-----------------------------
-<h1> {{ ob }} </h1>
-<h1> {{ ob | date }} </h1>
-<h1> {{ ob | date:'fullDate' }} </h1>
-<h1> {{ ob | date:'shortDate' }} </h1>
-<h1> {{ ob | date:'mediumDate' }} </h1>
-<h1> {{ ob | date:'dd-MM-yyyy'}} </h1>
-<h1> {{ ob | date:'MMMM dd yyyy'}} </h1>
 
 
 
@@ -2121,10 +2051,10 @@ import { Todo, TodoService } from '../todo.service';
   `,
 })
 export class TodoListComponent implements OnInit {
-  todos: Observable<Todo[]> | undefined;
+  todos$!: Observable<any>;
   constructor(private todoService: TodoService) {}
   ngOnInit(): void {
-    this.todos = this.todoService.todoObs;
+    this.todos$ = this.todoService.todoObs;
   }
   deleteTodo(id: number) {
     this.todoService.remove(id);
@@ -2573,7 +2503,7 @@ export class AppComponent {
   </div>
 </form>
  
-{{this.empForm.value | json}}
+<pre>{{this.empForm.value | json}}</pre>
  
 
 
@@ -2786,7 +2716,7 @@ program-63 : Query-param example
 		});
 	}
  
- 
+
 	  
 	  
 Program-64 Router Guard
@@ -3282,15 +3212,19 @@ Program:68 ToDo App using NgRx
   }
   
 6. todocrud.component.html
-   <ol>
-    @for(todo of todoArr;track $index){
-    <li class="my-2">
-        <span [ngClass]="{'strikethrough': todo.isCompleted}">{{todo.text}} &nbsp; {{todo.isCompleted}} &nbsp;</span>
-        <button class="btn btn-danger" (click)="deleteMyTodo(todo.id)">Delete</button>
-        <button class="btn btn-secondary mx-1" (click)="toggleMyTodo(todo.id)">Toggle</button>
-    </li>
-    }
-</ol>
+    <h3 class="text-center">This is Todo CRUD Component using NGRX</h3>
+	<div class="border p-2 text-center col-sm-4 offset-4">
+		<ol>
+			@for(todo of todos$|async;track $index){
+			<li class="my-2">
+				<span [ngStyle]="{ 'text-decoration': todo.isCompleted ? 'line-through' : 'none' }">{{todo.text}} &nbsp; {{todo.isCompleted}}
+					&nbsp;</span>
+				<button class="btn btn-danger" (click)="deleteMyTodo(todo.id)">Delete</button>
+				<button class="btn btn-secondary mx-1" (click)="toggleMyTodo(todo.id)">Toggle</button>
+			</li>
+			}
+		</ol>
+	</div>
    
    
 

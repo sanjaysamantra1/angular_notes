@@ -809,11 +809,11 @@ Assignment
 1. Create a custom pipe(ordinal) which takes a number as input and returns in ordinal format
    input : 21,22,23,24  output : 21st, 22nd , 23rd, 24th
 2. create a custom pipe(Roman) which takes a number as input and returns its equivalent roman value
-   input :  4     
-   output : IV  
+   input :  4    8     9   
+   output : IV  VIII   IX 
 3. create a custom pipe called 'age' which takes a date as input and returns the age in years.
    input : 04-06-2020
-   output : 4 years old
+   output : 5 years old
 4. declare an array of employee objects. display them in a table.
    create a custom pipe Salutation that will add 'mr. / miss.' before the employee name.
 5. declare an array of employee objects. display them in a table. 
@@ -917,7 +917,17 @@ Child to parent
       this.product = data;
    }
 
-  
+
+
+Assignment
+==========
+-Create a component(EmployeeCRUD), which holds array of employees.
+-Create 2 Child Components(EmployeeTable , EmployeeAdd)
+-Pass data from EmployeeCRUD to EmployeeTable, EmployeeTable should display the data in table
+-add delete button against every employee(row) to perform delete operation
+-EmployeeAdd component should have form to add a new Employee to the employee list
+-all the logic/functions should be present in Parent Component(EmployeeCRUD)
+
 
 
 component lifecycle hooks/method 
@@ -972,9 +982,9 @@ ngDoCheck()
 -Invoked when the change detector of the given component is invoked. 
 -It allows us to implement our own change detection algorithm for the given component.
 -useful to detect and act upon the changes that can not be detected by Angular on its own.
--Due to default behavior of angular change detection, ngOnChanges can't detect if someone changes a property of an object or push an item into array ??. So ngDoCheck comes to recuse.
+-Due to default behavior of angular change detection, ngOnChanges can't detect if someone changes a property of an object or push an item into array. So ngDoCheck comes to recuse.
 -Detect deep changes like a property change in object or item is pushed into array even without reference change.
--By using ngDoCheck and KeyValueDiffer, you can monitor changes in complex objects that might not be caught by Angular's default change detection mechanism.
+-By using ngDoCheck and KeyValueDiffer, we can monitor changes in complex objects that might not be caught by Angular's default change detection mechanism.
 
 
 ngAfterContentInit()
@@ -1109,7 +1119,7 @@ steps to create and use service
 Dependency injection 
 =====================
 -Dependency injection (DI), is an application design pattern. 
--In Angular, the Dependency Injection framework provides declared dependencies to a class when that class is instantiated.   
+-Dependency Injection framework provides declared/mentioned dependencies to a class when that class is instantiated.   
 
 constructor(private myHttp:HttpClient){}
 	OR
@@ -1228,7 +1238,7 @@ POSTMAN
  https://www.postman.com/downloads/
 
 
-Fake Online REST API for Testing 
+Free Online REST API for Testing 
 1. https://jsonplaceholder.typicode.com/users
 2. https://reqres.in/
 3. https://fakestoreapi.com/products
@@ -1270,7 +1280,7 @@ How to use HttpClient
 	   provideHttpClient() // Configures Angular's HttpClient service to be available for injection.
    ]
 
-2. inject HttpClient in custom service / Component
+2. inject 'HttpClient' in custom service / Component
    constructor(private http: HttpClient) { }
    
 3. using that referrence variable call httpClient methods(GET,POST,PUT,PATCH,DELETE)
@@ -1322,7 +1332,7 @@ models in Angular
  ex:-Users have a firstName and a lastName.the full name of the user within the templates looks like this:
      <li *ngFor="let user of users">{{ user.firstName }} {{ user.lastName }}</li>
 	what if customer calls and tells that the order of firstname and lastname should be switched,go through every template and switch the expressions.
--But if our user is a User object, we can simply implement a function to print the fullname.
+-If our user is a User object, we can simply implement a function to print the fullname.
  
 -Another good reason for using models is type enforce. We want to know the type of things when we use them and not just define everything as any.
 
@@ -1740,13 +1750,13 @@ Template Driven Form
    imports: [FormsModule]
 
 2. view/HTML File-
-   a. use ngForm directive with form's template reference variable
+   a. use 'ngForm' with form's template reference variable
       <form #myForm="ngForm" ></form>
 	  
-   b. Use ngModel directive with every input field 
+   b. Use ngModel with every input field 
       <input name="firstName" ngModel /> 
    
-   c. use ngModelGroup directive to group multiple fields
+   c. use 'ngModelGroup' to group multiple fields
 	 <fieldset ngModelGroup="address">...</fieldset>
 
 3. Receive the data in component class from our form
@@ -1983,12 +1993,12 @@ Active-Route
 
 Navigate from one route to another
 ----------------------------------
-<button routerLink="/html">take me to HTML </button>			
+<button routerLink="/home">take me to Home </button>			
 			(OR)
 constructor(private routerObj : Router) { }
 
   takeMeToHtml() {
-    this.routerObj.navigate(['/html'])
+    this.routerObj.navigate(['/home'])
   }
 
 
@@ -2288,15 +2298,28 @@ compiles an application and stores the generated files in dist folder.
 
 
 
+
+
+
 https://angular.dev/tools/cli/deployment
+
+Firebase hosting	
+Vercel	
+Netlify		
+Amazon Cloud S3
+GitHub pages
+Hostinger
+
 
 Deploy Angular Application in GitHub
 ====================================
    git checkout -b mybranch1
 1. 	 (OR)
    ng add angular-cli-ghpages
-2. ng build --base-href angular_project_nov_2024
-3. ngh --dir dist/angular_project_nov_2024/browser
+2. 
+	ng build --base-href angular_project_feb_2025 --configuration=production
+	ng build --output-path docs --base-href angular_project_feb_2025 --configuration=production
+3. ngh --dir dist/angular_project_feb_2025/browser
    go to github website & open your Repository
    Settings Tab --> pages --> you should see the live URL
 
@@ -2312,7 +2335,7 @@ Deploy Angular Application in GitHub
 3. create a new branch for deployment
    git checkout -b mybranch1
 4. Build your project using the GitHub project name
-   ng build --output-path docs --base-href /project1/  
+   ng build --output-path docs --base-href /angular_project_feb_2025/  
 5. When the build is complete, make a copy of docs/index.html and name it docs/404.html
 6. Commit your changes and push the code to branch
 7. go to github website & open your Repository
@@ -2417,22 +2440,18 @@ Spy
 spyOn(someObj, 'func').and.returnValue(42);
 spyOn(someObj, 'func').withArgs(2, 3).and.returnValue(5);
 
-
-// app.js 
-const app = {
-  processData: (data) => {
+app.component.ts
+================
+ processData(data: any) {
     console.log('Processing data:', data);
     return data.length;
-  },
-  fetchData: () => {
+  }
+  fetchData() {
     const data = ['item1', 'item2', 'item3'];
-    return app.processData(data);
-  },
-};
-module.exports = app;
+    return this.processData(data);
+  }
 
-// app.spec.js 
-const app = require('./app');
+
 describe('fetchData functionality', () => {
   it('should call processData with the correct data', () => {
     // Spy on processData,  callThrough() ensures the original implementation still runs
@@ -2691,9 +2710,14 @@ The ng add command will additionally perform the following configurations:
 
 
 
-Props Drilling
-==============
--Prop drilling is basically a situation when the same data is being sent at almost every level due to requirements in the final level.
+Props/Data Drilling
+===================
+-pass data (props) from a parent component to deeply nested child components, even if intermediate components don’t need the data.
+
+Code Maintainability: Passing props through multiple layers makes the code messy.
+Performance Issues: Unnecessary re-renders of components that don’t need the props.
+Tightly Coupled Components: Makes refactoring difficult, as changes to props affect multiple components.
+
 -Solution : State management Library (NgRX)
 
 
@@ -2733,6 +2757,24 @@ Actions describe unique events that are dispatched from components and services.
 State changes are handled by pure functions called reducers that take the current state and the latest action to compute a new state.
 Selectors are pure functions used to select, derive and compose pieces of state.
 State is accessed with the Store, an observable of state and an observer of actions
+
+
+store-devtools (https://ngrx.io/guide/store-devtools)
+==============
+1. add 'Redux Devtools Extension' in browser (chrome)
+2. ng add @ngrx/store-devtools
+3. add the below code in app.config.ts
+   provideStoreDevtools({
+      maxAge: 25, // Retains last 25 states
+      // logOnly: !isDevMode(), // Restrict extension to log-only mode
+      autoPause: true, // Pauses recording actions and state changes when the extension window is not open
+      trace: false, //  If set to true, will include stack trace for every dispatched action, so you can see it in trace tab jumping directly to that part of code
+      traceLimit: 75, // maximum stack trace frames to be stored (in case trace option was provided as true)
+      connectInZone: true // If set to true, the connection is established within the Angular zone
+    })
+
+
+
   
   
 Environments
