@@ -15,6 +15,7 @@ Angular installation
    npm install -g @angular/cli@latest
 		OR
    npm install -g @angular/cli@17
+Note: for MAC if the above command doesn't work plz add sudo (sudo npm install -g @angular/cli)
 
 5. check if angular CLI  is installed??
    ng v  
@@ -23,9 +24,9 @@ Angular installation
 
 6. create a new angular project (go to the folder where project needs to be created)
    ng new project1 (project1 - name of the project, can be any other valid name)
-   ng new your-angular-project --defaults
+   ng new project1 --defaults
    
-   you will be prompted for few things, just select 'yes' (enter)
+   you will be prompted for few things, just press 'ENTER'
    1. CSS/SCSS/LESS - select css
 
 7. Run the project / Start the project
@@ -65,7 +66,7 @@ Chrome Extensions
 1. Mobile Simulator
 2. Angular DevTools
 3. Redux DevTools
-4. JsOn Viewer
+4. Json Viewer
 
 
 
@@ -263,7 +264,7 @@ How to Display Images from local folder
 
 Databinding
 ===========
--automatic synchronization of data between Component(TS) and view(HTML).
+-Automatic synchronization of data between Component(TS) and view(HTML).
 
 1.  interpolation  	 {{ }} (1-way)   (component-->view)
 2.  property Binding  [ ]  (1-way)   (component-->view)
@@ -418,7 +419,7 @@ Directives
 -Directives Enhance the power of HTML elements.
 -Directives add additional behavior to elements in Angular applications.
 -Before Angular 17  (*ngIf , *ngSwitchCase, *ngFor)
--After angular-17  (@if , @else , @switch , @case , @default , @for, @let)
+-After angular-17  (@if , @else , @switch , @case , @default , @for, @empty , @let)
 
 1. Structural Directives : 
 	Directive which changes the layout/structure of the DOM.
@@ -466,13 +467,13 @@ Switch Case
 @for()
 ======
 1. for with array , @for with @empty
-	@for(car of cars;track car;let i = $index){
-	  <h4>{{car}}----{{i}}</h4>
+	@for(car of cars;track $index){
+	  <h4>{{car}}----{{$index}}</h4>
 	} @empty {
 	  Empty list of cars
 	}
 2. @for() with String
-   @for(char of str;track char){
+   @for(char of str;track $index){
 		<div>{{char}}</div>
    }
  
@@ -582,6 +583,7 @@ child
 parent
 ======
 <h1 id="div1">Registration Form</h1>
+<h1 class="div2">Registration Form</h1>
 
 
 
@@ -651,6 +653,7 @@ ngxPagination
 Assignment:
 -Read data from a static array and display list of products in cards
   https://fakestoreapi.com/products
+-use font-awesome to display any icons (star , delete)
 -implement pagination
 -implement search functionality (Search By Title)
 -implement sort functionality (Price Asc, Price desc)
@@ -661,15 +664,18 @@ How to use SweetAlert (https://sweetalert2.github.io/)
 =====================	
 1. npm i sweetalert2	
 2. import sweet-Alert in our component
-   import Swal from 'sweetalert2'	
+   import Swal from 'sweetalert2';	
 3. on button click call a function, which has the below code	
    Swal.fire('Good job!', 'You clicked the button!', 'success');
+			(OR)
+  Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question"});
+
 
 
 How to use snackbar	
 ===================
 1. npm i awesome-snackbar
-2. import Snackbar from 'awesome-snackbar'
+2. import Snackbar from 'awesome-snackbar';
 3. new Snackbar('Helloooo, Good Morning',
       { position: 'top-center', theme: 'light', timeout: 5000, actionText: 'X' }
     );
@@ -683,11 +689,11 @@ Assignment
 ----------
 1. create 1 EmployeeCRUD component
 2. display list of employees in a table(data comes from an array)
-3. user should be able to delete Employee (ask user confirmation)
+3. user should be able to delete Employee (ask user confirmation) 
 4. view the details of each employee in a modal (bootstrap Modal)
 5. add a new employee to the table (insert a new record to the array)
-   use SnackBar to display message ('EmployAdded Successfully')
-
+   use SnackBar to display message ('EmployAdded Successfully' - message should be maintained in a constant file)
+6. use font-awesome to display any icons (star , delete, edit)
 
 
 
@@ -1075,6 +1081,14 @@ https://angular.dev/guide/components/programmatic-rendering
 
 
 
+
+ViewContainerRef.createComponent()
+==================================
+-to load components dynamically rather than declaring them statically in the template.
+-useful when the component to be displayed depends on some user interaction, configuration, or data that isn't known at compile time.
+-It eliminates the need for the ComponentFactoryResolver
+
+	
 	
 
 Angular Services
@@ -1095,7 +1109,7 @@ Angular Services
 steps to create and use service
 --------------------------------
 1. create a service (ng g s service-name)
-	a. write a class with set of methods and properties.
+	a. class with set of methods and properties.
 	b. decorate that class with @injectable decorator
 	 
 2. use a service in component
@@ -1131,23 +1145,13 @@ constructor(){
 
 Assignment
 ==========
-1. create an EmployeeService with an array of employees
+1. create an EmployeeService
+	Service should have 1 variable.  ex: employees = [ {}, {}, {} {}]   
+	Service should have 3 methods.   ex: getAllEmployees(), getMaleEmployees(), getFemaleEmployees()
 2. inject that service in EmployeeComponent
 3. Display List of Employees in a table / Card
    have a dropdown with 3 values- allEmployees , maleEmployees , femaleEmployees
    based on the dropdown value selected, employee data should be shown
-
-
-
-
-ViewContainerRef.createComponent()
-==================================
--to load components dynamically rather than declaring them statically in the template.
--useful when the component to be displayed depends on some user interaction, configuration, or data that isn't known at compile time.
--It eliminates the need for the ComponentFactoryResolver
-
-
-
 
 
 
@@ -1244,7 +1248,7 @@ Free Online REST API for Testing
 3. https://fakestoreapi.com/products
 4. https://api.github.com/users/google
 5. https://dummyjson.com/products
-6. https://dummy.restapiexample.com/
+6. https://dummy.restapiexample.com/  (CRUD)
 7. https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies
 8. https://api.publicapis.org/entries
 9. https://github.com/geertjanw/ojet-training/blob/master/employeeData.json
@@ -1257,7 +1261,7 @@ https://medium.com/@devmrin/create-a-rest-api-json-server-in-less-than-1-minute-
 1.Install json-server (not necessarily inside angular project, run the below command in cmd)
 	npm install -g json-server
 2.create a json file with some data(not necessarily inside an angular project)
-    employees.json (filename can be anything.json) (copy con employees.json)
+    employees.json (filename can be anything.json) (copy con employees.json)(MAC: touch employees.json)
 3.start json server(go to the folder where json file is present,run the below command in cmd)
    json-server --watch employees.json
    
@@ -1280,7 +1284,7 @@ How to use HttpClient
 	   provideHttpClient() // Configures Angular's HttpClient service to be available for injection.
    ]
 
-2. inject 'HttpClient' in custom service / Component
+2. inject 'HttpClient' in custom-service / Component
    constructor(private http: HttpClient) { }
    
 3. using that referrence variable call httpClient methods(GET,POST,PUT,PATCH,DELETE)
@@ -1320,14 +1324,14 @@ HttpClient with Headers
 -Reading the full response(not only the body)
  httpClient.get(URL)	//  { observe: 'body' } (default)
  httpClient.get(URL , { observe: 'body' })     
- httpClient.get(URL , { observe: 'response' })
+ httpClient.get(URL , { observe: 'response' })  // returns { body:[],status:200,ok:true}
  
 
- 
+
 
 models in Angular
 =================
--A Model represents the structure of the data object.
+-A Model represents the structure/shape of the data object.
 -Handling raw JSON objects is really painful and hard to maintain.
  ex:-Users have a firstName and a lastName.the full name of the user within the templates looks like this:
      <li *ngFor="let user of users">{{ user.firstName }} {{ user.lastName }}</li>
@@ -1340,8 +1344,14 @@ models in Angular
 -Classes are used not only for type-checking but also if we need some methods,they are used to instantiate.
 
 
-InterFace As Model: fields mentioned in interface can only be used in view.
-Class As Model: Structure Enforcement + Logic (fullName() , annualSalary())
+InterFace As Model: 
+	1. Improves Readability
+	2. Structure Enforcement : fields mentioned in interface can only be used in view.
+	
+Class As Model: 
+	1. Improves Readability
+	2. Structure Enforcement + 
+	3. Logic (fullName() , annualSalary())
 
 
 

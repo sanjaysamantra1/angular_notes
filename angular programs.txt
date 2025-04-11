@@ -363,6 +363,17 @@ export class AppComponent {
 }
 
 
+<div>States datalist</div>
+	<input list="states" name="state" id="state" [(ngModel)]="selectedState">
+    <datalist id="states">
+        @for(state of statesArr;track $index){
+           <option>{{state}}</option>
+        }
+    </datalist>
+<div>Selected state: {{selectedState}}</div>		
+		
+		
+		
 
 program-17: ngFor directive with trackBy
 =========================================
@@ -1833,13 +1844,16 @@ export class ObservableDemo3Component {
 
 program : 53- exhaustMap Example
 ----------------------------
- exhaustMapDemo() {
-    const clicks = fromEvent(document, 'click');
-    const result = clicks.pipe(
-      exhaustMap(() => this.httpClient.get('https://fakestoreapi.com/products'))
-    );
-    result.subscribe((x) => console.log(x));
-  }
+@ViewChild('loginBtn') loginBtn!: ElementRef;
+
+ngAfterViewInit() {
+    fromEvent(this.loginBtn.nativeElement, 'click').pipe(exhaustMap((val) => {
+      return this.http.get('https://jsonplaceholder.typicode.com/users')
+    })).subscribe({
+      next: (res) => console.log('Response:', res),
+      error: (err) => console.error('Error:', err),
+    })
+}
   
   
 program : 54 - distinctUntilChanged Example
@@ -2063,6 +2077,71 @@ export class TodoListComponent implements OnInit {
 
 
 
+
+
+Program:- RXJS Behaviour-Subject Cart Details
+*********************************************
+cart-service.ts
+---------------
+export class CartService {
+  private cartItemSubject = new BehaviorSubject([]);
+  cartItem$ = this.cartItemSubject.asObservable();
+  private totalPriceSubject = new BehaviorSubject(0);
+  totalPrice$ = this.totalPriceSubject.asObservable();
+
+  addItem(newItem: any) {
+    const cartItems: any = this.cartItemSubject.value;
+    cartItems.push(newItem);
+    this.cartItemSubject.next(cartItems);
+    this.calculateTotalPrice();
+  }
+  removeItem(itemToRemove: any) {
+    const cartItems: any = this.cartItemSubject.value;
+    const cartItemsAfterRemove = cartItems.filter((cartItem: any) => {
+      return cartItem.id !== itemToRemove.id;
+    });
+    this.cartItemSubject.next(cartItemsAfterRemove);
+    this.calculateTotalPrice();
+  }
+  calculateTotalPrice() {
+    const cartItems: any = this.cartItemSubject.value;
+    let totalPrice = 0;
+    cartItems.forEach((cartItem: any) => {
+      totalPrice = totalPrice + cartItem.price;
+    });
+    this.totalPriceSubject.next(totalPrice);
+  }
+}
+
+
+header.component.ts
+-------------------
+export class HeaderComponent {
+  cartItems: any[] = [];
+  totalPrice: number = 0;
+  subscriptionsArr: Subscription[] = [];
+  constructor(private CartService: CartService) {
+    let cartItemSubscription = this.CartService.cartItem$.subscribe(cartItems => {
+      this.cartItems = cartItems;
+    });
+    this.subscriptionsArr.push(cartItemSubscription);
+
+    let totalPriceSubscription = this.CartService.totalPrice$.subscribe(totalPrice => {
+      this.totalPrice = totalPrice;
+    });
+    this.subscriptionsArr.push(totalPriceSubscription);
+  }
+
+  ngOnDestroy() {
+    this.subscriptionsArr.forEach(subscription => {
+      subscription.unsubscribe();
+    })
+  }
+}
+
+
+
+
 Program: Signal 
 *****************
 export class SignalDemoComponent {
@@ -2104,7 +2183,7 @@ export class SignalDemoComponent {
 
 Program: effects
 =================
-userId = signal(1);
+  userId = signal(1);
   userData: any;
   userDetailsEffect = effect(() => {
     const id = this.userId();
@@ -2407,102 +2486,95 @@ import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
 })
 export class AppComponent {
   empForm!: FormGroup;
- 
-  constructor(private fb: FormBuilder) {}
- 
+  constructor(private fb: FormBuilder) { }
+
   ngOnInit() {
     this.empForm = this.fb.group({
       employees: this.fb.array([])
     });
   }
- 
-  employees(): FormArray {
+
+  getAllEmployees(): FormArray {
     return this.empForm.get('employees') as FormArray;
   }
- 
-  newEmployee(): FormGroup {
+
+  createNewEmployee(): FormGroup {
     return this.fb.group({
       firstName: '',
       lastName: '',
       skills: this.fb.array([])
     });
   }
- 
+
   addEmployee() {
-    this.employees().push(this.newEmployee());
+    this.getAllEmployees().push(this.createNewEmployee());
   }
- 
+
   removeEmployee(empIndex: number) {
-    this.employees().removeAt(empIndex);
+    this.getAllEmployees().removeAt(empIndex);
   }
- 
+
   employeeSkills(empIndex: number): FormArray {
-    return this.employees()
-      .at(empIndex)
-      .get('skills') as FormArray;
+    return this.getAllEmployees().at(empIndex).get('skills') as FormArray;
   }
- 
+
   newSkill(): FormGroup {
-    return this.fb.group({
-      skill: '',
-      exp: ''
-    });
+    return this.fb.group({skill: '',exp: ''});
   }
- 
+
   addEmployeeSkill(empIndex: number) {
     this.employeeSkills(empIndex).push(this.newSkill());
   }
- 
+
   removeEmployeeSkill(empIndex: number, skillIndex: number) {
     this.employeeSkills(empIndex).removeAt(skillIndex);
   }
- 
+
   onSubmit() {
     console.log(this.empForm.value);
   }
 }
 ----------------------------------
-<style>button{margin:5px}</style>
-<h1>Angular Nested FormArray / Dynamic FormArray</h1> 
+<style>
+    button {
+        margin: 5px
+    }
+</style>
+<h1>Angular Nested FormArray / Dynamic FormArray</h1>
 <form [formGroup]="empForm" (ngSubmit)="onSubmit()">
-  <div formArrayName="employees">
-    <div *ngFor="let employee of employees().controls; let empIndex=index">
-      <div
-        [formGroupName]="empIndex"
-        style="border: 2px solid blue; padding: 10px; width: 700px; margin: 10px;"
-      >
-        {{empIndex}} First Name :
-        <input type="text" formControlName="firstName" />
-        Last Name:
-        <input type="text" formControlName="lastName" />
- 
-        <button (click)="removeEmployee(empIndex)">Remove</button>
- 
-        <div formArrayName="skills">
-          <div
-            *ngFor="let skill of employeeSkills(empIndex).controls; let skillIndex=index"
-          >
-            <div [formGroupName]="skillIndex">
-              {{skillIndex}} Skill :
-              <input type="text" formControlName="skill" />
-              Exp:
-              <input type="text" formControlName="exp" />
- 
-              <button (click)="removeEmployeeSkill(empIndex,skillIndex)">
-                Remove
-              </button>
+    <div formArrayName="employees">
+        <div *ngFor="let employee of getAllEmployees().controls; let empIndex=index">
+            <div [formGroupName]="empIndex" style="border: 2px solid blue; padding: 10px; width: 700px; margin: 10px;">
+                {{empIndex}} First Name :
+                <input type="text" formControlName="firstName" />
+                Last Name:
+                <input type="text" formControlName="lastName" />
+
+                <button (click)="removeEmployee(empIndex)">Remove</button>
+
+                <div formArrayName="skills">
+                    <div *ngFor="let skill of employeeSkills(empIndex).controls; let skillIndex=index">
+                        <div [formGroupName]="skillIndex">
+                            {{skillIndex}} Skill :
+                            <input type="text" formControlName="skill" />
+                            Exp:
+                            <input type="text" formControlName="exp" />
+
+                            <button (click)="removeEmployeeSkill(empIndex,skillIndex)">
+                                Remove
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" (click)="addEmployeeSkill(empIndex)">
+                    Add Skill
+                </button>
             </div>
-          </div>
         </div>
-        <button type="button" (click)="addEmployeeSkill(empIndex)">
-          Add Skill
-        </button>
-      </div>
+        <button type="button" (click)="addEmployee()">Add Employee</button>
     </div>
-    <button type="button" (click)="addEmployee()">Add Employee</button>
-  </div>
 </form>
- 
+
 <pre>{{this.empForm.value | json}}</pre>
  
 
