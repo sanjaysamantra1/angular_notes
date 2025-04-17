@@ -1307,6 +1307,16 @@ HttpClient vs fetch()
 
 
 
+CSRF, or Cross-Site Request Forgery:
+===================================
+https://portswigger.net/web-security/csrf#what-is-csrf
+https://portswigger.net/web-security/all-topics
+
+-Angular looks for a cookie named XSRF-TOKEN.
+-If found, Angular automatically adds a header X-XSRF-TOKEN with the same value to all unsafe requests.
+
+
+
 Assignment
 ==========
 1. Create 1 user CRUD application using HttpClient
@@ -1350,7 +1360,7 @@ InterFace As Model:
 	
 Class As Model: 
 	1. Improves Readability
-	2. Structure Enforcement + 
+	2. Structure Enforcement 
 	3. Logic (fullName() , annualSalary())
 
 
@@ -1512,6 +1522,7 @@ concatMap() = map + concatAll
     -Map values to inner observable, subscribe and emit in order.
 	-concatMap waits for inner Observable to complete before taking items from the next inner Observable.
 	-concatMap does preserve the order from outer Observable.
+	-inner observables are sequential
 	-Like mergeMap, concatMap also doesn’t cancel any inner Observables. 
 	 All data from inner Observables get to the final collection.
 	-Queuing up every new Observable, and subscribing to a new observable only when the last observable completed.
@@ -1533,6 +1544,7 @@ ExhaustMap()
 	-we have a login screen with a login button, where each click is mapped to 1 login request.
 	-If the user clicks more than once on the login button, it will cause multiple calls to the server.
 	-use exhaustMap to temporarily “disable” the mapping while the first http request is still on the go.
+	-
 	-this makes sure you never call the server while the current request is running.
 
 
@@ -1636,7 +1648,7 @@ Side effects:
 
 
 Declare Signal:
-num: Signal<number> = signal(0);
+count: Signal<number> = signal(0);
 
 Use Signal:
 -Typescript : console.log('The count is: ' + count());
@@ -1885,7 +1897,8 @@ With FormBuilder
 	}
 2. loginForm = this.formBuilder.group({
 	  email: [''],
-	  password: ['']
+	  password: [''],
+	  address: this.formBuilder.group({});
 	});
 
 
@@ -1997,7 +2010,10 @@ RouterOutlet
 
 Active-Route
 ------------
-<a routerLink="careers" routerLinkActive="active">careers</a>
+1. <a routerLink="careers" routerLinkActive="active">careers</a>
+2. import  RouterLinkActive in typescript file
+3. add css for 'active' class 
+   .active{background-color: aquamarine;}
 
 
 
@@ -2006,10 +2022,10 @@ Navigate from one route to another
 <button routerLink="/home">take me to Home </button>			
 			(OR)
 constructor(private routerObj : Router) { }
-
-  takeMeToHtml() {
-    this.routerObj.navigate(['/home'])
-  }
+takeMeToHtml() {
+  this.routerObj.navigate(['/home'])
+}
+  
 
 
 Navigate Previous / Next Route
@@ -2087,7 +2103,7 @@ Router-Guard
     path: 'productdetails/:id',
     component: productDetailsComponent,
     canActivate: [myGuard]
-  },
+  }
 
 
 
@@ -2392,12 +2408,15 @@ toBeLessThan();
 toContain()
 
 
+
+Set-up & tear-down
 Jasmine Global Functions
 ------------------------
 beforeAll()
 beforeEach()
 afterEach()
 afterAll()
+
 
 fdescribe() - focused describe. If it exists, jasmine will run only fdescribe spec and ignore other type of describe (describe and xdescribe).
 xdescribe() - disabled describe. It will never be executed.
@@ -2774,14 +2793,7 @@ store-devtools (https://ngrx.io/guide/store-devtools)
 1. add 'Redux Devtools Extension' in browser (chrome)
 2. ng add @ngrx/store-devtools
 3. add the below code in app.config.ts
-   provideStoreDevtools({
-      maxAge: 25, // Retains last 25 states
-      // logOnly: !isDevMode(), // Restrict extension to log-only mode
-      autoPause: true, // Pauses recording actions and state changes when the extension window is not open
-      trace: false, //  If set to true, will include stack trace for every dispatched action, so you can see it in trace tab jumping directly to that part of code
-      traceLimit: 75, // maximum stack trace frames to be stored (in case trace option was provided as true)
-      connectInZone: true // If set to true, the connection is established within the Angular zone
-    })
+   provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
 
 
 

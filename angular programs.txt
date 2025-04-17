@@ -423,6 +423,8 @@ export class AppComponent {
  <button class="btn btn-primary" (click)="updateEmployeeData()">Click Me</button>
 
 
+
+
 Program-18 : Pagination
 ==========================
 1. Install Pagination Library using the below command
@@ -436,8 +438,8 @@ Program-18 : Pagination
 
 
 
-Program : star Rating
-=======================
+Program-19 : star Rating
+========================
   rating: number = 3;
   maxStars: number = 5;
   stars: boolean[] = [];
@@ -468,8 +470,8 @@ Program : star Rating
 
 
   
-Program-18 : Custom Directive
-----------------------------
+Program-20 : Custom Directive
+=============================
 import { Directive, HostBinding, HostListener } from '@angular/core';
 
 @Directive({
@@ -496,7 +498,7 @@ export class NumberonlyDirective {
 
 
 
-Program-19: Custom Directive - Highlight
+Program-21: Custom Directive - Highlight
 ===========================================
 import { Directive, ElementRef, HostListener } from '@angular/core';
 @Directive({
@@ -521,7 +523,10 @@ export class HighlightDirective {
 <span appHighlight>this is a paragraph</span>
 
 
-Program-19: Custom Directive - Zoomin
+
+
+
+Program-22: Custom Directive - Zoomin
 ======================================
 import { Directive, ElementRef, HostListener } from '@angular/core';
 @Directive({
@@ -539,7 +544,7 @@ export class ZoominDirective {
 
  
 
-Program-20: Custom Directive - Back Button
+Program-23: Custom Directive - Back Button
 ===========================================
 import { Directive, HostListener } from '@angular/core';
 import { Location } from '@angular/common'
@@ -559,8 +564,10 @@ export class BackButtonDirective {
 
 
 
-Program: Tooltip Directive
-==========================
+
+
+Program-24 : Tooltip Directive
+===============================
 import { Directive, ElementRef, HostListener, Input, Renderer2 } from '@angular/core';
 @Directive({
   selector: '[appTooltip]'
@@ -591,8 +598,8 @@ export class TooltipDirective {
 
 
 
-Program-22 How to use Modal
-===========================
+Program-25 : How to use Modal
+=============================
 1. npm i bootstrap
 2. Add the below TS code
   selectedEmployee:any;
@@ -636,8 +643,8 @@ Program-22 How to use Modal
 
 
 
-program-25: async pipe
-----------------------------
+program-26 : async pipe
+========================
 import { Component } from "@angular/core";
 import { Observable,interval } from 'rxjs';
 @Component({
@@ -656,8 +663,8 @@ export class AppComponent {
 
 
 
-program-26: Custom Pipe(Remaining Char)
----------------------------------------
+program-27 : Custom Pipe(Remaining Char)
+========================================
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'count'
@@ -670,8 +677,8 @@ export class CountPipe implements PipeTransform {
 }
 
 
-Custom Pipe - Age
-=================
+program-28 : Custom Pipe(Age Pipe)
+==================================
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'age',
@@ -689,8 +696,8 @@ export class AgePipe implements PipeTransform {
 
 
 
-program-27: Custom Pipe(Truncate)
-----------------------------------
+program-29: Custom Pipe(Truncate)
+=================================
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'truncate'
@@ -719,8 +726,8 @@ export class TruncatePipe implements PipeTransform {
 
 
 
-program-28: Custom Pipe(Search)
---------------------------------
+program-30: Custom Pipe(Search)
+=================================
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'search'
@@ -740,8 +747,8 @@ export class SearchPipe implements PipeTransform {
 
 
 
-program-29: Custom Pipe(Mr. Miss)
---------------------------------
+program-31: Custom Pipe(Mr. Miss)
+=================================
 import { Pipe, PipeTransform } from '@angular/core';
 @Pipe({
   name: 'title'
@@ -757,8 +764,8 @@ export class SearchPipe implements PipeTransform {
 
 
 
-program-30: use pre-defined pipes in component
---------------------------------------------
+program-32: use pre-defined pipes in component
+===============================================
 import { Component, ViewChild } from '@angular/core';
 import { CurrencyPipe } from '@angular/common';
 
@@ -779,8 +786,8 @@ export class AppComponent {
 
 
 
-program-31: pure pipe vs impure pipe
----------------------------------
+program-33: pure pipe vs impure pipe
+====================================
 -A pure pipe is only called when Angular detects a change in the value 
 or the parameters passed to a pipe.(on component load only)
 
@@ -845,8 +852,8 @@ export class AppComponent {
 
 
 
-program-32: inputs and outputs(component communication)
-----------------------------
+program-34 : inputs and outputs(component communication)
+========================================================
 import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'app-parent',
@@ -912,8 +919,8 @@ export class ChildComponent {
 }
 
 
-Flipkart Categories
-====================
+program-35 : Flipkart Categories
+=================================
 allCategories = [
     { label: 'Grocery', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/29327f40e9c4d26b.png?q=100' },
     { label: 'Mobile', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/22fddf3c7da4c4f4.png?q=100' },
@@ -953,8 +960,8 @@ allCategories = [
 
 
 
-program-33 : life cycle hooks all methods
---------------------------------------
+program-36 : life cycle hooks all methods
+==========================================
 import { Component } from "@angular/core";
 @Component({
   selector: 'app-root',
@@ -1050,8 +1057,8 @@ export class MychildComponent implements OnInit {
 
 
 
-program-34 ngDOCheck()
------------------------
+program-37 :  ngDOCheck()
+============================
 import { Component, OnInit, OnChanges, ChangeDetectionStrategy, DoCheck, 
   ChangeDetectorRef } from '@angular/core';
 
@@ -1077,7 +1084,7 @@ export class ChildComponent implements OnChanges, OnInit, DoCheck {
 }
 
 
-Example - ngDoCheck
+program-38 - ngDoCheck
 ======================
 import { Component, DoCheck, KeyValueDiffers, KeyValueDiffer } from '@angular/core';
 @Component({
@@ -1123,8 +1130,8 @@ export class AppComponent implements DoCheck {
 
 
 
-program-35: @ViewChild and ngAfterViewInit lifecycle hooks
-----------------------------------------------
+program-39 : @ViewChild and ngAfterViewInit lifecycle hooks
+===========================================================
 import { Component, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 @Component({
   selector: 'app-root',
@@ -1148,8 +1155,8 @@ export class AppComponent implements AfterViewInit {
 
 
 
-Program-36 @viewChild to access child members in parent component
---------------------------------------------------------------
+Program-40 : @viewChild to access child members in parent component
+===================================================================
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { ChildComponent } from './child/child.component'
 
@@ -1176,8 +1183,8 @@ export class AppComponent implements AfterViewInit {
 
 
 
-Program-37  @viewChildren
------------------------
+Program-41  :   @viewChildren
+===============================
 @ViewChildren('myInputBox') allinputBoxes: any;
 
 ngAfterViewInit() {
@@ -1189,8 +1196,8 @@ ngAfterViewInit() {
 
 
 
-Renderer2
-==========
+Program-42  :   renderer
+==========================
 import { Component, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 @Component({
   selector: 'app-example',
@@ -1220,7 +1227,7 @@ export class ExampleComponent implements AfterViewInit {
 
 
 
-Program : ViewContainerRef.createComponent()
+Program-43 : ViewContainerRef.createComponent()
 =============================================
 <!-- app.component.html -->
 <div>
@@ -1250,8 +1257,8 @@ export class AppComponent {
 }
 
 
-program-38: create a math Services
-------------------------------
+program-44: create a math Services
+======================================
 import { Injectable } from '@angular/core';
 @Injectable()
 export class MathService {
@@ -1297,8 +1304,8 @@ export class AppComponent {
 
 
 
-program-39: httpClient example
----------------------------
+program-45: httpClient example
+================================
 import { Component } from "@angular/core";
 import { HttpClient } from '@angular/common/http';
 
@@ -1321,8 +1328,8 @@ result;
 
 
 
-program-40 :  HttpClient with Headers
---------------------------------------
+program-46 :  HttpClient with Headers
+=======================================
 Reading the full response(not only the body)
 
 this.http.get('https://jsonplaceholder.typicode.com/posts',
@@ -1335,8 +1342,8 @@ this.http.get('https://jsonplaceholder.typicode.com/posts',
 
 
 
-program-41: httpClientt (Todo Service)
-------------------------------------
+program-47: httpClientt (Todo Service)
+======================================
 todo.ts
 -------
 export interface Todo {
@@ -1389,8 +1396,8 @@ export class AppComponent {
 
 
 
-program-42: Http with Model & Observable
------------------------------------------
+program-48 : Http with Model & Observable
+==========================================
 export class Comment {
   constructor(
     public id: number,
@@ -1446,8 +1453,8 @@ export class AppComponent {
 
 
 
-Program:43 Model Class
------------------------------
+Program-49 : Model Class
+==========================
 export class Employee {
   id: number;
   firstName: string;
@@ -1482,8 +1489,8 @@ getEmployees(): Observable<Employee[]> {
   
 
 	
-Program-44 HTTP Interceptor Example
-------------------------------------
+Program-50 : HTTP Interceptor Example
+=======================================
 import { HttpInterceptorFn } from '@angular/common/http';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // const myToken = sessionStorage.getItem('myToken');
@@ -1501,8 +1508,8 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 
-Program-45 : Retry Interceptor
-==============================
+Program-51 : Retry Interceptor
+===============================
 import { HttpInterceptorFn } from '@angular/common/http';
 import { retry } from 'rxjs';
 export const retryInterceptor: HttpInterceptorFn = (req, next) => {
@@ -1512,8 +1519,8 @@ export const retryInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 
-Loading Interceptor
-===================
+Program-52 : Loading Interceptor
+================================
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { finalize } from 'rxjs';
@@ -1528,8 +1535,8 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
 }
 
 
-loader.service.ts
-==================
+Program-53 : Loading Interceptor
+===============================
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
@@ -1549,7 +1556,7 @@ export class LoadingService {
 
 
 
-program-46 : Error Interceptor
+program-54 : Error Interceptor
 ==============================
 import { HttpInterceptorFn } from '@angular/common/http';
 import { inject } from '@angular/core';
@@ -1570,8 +1577,8 @@ export const myErrorInterceptor: HttpInterceptorFn = (req, next) => {
 
 
 
-Program-47: Observables
-----------------------
+Program-55: Observables
+=========================
 import { Component } from "@angular/core";
 import { Observable, from, interval, range } from 'rxjs';
 import { take, filter, map } from 'rxjs/operators';
@@ -1635,8 +1642,8 @@ export class AppComponent {
 
 
 
-Program:48 Zip()
------------------
+Program-56 : Zip()
+====================
 zipDemo() {
     let publisher1 = of(32, 31, 34);
     let publisher2 = of('sanjay', 'sameer', 'bishnu');
@@ -1651,8 +1658,8 @@ zipDemo() {
 
 
 
-program-49 : forkjoin
-----------------------
+program-57 : forkjoin()
+========================
 fetchDataFromMultipleAPIs() {
     let userNames = ['sanjaysamantra1', 'ushamahesh818', 'seun035'];
     let requests = userNames.map(userName => {
@@ -1665,8 +1672,8 @@ fetchDataFromMultipleAPIs() {
 
 
 
-Program-50 :  MergeMap
------------------------
+Program-58 :  MergeMap()
+========================
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
@@ -1734,8 +1741,10 @@ export class TestComponent implements AfterViewInit {
     });
                    
 
-Program-51 ConcatMap Example
-----------------------------
+
+
+Program-59 : ConcatMap()
+===========================
 import { Component, ViewChild, AfterViewInit } from '@angular/core';
 import { fromEvent, Observable } from 'rxjs';
 import { concatMap } from 'rxjs/operators';
@@ -1787,8 +1796,8 @@ export class TestComponent implements AfterViewInit {
 
 
 
-program-52 :  TypeAhead using SwitchMap
---------------------------------------
+program-60 :  TypeAhead using SwitchMap
+========================================
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
@@ -1842,8 +1851,8 @@ export class ObservableDemo3Component {
 
   
 
-program : 53- exhaustMap Example
-----------------------------
+program-61 : exhaustMap Example
+===============================
 @ViewChild('loginBtn') loginBtn!: ElementRef;
 
 ngAfterViewInit() {
@@ -1856,8 +1865,10 @@ ngAfterViewInit() {
 }
   
   
-program : 54 - distinctUntilChanged Example
----------------------------------------
+  
+  
+program-62 :  distinctUntilChanged Example
+============================================
  distinctUntilChangedDemo() {
     let userIds = of(1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3);
     userIds.pipe(distinctUntilChanged()).subscribe((res) => {
@@ -1882,8 +1893,8 @@ program : 54 - distinctUntilChanged Example
   
 
 
-Program-54 RXJS-Subject Example
--------------------------------
+Program-63 : RXJS-Subject Example
+===================================
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 
@@ -1981,8 +1992,8 @@ export class Rxjs2Component implements OnInit {
 
 
 
-Program:-55 RXJS Behaviour-Subject Example
----------------------------------------
+Program-64 : RXJS Behaviour-Subject Example
+============================================
 todo.service.ts
 ---------------
 import { Injectable } from '@angular/core';
@@ -2079,8 +2090,8 @@ export class TodoListComponent implements OnInit {
 
 
 
-Program:- RXJS Behaviour-Subject Cart Details
-*********************************************
+Program-65 : RXJS Behaviour-Subject Cart Details
+=================================================
 cart-service.ts
 ---------------
 export class CartService {
@@ -2142,8 +2153,8 @@ export class HeaderComponent {
 
 
 
-Program: Signal 
-*****************
+Program-66 : Signal 
+====================
 export class SignalDemoComponent {
   num: WritableSignal<number> = signal(0);
   messages: WritableSignal<string[]> = signal([]);
@@ -2181,8 +2192,8 @@ export class SignalDemoComponent {
 
 
 
-Program: effects
-=================
+Program-67 : effects
+======================
   userId = signal(1);
   userData: any;
   userDetailsEffect = effect(() => {
@@ -2207,11 +2218,9 @@ Program: effects
 
 
 
-******
-Angular Forms
-*********
-program-56: Form with Class Names
---------------------------------
+
+program-68: Form with Class Names
+====================================
 <form name='myForm'>
     Name:
     <input name='uname' [(ngModel)]='name' required /><br><br>
@@ -2229,8 +2238,10 @@ program-56: Form with Class Names
 </style>
 
 
-program-57 template driven form Example
---------------------------------------
+
+
+program-69 : template driven form Example
+==========================================
 <form #myForm="ngForm" (ngSubmit)="logForm(myForm.value)">
   <label>Firstname:</label>
   <input type="text" name="firstname" ngModel>
@@ -2255,8 +2266,10 @@ program-57 template driven form Example
 
 
 
-Template Driven form with Validation
-=======================================
+
+
+program-70 : Template Driven form with Validation
+==================================================
 <h1 class="text-center">Template Driven Form</h1>
 
 <form #myForm="ngForm" (submit)="submitMyForm(myForm)">
@@ -2305,8 +2318,8 @@ Template Driven form with Validation
 
 
 
-program-58: Template Driven Form with validation
----------------------------------------------
+program-71 : Template Driven Form with validation
+=================================================
 <h1>template driven Form with validation</h1>
 
 <form name="myForm1" #myForm="ngForm" (submit)="submitMyForm(myForm.value)">
@@ -2350,8 +2363,8 @@ export class TemplateComponent {
 
 
 
-program-58: Model driven form example
--------------------------------------
+program-72 : Model driven form example
+=======================================
 <form [formGroup]="registerForm">
   <label>Firstname:</label>
   <input type="text" formControlName="firstname">
@@ -2396,8 +2409,9 @@ export class AppComponent {
 
 
 
-program-59: Model driven form with validation
-------------------------------------------
+
+program-73 : Model driven form with validation
+===============================================
 <div>
     <h2> Model Driven Forms </h2>
     <hr>
@@ -2474,8 +2488,8 @@ export class AppComponent {
 
 
 
-program-60 dynamic Form
-=======================
+program-74  :  dynamic Form
+=============================
 import { Component } from '@angular/core';
 import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
  
@@ -2582,8 +2596,8 @@ export class AppComponent {
 
 
 
-program-60 Custom Validation
-============================
+program-75 :  Custom Validation
+================================
 
 createPasswordStrengthValidator
 ---------------------------------
@@ -2644,8 +2658,95 @@ export function userExistsValidator(): AsyncValidatorFn {
 
 
 
-program-61: routing
---------------------
+Program-76 : Password Generator
+================================
+<div class="container">
+  <h2>🔐 Angular Password Generator</h2>
+
+  <label>
+    Length: 
+    <input type="number" [(ngModel)]="length" min="4" max="50">
+  </label>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="includeUppercase" />
+    Uppercase (A-Z)
+  </label>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="includeLowercase" />
+    Lowercase (a-z)
+  </label>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="includeNumbers" />
+    Numbers (0-9)
+  </label>
+
+  <label>
+    <input type="checkbox" [(ngModel)]="includeSymbols" />
+    Symbols (!@#$)
+  </label>
+
+  <button (click)="generatePassword()">Generate Password</button>
+
+  <div class="output">
+    <p>{{ password }}</p>
+    <button (click)="copyToClipboard()">📋 Copy</button>
+  </div>
+</div>
+------------------------------
+  length: number = 8;
+  includeUppercase: boolean = true;
+  includeLowercase: boolean = true;
+  includeNumbers: boolean = true;
+  includeSymbols: boolean = false;
+
+  password: string = '';
+
+  generatePassword() {
+    const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lower = 'abcdefghijklmnopqrstuvwxyz';
+    const numbers = '0123456789';
+    const symbols = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    let validChars = '';
+    if (this.includeUppercase) validChars += upper;
+    if (this.includeLowercase) validChars += lower;
+    if (this.includeNumbers) validChars += numbers;
+    if (this.includeSymbols) validChars += symbols;
+
+    if (!validChars) {
+      this.password = '⚠️ Select at least one option';
+      return;
+    }
+
+    let generated = '';
+    for (let i = 0; i < this.length; i++) {
+      const index = Math.floor(Math.random() * validChars.length);
+      generated += validChars[index];
+    }
+
+    this.password = generated;
+  }
+
+  copyToClipboard() {
+    navigator.clipboard.writeText(this.password);
+    alert('Password copied to clipboard!');
+  }
+
+
+
+
+
+
+
+
+
+
+
+program-77 : routing
+=====================
 1. Specify the Base URL: <base href="/"> in index.html
 2. Import RouterModule from '@angular/router'
 3. Define the routes
@@ -2733,8 +2834,8 @@ N.P:- Create 3 components
 
 	
 
-Program-62:Path-Param Example
------------------------------
+Program-78 : Path-Param Example
+==============================
 1. create productDetailsComponent
    ng g c productDetails
    
@@ -2765,8 +2866,8 @@ Program-62:Path-Param Example
 	
 	
 
-program-63 : Query-param example
---------------------------------
+program-79 : Query-param example
+=================================
 1. create a new route and add in route configuration
    {
     path: 'productdetails', 
@@ -2791,8 +2892,8 @@ program-63 : Query-param example
 
 	  
 	  
-Program-64 Router Guard
------------------------
+Program-80 : Router Guard
+==========================
 import { CanActivateFn } from '@angular/router';
 export const authGuard: CanActivateFn = (route, state) => {
   // Inject user service, Read user info from user service
@@ -2828,8 +2929,8 @@ export const hasChangesGuard: CanDeactivateFn<unknown> =
 
  
 
-program-65 : Route resolver Example
------------------------------------
+program-81 : Route resolver Example
+=====================================
 1. create ProductService and add the below code
 
 	import { HttpClient } from '@angular/common/http';
@@ -2877,8 +2978,8 @@ program-65 : Route resolver Example
 
 
  
-Program- Folder Explorer(Folder-Emoji)
-=====================================
+Program-82 : Folder Explorer(Folder-Emoji)
+===========================================
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 @Component({
@@ -2916,8 +3017,8 @@ export class FolderExplorerComponent {
  
  
  
-Program: traffic Application
-============================
+Program-83 : traffic Application
+=================================
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 @Component({
@@ -2988,8 +3089,8 @@ export class TrafficSignalComponent {
 
  
 
-Program-66: jasmine karma
---------------------------
+Program-84 : jasmine karma
+==========================
 import { JasmineComponent } from './jasmine.component';
 
 describe('I am testing Jasmine component', () => {
@@ -3040,8 +3141,8 @@ export class JasmineComponent implements OnInit {
 }
 
 
-Testing Service with HttpClient
-===============================
+Program-85  : Testing Service with HttpClient
+================================================
 import { TestBed } from '@angular/core/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
@@ -3070,15 +3171,19 @@ describe('UserService', () => {
     expect(service).toBeTruthy();
   });
   it('should fetch data using GET request', () => {
-    const mockUsers = [{ id: 1, name: 'aaa', sal: 5000 }]
-    service.getAllUsers().subscribe((data) => {
-      expect(data).toEqual(mockUsers);
+    const dummyUsers = [
+      { id: 1, name: 'Leanne Graham' },
+      { id: 2, name: 'Ervin Howell' }
+    ];
+    service.getAllUsers().subscribe(users => {
+      expect(users).toEqual(dummyUsers);
+      expect(users.length).toBe(2);
     });
     // Expect the GET request
     const req = httpTestingController.expectOne('https://jsonplaceholder.typicode.com/users');
     expect(req.request.method).toBe('GET');
     // Respond with mock data
-    req.flush(mockUsers);
+    req.flush(dummyUsers);
   });
 });
 
@@ -3188,7 +3293,7 @@ describe("WeatherProcessor", function () {
 
 
 
-Program:67 Counter App using NgRx
+Program-86 : Counter App using NgRx
 =================================
 1. Install NgRx Store in the project
    ng add @ngrx/store
@@ -3201,7 +3306,7 @@ Program:67 Counter App using NgRx
 	
 3. Create Reducer File(counter.reducer.ts)
 	import { createReducer, on } from '@ngrx/store';
-	import { increment, decrement, reset } from './counter.actions';
+	import { increment, decrement, reset } from '../actions/counter.actions';
 	export const initialState = 0;
 	export const counterReducer = createReducer(
 		initialState,
@@ -3230,8 +3335,8 @@ Program:67 Counter App using NgRx
 
 
 
-Program:68 ToDo App using NgRx
-==============================
+Program-87 : ToDo App using NgRx
+=================================
 1. Install NgRx Store in the project
    ng add @ngrx/store
    
@@ -3301,7 +3406,7 @@ Program:68 ToDo App using NgRx
    
 
 
-Program:69 - Employee CRUD using NgRx
+Program-88 : Employee CRUD using NgRx
 =====================================
 1. Install  Store & Effect in the project
    ng add @ngrx/store
@@ -3410,8 +3515,8 @@ Program:69 - Employee CRUD using NgRx
 	  }
 
 
-Program: angular & GraphQL
-============================
+Program-89 : angular & GraphQL
+===============================
 1. install apollo-angular
    ng add apollo-angular
    
@@ -3445,8 +3550,8 @@ Program: angular & GraphQL
   </div>
   
   
-Cypress Testing
-=================
+program-90 : Cypress Testing
+==============================
 describe('My First Test', () => {
   it('Visits the initial project page', () => {
     cy.visit('/')
@@ -3470,8 +3575,8 @@ describe('My First Test', () => {
 })
 
 
-App_Initializer 
-===============
+Program-91  : App_Initializer 
+=============================
 1. Create a Configuration Service
 import { Injectable } from '@angular/core';
 @Injectable({
