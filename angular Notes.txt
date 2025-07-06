@@ -24,7 +24,7 @@ Note: for MAC if the above command doesn't work plz add sudo (sudo npm install -
 
 6. create a new angular project (go to the folder where project needs to be created)
    ng new project1 (project1 - name of the project, can be any other valid name)
-   ng new project1 --defaults
+   npx ng new project1 --defaults
    
    you will be prompted for few things, just press 'ENTER'
    1. CSS/SCSS/LESS - select css
@@ -264,6 +264,7 @@ How to Display Images from local folder
 
 Databinding
 ===========
+-Databinding Connects the data of a component with its view/UI.
 -Automatic synchronization of data between Component(TS) and view(HTML).
 
 1.  interpolation  	 {{ }} (1-way)   (component-->view)
@@ -359,12 +360,12 @@ Template Reference variables
 Assignments: 
 1. Have a paragraph & a toggle button, on click of the button control the visibility(Show/Hide) of the paragraph
 2. Create a text-area with maxLength=100, as the user keeps typing display updated Remaining characters.
-3. Create dropdown with state names, when user changes dropdown value, print the selected dropdown value in a paragraph
+3. Create dropdown with state names, when user changes dropdown value, print the selected dropdown value in a div
 4. have 2 inputBoxes, and a dropdown(+,-,*,/) and perform arithmetic operations
 5. create a input box, toggle the type of that input box to (text/password)
 6. create a counter example with 3 controls(increment,decrement,reset)
 7. Have a toggle button and control Dark/Light theme of a page.
-
+8. Temperature Converter (celcius to fahrenheit)
 
 	
 CSS
@@ -383,29 +384,30 @@ Note:- the styles written in component's css file applies only to one component.
 
 View Encapsulation
 ******************
-View encapsulation defines whether the template and styles defined within the component can affect the whole application or vice versa. 
+-View encapsulation allows to control how styles are applied to components. 
+-Prevents styles from one component affecting other components.
 
 Angular provides below encapsulation strategies:
-1. Emulated (default) - styles from main HTML(index.html) propagates to the component. 
+1. Emulated (default) - styles from main HTML(index.html/styles.css) propagates to the component. 
 					Styles defined in component are scoped to that component only.
 
-2. None - styles from the component propagate back to the main HTML and therefore are   visible to all components on the page. 
-Be careful with apps that have None components in the application. 
+2. None - styles from the component propagate back to the main HTML and therefore are visible to all components on the page. 
+applicable to any HTML element of the application
  
 3. shadowDOM - Use shadowDOM for style encapsulation (only component css will be applied)
 			   1. CSS won't come from main HTML to Component.
 			   2. css will be provided from parent to child component.
 
 ex:- encapsulation: ViewEncapsulation.Emulated(default) 
-	 encapsulation: ViewEncapsulation.ShadowDom
 	 encapsulation: ViewEncapsulation.None
+	 encapsulation: ViewEncapsulation.ShadowDom
 	 
 
-Emulated: index HTML--->parent Component (yes)
-		  index HTML-->child component (yes)
+Emulated: Global CSS--->parent Component (yes)
+		  Global CSS-->child component (yes)
 		  Parent(Emulated) --> child(Emulated) (No)
-ShadowDom: index HTML--->parent Component(shadowDOM) (No)
-		   index HTML-->child component (No)
+ShadowDom: Global CSS--->parent Component(shadowDOM) (No)
+		   Global CSS-->child component (No)
 		   Parent (shadowDOM) --> child(Emulated) (Yes)		   
 		   Parent (shadowDOM) --> child(ShadowDom) (No)		   
 None: index<--->parent Component(None)<-->child component
@@ -417,7 +419,7 @@ None: index<--->parent Component(None)<-->child component
 Directives
 **********
 -Directives Enhance the power of HTML elements.
--Directives add additional behavior to elements in Angular applications.
+-Extend the functionality of HTML Elements / Add Additional behaviour.
 -Before Angular 17  (*ngIf , *ngSwitchCase, *ngFor)
 -After angular-17  (@if , @else , @switch , @case , @default , @for, @empty , @let)
 
@@ -541,7 +543,7 @@ ngClass
 -Array of Classes: 
 	<div [ngClass]="['class1', 'class2', isActive ? 'active' : 'inactive']">
 -Combining Object and Array : 
-	<div [ngClass]="['common-class', { 'active': isActive, 'disabled': isDisabled }]">
+	<div [ngClass]="['common-class-1','common-class-2', { 'active': isActive, 'disabled': isDisabled }]">
 
 <p [class.myClass]='flag'> Add a class to an element </p>
 <p [ngClass]="myClasses"> Add Multiple classes to an element </p>
@@ -608,7 +610,7 @@ Read Data from a typescript file
 =================================
 1. create a typeascript file and export the data (employees.ts/products.ts)
    let productDate = [ {},{},{} ];
-   export default productData;
+   export default productData;				
 2. import the data & use in component file (products.component.ts)
    import productData from './products_data';  
    productsArr = productData;  // inside the class
@@ -622,14 +624,17 @@ Read Data from a typescript file
 
 How to use font-awesome (https://fontawesome.com/v4/icons/)
 =======================
-1. ng add @fortawesome/angular-fontawesome
+1. ng add @fortawesome/angular-fontawesome / npm i @fortawesome/angular-fontawesome
 			(OR)
    npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core 
    npm install @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons
    
 2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-   import { faStar } from '@fortawesome/free-solid-svg-icons'; / import { faStar } from '@fortawesome/free-regular-svg-icons';
+   import { faStar } from '@fortawesome/free-solid-svg-icons';  / import { faStar } from '@fortawesome/free-regular-svg-icons';
+   
    imports: [FontAwesomeModule]
+   
+   
 3. <fa-icon [icon]="faStar"></fa-icon>
 
 
@@ -653,7 +658,7 @@ ngxPagination
 Assignment:
 -Read data from a static array and display list of products in cards
   https://fakestoreapi.com/products
--use font-awesome to display any icons (star , delete)
+-use font-awesome to display any icons (star )
 -implement pagination
 -implement search functionality (Search By Title)
 -implement sort functionality (Price Asc, Price desc)
@@ -668,7 +673,7 @@ How to use SweetAlert (https://sweetalert2.github.io/)
 3. on button click call a function, which has the below code	
    Swal.fire('Good job!', 'You clicked the button!', 'success');
 			(OR)
-  Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question"});
+  Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question",timer:5000});
 
 
 
@@ -686,7 +691,7 @@ https://www.npmjs.com/package/ngx-toastr
 
 
 Assignment
-----------
+=========
 1. create 1 EmployeeCRUD component
 2. display list of employees in a table(data comes from an array)
 3. user should be able to delete Employee (ask user confirmation) 
@@ -721,7 +726,7 @@ Custom Directive Assignment
 	
 Angular Pipes
 =============
--transform strings, currency amounts, dates, and other data for display.
+-Transform strings, currency amounts, dates, and other data for display.
 -Pipes are used in template expressions to accept an input value and return a transformed value.
  ex: {{ 5000 | currency }}    output: $5,000.00
             (OR)
@@ -746,6 +751,8 @@ curreny
 -------                  
 {{ 5000 | currency}}
 {{ 5000 | currency : 'USD' }} 
+{{ 5000 | currency : 'USD' : 'symbol' }}
+{{ 5000 | currency : 'USD' : 'code' }} 
 {{ 5000 | currency : 'INR' }}
 {{mySal | currency : '&euro;'}}
   input | pipeName : arguement
@@ -756,6 +763,9 @@ Date
 <h5>{{today | date : 'mediumDate'}}</h5>
 <h5>{{today | date : 'longDate'}}</h5>
 <h5>{{today | date : 'fullDate'}}</h5>
+
+<div>{{today | date : 'short' }}</div>
+<div>{{today | date : 'HH:mm' }}</div>
 
 <h4>{{ today | date: "fullTime":"UTC" }}</h4>
 
@@ -798,6 +808,15 @@ slice pipe
 <h4>{{myName | slice : 2 : -1}}</h4>
 
 
+
+Pipe Chaining
+=============
+<div>{{ price | number : '1.2-2' | currency }}</div>
+<div>{{ name | titlecase | slice : 0 : 10 }}</div>
+<div>{{ today | date | uppercase }}</div>
+
+
+
 Custom Pipe
 ===========
 1. ng generate pipe remaining
@@ -821,7 +840,7 @@ Assignment
    input : 04-06-2020
    output : 5 years old
 4. declare an array of employee objects. display them in a table.
-   create a custom pipe Salutation that will add 'mr. / miss.' before the employee name.
+   create a custom pipe 'Salutation' that will add 'mr. / miss.' before the employee name.
 5. declare an array of employee objects. display them in a table. 
    add a search-box above the table. create a custom-pipe to filter/search employees data.
 
@@ -970,7 +989,9 @@ The hooks/lifecycle methods are executed in this order:
 constructor()
 -This is invoked when Angular creates a component or directive by calling new on the class.
 -Initialize class variables,dependency Injection.
--No Business Logic should be written in constructor.
+-No Business Logic should be written in constructor. 
+-Avoid : Http Requests, Complex Computations, DOM Manipulations
+
 
 ngOnChanges()
 -ngOnchanges() will not be invoked if the component doesn't have inputs:[]
@@ -979,9 +1000,9 @@ ngOnChanges()
 
 
 ngOnInit()
--Invoked for every component when a component gets Initialized.
+-Invoked for every component when a component gets Initialized. After Component's Properties have been initialized.
 -This hook is called only once, after the first ngOnChanges.not after every ngOnchanges()
--Time Consuming Logic goes here. Ex:- API Call
+-Time Consuming Logic goes here. Ex:- Fetching Data, Complex Computations
 
 
 ngDoCheck()
@@ -1020,8 +1041,6 @@ ngOnDestroy()
 -This method is invoked just before Angular destroys the component.
 -Clean up code.  ex:- clearInterval(),clearTimeout(); unsubscribe();
 
-
-N.p-ngDoCheck and ngOnChanges should not be implemented together on the same component
 
 
 
@@ -1099,10 +1118,11 @@ Angular Services
 - Lazily instantiated
 	(Angular only instantiates a service when a component depends on it)
 - Singletons
-	(Each component dependent on a service gets a reference to the single instance generated by the service factory.only one instance of the service gets created through-out the application)
+	(Each component dependent on a service gets a reference to the single instance generated by the service factory.
+	only one instance of the service gets created through-out the application)
 
 -create a service using angular CLI
- ng generate service myService
+ ng generate service <serviceName>
 		
 
 
@@ -1182,7 +1202,7 @@ https://docs.angular.lat/guide/dependency-injection-providers
 Communicating with backend services using HTTP
 ==============================================
 -frontEnd applications need to communicate with a server to Fetch or Send data.
--Using HttpClient an angular application can communicate with server.
+-Angular application communicates with server Using 'HttpClient' module.
 
 
 HTTP Methods
@@ -1248,6 +1268,7 @@ Free Online REST API for Testing
 3. https://fakestoreapi.com/products
 4. https://api.github.com/users/google
 5. https://dummyjson.com/products
+   https://dummyjson.com/users/search?q=michael
 6. https://dummy.restapiexample.com/  (CRUD)
 7. https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies
 8. https://api.publicapis.org/entries
@@ -1353,7 +1374,8 @@ models in Angular
 -Interfaces are used in Typescript to perform type-checking,Interface cannot be used to instantiate.
 -Classes are used not only for type-checking but also if we need some methods,they are used to instantiate.
 
-
+Types of Models:
+---------------
 InterFace As Model: 
 	1. Improves Readability
 	2. Structure Enforcement : fields mentioned in interface can only be used in view.
@@ -1369,6 +1391,10 @@ Http Interceptor
 ================
 -interceptors are used to pre-process and post-process the HTTP request.
 -Used before sending request and after getting response from the server. 
+
+Angular Service/Component Triggers API--> Interceptor --> modifies the Request --> Backend Server
+Backend Server --> response --> Interceptor --> modifies the Response --> Angular Service/Component
+
 
 Use Cases:
 -Add an Access Token or some custom HTTP header for all outgoing HTTP requests.
@@ -1392,6 +1418,7 @@ How to Use Interceptors
     provideRouter(routes),
     provideHttpClient(withInterceptors([logInterceptor]))
   ],
+
 
 
 
@@ -1455,9 +1482,6 @@ Error Handling      catchError , retry, retryWhen
 Mathematical  		count, max , min , reduce
 
 
-
-
-
     // publisher
     const observable1 = new Observable((publisher) => {
       publisher.next('AAAAAAAA')
@@ -1478,8 +1502,8 @@ Mathematical  		count, max , min , reduce
    
 Digital Clock
 =============
-this.time$ = new Observable<string>(observer => {
-   setInterval(() => observer.next(new Date().toLocaleTimeString()), 1000);
+currentTime$ = new Observable<string>(publisher => {
+   setInterval(() => publisher.next(new Date().toLocaleTimeString()), 1000);
 });
 
 
@@ -1494,10 +1518,6 @@ forkjoin()
 -One common use case is if you wish to issue multiple requests on page load (or some other event) and only want to take action when a response has been received for all. this is similar to Promise.all()
 
 
-movies - [ 1,2,3,4,5]
-		1 - imdb API
-		2 - imdb API
-		
 
 map() vs mergemap() vs concatmap() vs switchmap():
 --------------------------------------------------
@@ -1508,8 +1528,8 @@ mergeMap() = map + mergeAll
     -MergeMap never cancels any of its inner observable. It waits for them to finish and emit value.
 	-MergeMap does not care about the order.
 	-inner observables might finish in an order that is different from the order in which they are subscribed
-	-receive data from an observable (outer observable). For each of those values, you want to call another observable (inner observable) to get more data.
-	-mergeMap the movie into an http request to IMDB and by that, to enhance your movie cards with this additional data
+	-receive data from an observable (outer observable). For each of those values, we want to call another observable (inner observable) to get more data.
+	-mergeMap the movie into an http request to IMDB and by that, to enhance our movie cards with this additional data
 	
 	outerObservable.pipe(mergeMap(OuterObservableResponse => {
       return this.httpClient.get(`https://jsonplaceholder.typicode.com/users/${OuterObservableResponse}`)
@@ -1544,8 +1564,7 @@ ExhaustMap()
 	-we have a login screen with a login button, where each click is mapped to 1 login request.
 	-If the user clicks more than once on the login button, it will cause multiple calls to the server.
 	-use exhaustMap to temporarily “disable” the mapping while the first http request is still on the go.
-	-
-	-this makes sure you never call the server while the current request is running.
+	-this makes sure we never call the server while the current request is running.
 
 
 
@@ -1594,15 +1613,15 @@ one Obeserver.                       	* Store data and modify frequently
 
 Observables
 ===========
-1. They are cold: Code gets executed when they have at least a single observer.
+1. They are cold: Code gets executed when they have at least 1 subscriber/observer.
 2. Creates copy of data: Observable creates copy of data for each observer.
-3. Uni-directional: Observer/subscriber can not assign value to observable.
+3. Uni-directional: subscriber can only read data, subscriber can not assign value to observable.
 
 Subjects (Subject,ReplaySubject,BehaviorSubject)
 ================================================
 1. They are hot: code gets executed and value gets broadcasted even if there is no observer/consumer/subscriber.
 2. Shares data: Same data gets shared between all observers.
-3. bi-directional: Observer/subscriber can assign value to observable.
+3. bi-directional: subscriber can read data, subscriber can assign value to observable.
 
 
 	subjects				Each Next Subscribers receive
@@ -1616,7 +1635,11 @@ AsyncSubject  --------  latest value when stream gets closed (complete)
 
 Assignment
 ==========
-create 1 employee crud application using 'subject' 
+1. create 'employee' service, which holds employees data as Subject/BehaviorSubject.
+2. Provide Methods addEmployee(), clearEmployee() in employee service
+3. components can subscribe the observable present in service to read employee data and display 
+4. implement add new Employee
+5. Implement Delete Employee
 
 
 
@@ -1627,7 +1650,8 @@ What are signals
 -Signals can contain any value, from primitives to complex data structures.
 -We read a signal's value by calling its getter function, which allows Angular to track where the signal is used.
 -Signals may be either writable or read-only
--A signal is not a replacement for RxJS and Observables for asynchronous operations, such as http.get
+-A signal is not a replacement for RxJS
+-RxJS and Observables are meant for asynchronous operations, such as http.get()
 
 
 Disadvantage of Change Detection
@@ -1759,10 +1783,12 @@ Classes:
 -------
 ng-pristine : No user interaction occured/not yet modified
 ng-dirty : User interaction occured/modified
-ng-valid : It meets all the validation
+
 ng-invalid : One of the Validation is not meeting
-ng-touched: already touched (blur)
+ng-valid : It meets all the validation
+
 ng-untouched: not yet touched
+ng-touched: already touched (blur)
 
 
 
@@ -1779,7 +1805,7 @@ Template Driven Form
       <input name="firstName" ngModel /> 
    
    c. use 'ngModelGroup' to group multiple fields
-	 <fieldset ngModelGroup="address">...</fieldset>
+	 <div ngModelGroup="address">...</div>
 
 3. Receive the data in component class from our form
    <form #myForm="ngForm" (submit)="printFormData(myForm)"></form>
@@ -1849,13 +1875,13 @@ Model driven form
 	a. import { ReactiveFormsModule } from '@angular/forms';
 	b. imports:[ReactiveFormsModule]  
 	
-2. view 
+2. view/HTML  File Changes
 	a. use formGroup with form
 		<form [formGroup]="registerForm"> </form>
 	b. use formControlName with every form field
 		<input formControlName="firstname">
-	c. use formGroupName to group multiple form fields.
-	    <fieldset formGroupName="address">...</fieldset>
+	c. use formGroupName to group multiple form fields
+	    <div formGroupName="address">...</div>
 
 3. Component
 	a. create FormGroup class Object to group fields
@@ -2078,6 +2104,11 @@ Login component
 
 
 
+routerLink vs [routerLink]
+==========================
+-routerLink takes a string as path/route , [routerLink] binds to a variable, an array, or an expression.
+
+
 	
 Protecting routes with guard
 ----------------------------
@@ -2096,7 +2127,7 @@ Router-Guard
 ------------
 1. create a guard by using below CLI command
    ng g guard auth 
-   (change the logic inside the guard)   
+   (change the logic inside the guard, to return true/false)   
 
 2. in Route Configuration protect the route by adding canActivate:[myGuard]
    {
@@ -2165,7 +2196,7 @@ loadComponent: () =>
 @defer()
 ========
 -To reduce the initial bundle size of our application.
--The content of the main @defer block is lazily loaded.
+-The content of the @defer block is lazily loaded.
 -any component that is written inside @defer, a separate CHUNK file gets created
 -@defer blocks have several sub blocks to allow you to gracefully handle different stages in the deferred loading process.
 -@placeholder is an optional block that declares content to show before the defer block is triggered.
@@ -2430,6 +2461,7 @@ Spy: Used to track calls to a function without altering its actual behavior.
 	 spyOn(obj, 'greet'); // spy
 Stub: Used to replace the function's implementation to control its behavior during testing.
      spyOn(obj, 'greet').and.returnValue("Stubbed greeting!"); // stub
+
 
 
 Stub
@@ -2762,9 +2794,9 @@ State Management using NGRX
 -It helps developers build large-scale applications with heavy data communications while sustaining high application performance.
 
 -NgRx provides a way to maintain data in our Angular application as a single source of truth.
--Instead of injecting services everywhere and managing communication between them,NgRx manages your application from one singular source.
+-Instead of injecting services everywhere and managing communication between them,NgRx manages our application from one singular source.
  
-UI-->Action-->Reducer-->Store(State)--->selectors--->UI
+Store(State)--->selector--->UI/Component-->Action-->Reducer-->Store
 
 
 5 parts of NgRx:
@@ -2777,7 +2809,7 @@ components can subscribe to the store and get automatic updates of state through
 A Reducer simply takes the action as an input and returns the new state according the action type and payload
 3.Actions : modify the state of the store by using reducers (functions) that enable changes while keeping it immutable
 4.Selectors : Selector is a function used for obtaining a part of the state from the store.
-5.Effects : A mechanism that listens for dispatched actions in an observable stream,processes the server response, and returns new actions either immediately or asynchronously to the reducer to change the state
+5.Effects : Listens for dispatched actions in an observable stream,processes the server response, and returns new actions either immediately or asynchronously to the reducer to change the state
   
   
 Key concepts
@@ -2815,6 +2847,25 @@ GraphQL
 -it allows the client to query only the data that they need.
 
 -The most popular  GraphQL library is Apollo Client.  
+
+
+| Feature                 | REST                       | GraphQL                        |
+| ----------------------- | -------------------------- | --------------------------------|
+| Endpoints           | Multiple per resource      | Single `/graphql` endpoint         |
+| Data Fetching       | Fixed responses            | Flexible queries                   |
+| Over/Under Fetching | Common                     | Rare                               |
+| Versioning          | Usually via URL/versioning | Often avoided via schema evolution |
+| Tooling             | Mature and simple          | Powerful but more complex          |
+| Caching             | HTTP cache friendly        | Needs custom caching strategies    |
+| Learning Curve      | Easier                     | Steeper                            |
+
+
+
+Free GraphQL APIs
+==================
+https://countries.trevorblades.com/graphql
+https://studio.apollographql.com/public/countries/variant/current/explorer
+
 
 
 
@@ -2882,6 +2933,21 @@ Dependencies VS Dev-Dependencies
   (bootstrap,sweetalert,react-modal)
   ex: npm i eslint
  
+ 
+ 
+ 
+Angular application with security
+=================================
+1. Authentication : JWT (JSON Web Tokens) / OAuth2
+2. Route Guards : Protect Angular routes using guards
+3. Token Interceptor : Intercept HTTP requests to attach JWT
+4. XSS (Cross-site Scripting) Prevention : Angular has built-in protections - Use {{ userInput }} instead of innerHTML
+5. CSRF (Cross-Site Request Forgery) : If using cookies for auth , Use HttpOnly and SameSite=Strict/Lax
+6. Secure Storage : Prefer in-memory storage over localStorage/sessionStorage for tokens, Do not store sensitive data (like passwords) in the browser
+7. HTTPS & CORS : use HTTPS in production , Configure CORS correctly on the backend to accept requests only from trusted domains
+8. Content Security Policy (CSP) : Configure CSP in your web server to restrict sources of scripts, styles, images, etc.
+9. Dependency Security : Keep Angular and dependencies updated. npm audit fix
+10. Logout & Token Expiry Handling : Invalidate tokens on logout, Handle token expiration gracefully (redirect to login, refresh token, etc.)
  
  
  
@@ -2961,3 +3027,4 @@ https://angular.dev/tools/language-service
 https://angular.dev/tools/devtools
 https://testbook.com/interview/angular-architecture-interview-questions
 https://desireinfotech.biz/assets/download/Angular-Course.pdf
+https://v2.angular.io/docs/ts/latest/guide/lifecycle-hooks.html

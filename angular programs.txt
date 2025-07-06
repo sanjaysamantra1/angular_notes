@@ -167,6 +167,25 @@ export class AppComponent {
 }
 
 
+Character & Word Count
+======================
+userInput: string = '';
+get characterCount(): number {
+   return this.userInput.length;
+}
+get wordCount(): number {
+   if (!this.userInput.trim()) return 0;
+   return this.userInput.trim().split(/\s+/).length;
+}
+----------
+<h2>Live Text Stats</h2>
+<textarea [(ngModel)]="userInput" rows="6" placeholder="Start typing..."></textarea>
+<div class="stats">
+   <p><strong>Character Count:</strong> {{ characterCount }}</p>
+   <p><strong>Word Count:</strong> {{ wordCount }}</p>
+</div>
+  
+
 
 
 
@@ -469,6 +488,90 @@ Program-19 : star Rating
 
 
 
+
+Program :  tic tac toe
+=======================
+  board: string[][] = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', '']
+  ];
+  currentPlayer: string = 'X';
+  winner: string | null = null;
+
+  makeMove(row: number, col: number): void {
+    if (!this.board[row][col] && !this.winner) {
+      this.board[row][col] = this.currentPlayer;
+      if (this.checkWinner()) {
+        this.winner = this.currentPlayer;
+      } else {
+        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+      }
+    }
+  }
+
+  checkWinner(): boolean {
+    const lines = [
+      // Rows
+      ...this.board,
+      // Columns
+      [this.board[0][0], this.board[1][0], this.board[2][0]],
+      [this.board[0][1], this.board[1][1], this.board[2][1]],
+      [this.board[0][2], this.board[1][2], this.board[2][2]],
+      // Diagonals
+      [this.board[0][0], this.board[1][1], this.board[2][2]],
+      [this.board[0][2], this.board[1][1], this.board[2][0]]
+    ];
+
+    return lines.some(line => line.every(cell => cell === this.currentPlayer));
+  }
+  reset(): void {
+    this.board = [
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', '']
+    ];
+    this.currentPlayer = 'X';
+    this.winner = null;
+  }
+-------------------------------
+<div class="board">
+  <div *ngFor="let row of board; let rowIndex = index" class="row">
+    <button *ngFor="let cell of row; let colIndex = index"
+            class="cell"
+            (click)="makeMove(rowIndex, colIndex)">
+      {{ cell }}
+    </button>
+  </div>
+</div>
+<div *ngIf="winner" class="winner">
+  Winner: {{ winner }} 🎉
+</div>
+<button (click)="reset()">Reset Game</button>
+--------------------------------------------
+.board {
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  margin-bottom: 10px;
+}
+.row {
+  display: flex;
+}
+.cell {
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  margin: 2px;
+}
+.winner {
+  font-size: 18px;
+  margin: 10px 0;
+}
+
+
+
+
   
 Program-20 : Custom Directive
 =============================
@@ -624,6 +727,7 @@ Program-25 : How to use Modal
             <div class="modal-body">
                 <p>id: {{ selectedEmployee?.eId }}</p>
                 <p>Name: {{ selectedEmployee?.name }}</p>
+                <p>sal: {{ selectedEmployee?.sal }}</p>
                 <p>sal: {{ selectedEmployee?.sal }}</p>
             </div>
             <div class="modal-footer">
@@ -1460,12 +1564,13 @@ export class Employee {
   firstName: string;
   lastName: string;
   sal: number;
-
-  constructor(id: number, firstName: string, lastName: string, sal: number) {
+  gender: string;
+  constructor(id: number, firstName: string, lastName: string, sal: number, gender: string) {
     this.id = id;
     this.firstName = firstName;
     this.lastName = lastName;
     this.sal = sal;
+    this.gender = gender;
   }
   getFullName(): string {
     return `${this.firstName} ${this.lastName}`;
@@ -1535,8 +1640,8 @@ export const loadingInterceptor: HttpInterceptorFn = (req, next) => {
 }
 
 
-Program-53 : Loading Interceptor
-===============================
+LoadingService
+------------------
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
@@ -1822,10 +1927,12 @@ export class ObservableDemo3Component {
   ngOnInit() {
     this.searchResult$ = this.searchForm.get("searchField").valueChanges.pipe(
       switchMap((term) =>
-        this.http.get<any>(`https://swapi.dev/api/people/?search=${term}`)
+        // this.http.get<any>(`https://swapi.dev/api/people/?search=${term}`)
+		this.http.get<any>(`https://dummyjson.com/users/search?q=${term}`)
       ),
       map((response: any) =>
-        response.count > 0 ? response.results : []
+        // response.count > 0 ? response.results : [];
+		 response.users.length > 0 ? response.users : []
     ));
   }
 }
@@ -1849,6 +1956,48 @@ export class ObservableDemo3Component {
     </table>
 </div>
 
+  
+  
+switchmap with other pipes
+================================
+// user-search.component.ts
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, switchMap, takeUntil } from 'rxjs/operators';
+import { Subject } from 'rxjs';
+import { UserService } from './user.service';
+
+@Component({
+  selector: 'app-user-search',
+  templateUrl: './user-search.component.html',
+})
+export class UserSearchComponent implements OnInit, OnDestroy {
+  searchControl = new FormControl('');
+  users: any[] = [];
+  private destroy$ = new Subject<void>();
+
+  constructor(private userService: UserService) {}
+
+  ngOnInit() {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(500),
+        distinctUntilChanged(),
+        switchMap(query => this.userService.searchUsers(query)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(results => {
+        this.users = results;
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+}
+  
+  
   
 
 program-61 : exhaustMap Example
@@ -2149,6 +2298,31 @@ export class HeaderComponent {
     })
   }
 }
+
+
+
+
+Program : Signal
+================
+  cookieCount: WritableSignal<number> = signal(10);
+  butter = computed(() => this.cookieCount() * 0.1);
+  sugar = computed(() => this.cookieCount() * 0.05);
+  flour = computed(() => this.cookieCount() * 0.2);
+  update(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.cookieCount.set(parseInt(input.value));
+  }
+--------------
+	<h2>Cookie recipe</h2>
+    <label>
+      # of cookies:
+      <input type="range" min="10" max="100" step="10" [value]="cookieCount()" (input)="update($event)" />
+      {{ cookieCount() }}
+    </label>
+    <p>Butter: {{ butter() }} cup(s)</p>
+    <p>Sugar: {{ sugar() }} cup(s)</p>
+    <p>Flour: {{ flour() }} cup(s)</p>
+
 
 
 
@@ -2499,10 +2673,8 @@ import { FormGroup, FormArray, FormBuilder } from '@angular/forms';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  empForm!: FormGroup;
-  constructor(private fb: FormBuilder) { }
-
-  ngOnInit() {
+  empForm: FormGroup;
+  constructor(private fb: FormBuilder) {
     this.empForm = this.fb.group({
       employees: this.fb.array([])
     });
@@ -2834,7 +3006,7 @@ N.P:- Create 3 components
 
 	
 
-Program-78 : Path-Param Example
+Program-78 : Path Param Example
 ==============================
 1. create productDetailsComponent
    ng g c productDetails
@@ -2854,9 +3026,10 @@ Program-78 : Path-Param Example
    {
    }
    ngOnInit() {
-    this.activatedRoute.params.subscribe(params => {
-       this.id = +params['id']; // (+) converts string 'id' to a number
-       // In a real app: make Http call to get the details
+    this.activatedRoute.params.pipe(switchMap((params: any) =>
+        this.http.get(`https://jsonplaceholder.typicode.com/users/${params.id}`)
+      )).subscribe((userResponse: any) => {
+      this.user = userResponse;
     });
   }	
 
@@ -2888,9 +3061,34 @@ program-79 : Query-param example
 		  this.prod = queryparams;
 		});
 	}
- 
 
+
+
+Nested Route
+============
+1. Create Nested Route Components
+   ng g c components/permanentjobs 
+   ng g c components/contractjobs
+2. add those components as nested route in app.routes.ts
+    {
+    path: 'careers',
+    component: CareersComponent,
+    children: [
+      { path: 'permanent', component: PermanentjobsComponent },
+      { path: 'contract', component: ContractjobsComponent },
+    ]
+  }
+3. in main route(Careers.html) add links & <router-outlet>
+    <div class="col-sm-2">
+      <div><a routerLink="permanent">Permanent Jobs</a></div>
+      <div><a routerLink="contract">Contract Jobs</a></div>
+    </div>
+    <div class="col-sm-10">
+      <router-outlet></router-outlet>
+    </div>
 	  
+
+
 	  
 Program-80 : Router Guard
 ==========================
@@ -3035,9 +3233,9 @@ export class TrafficSignalComponent {
   timer: any;
   constructor() {
     this.config = {
-      "red": { nextColor: 'green', duration: 4000 },
-      "green": { nextColor: 'yellow', duration: 3000 },
-      "yellow": { nextColor: 'red', duration: 1000 }
+      "red": { nextColor: 'green', duration: 3000 },
+      "green": { nextColor: 'yellow', duration: 5000 },
+      "yellow": { nextColor: 'red', duration: 2000 }
     };
     this.colorsArr = Object.keys(this.config);
   }
@@ -3294,7 +3492,7 @@ describe("WeatherProcessor", function () {
 
 
 Program-86 : Counter App using NgRx
-=================================
+===================================
 1. Install NgRx Store in the project
    ng add @ngrx/store
    
@@ -3414,7 +3612,7 @@ Program-88 : Employee CRUD using NgRx
    
 2. Create action File (employee.actions.ts)
 	import { createAction, props } from '@ngrx/store';
-	import { Employee } from '../models/employee';
+	import { Employee } from '../../models/employee';
 	export const fetchEmployees = createAction('[EmployeeList Page] Fetch Employees');
 	export const fetchEmployeesSucess = createAction(
 		'[Employees API] Employees Loaded Successfully',
@@ -3432,7 +3630,7 @@ Program-88 : Employee CRUD using NgRx
 	
 3. Create Reducer File(employee.reducer.ts)
 	import { createReducer, on } from '@ngrx/store';
-	import { fetchEmployeesSucess } from './employee.actions';
+	import { fetchEmployeesSucess } from '../actions/employee.actions';
 	export const initialState = [];
 	export const employeesReducer = createReducer(
 	  initialState,
@@ -3446,8 +3644,9 @@ Program-88 : Employee CRUD using NgRx
 	import { Actions, createEffect, ofType } from '@ngrx/effects';
 	import { of } from 'rxjs';
 	import { map, exhaustMap, catchError } from 'rxjs/operators';
-	import { EmployeeService } from '../services/employee.service';
-	import { addEmployee, deleteEmployee, fetchEmployees } from './employee.actions';
+	import { EmployeeService } from '../../services/employee.service';
+	import { addEmployee, deleteEmployee, fetchEmployees } from '../actions/employee.actions';
+	
 	@Injectable()
 	export class EmployeeEffects {
 		loadEmployees$: any;
@@ -3491,21 +3690,42 @@ Program-88 : Employee CRUD using NgRx
         ));
     }
 		
+}
+
+5. create employee.service.ts
+	import { HttpClient } from '@angular/common/http';
+	import { Injectable } from '@angular/core';
+	@Injectable({
+	  providedIn: 'root'
+	})
+	export class EmployeeService {
+	  constructor(private httpClient: HttpClient) { }
+	  fetchAllEmployees() {
+		return this.httpClient.get('http://localhost:3000/employees');
+	  }
+	  deleteEmployee(id: string) {
+		return this.httpClient.delete(`http://localhost:3000/employees/${id}`)
+	  }
+	  addEmployee(newEmp: any) {
+		return this.httpClient.post('http://localhost:3000/employees', newEmp)
+	  }
 	}
 
-5. Provide the Store & effect(app.config.ts)
+
+6. Provide the Store & effect(app.config.ts)
     providers: [
 		provideStore({ employees: employeesReducer }),
 		provideEffects(EmployeeEffects)
     ]
 
-6. Add Employee-list and add-employee component
-	  employees$: Observable<Employee[]> = this.store.select(state => state.employees);
+7. Add Employee-list and add-employee component
+	  employees$: Observable<Employee[]> | undefined;
 	  constructor(private store: Store<{ employees: Employee[] }>) {
+		this.employees$ = this.store.select(state => state.employees);
 	  }
 	  ngOnInit() {
-		this.store.dispatch({ type: '[EmployeeList Page] Fetch Employees' });
-		// this.store.dispatch(fetchEmployees());
+		// this.store.dispatch({ type: '[EmployeeList Page] Fetch Employees' });
+		this.store.dispatch(fetchEmployees());
 	  }
 	  deleteEmp(id: string) {
 		const flag = confirm('Are you sure, You want to delete this record?')
@@ -3521,33 +3741,45 @@ Program-89 : angular & GraphQL
    ng add apollo-angular
    
 2. in app.config.ts add backend URL
-   uri: 'http://localhost:5000/',
+   uri: 'https://countries.trevorblades.com/graphql'
    
-3. add the below code in component
-  import { Apollo, gql } from 'apollo-angular'; 
-   
-  comments: any;
-  constructor(private readonly apollo: Apollo) { }
+3. To Fetch Data From GraphQL API add the below code in component
+
+  countries: any;
+  constructor(private readonly apollo: Apollo) {
+  }
   ngOnInit() {
-    const GET_COMMENTS = gql`
-    query comments {
-      comments {
-        id
-        name
+    this.fetchCountries();
+  }
+  fetchCountries() {
+    const GET_COUNTRIES = gql`
+    query GetCountries {
+      countries {
+        code,name,currency
       }
     }
   `;
-    const queryRef = this.apollo.watchQuery<any>({ query: GET_COMMENTS });
+    const queryRef = this.apollo.watchQuery<any>({ query: GET_COUNTRIES });
     queryRef.valueChanges.subscribe((response: any) => {
-      this.comments = response.data.comments;
-      console.log(this.comments)
+      console.log(response);
+      this.countries = response.data.countries;
     });
   }
   
 4. use the data in HTML file
-   <div *ngFor="let data of comments">
-    {{data.id}}-{{data.name}}
-  </div>
+   <table class="table table-bordered table-striped">
+	  <tbody>
+		@for (country of countries; track $index) {
+		  <tr>
+			<td>{{country.code}}</td>
+			<td>{{country.name}}</td>
+			<td>{{country.currency}}</td>
+		  </tr>
+		}
+	  </tbody>
+  </table>
+  
+  
   
   
 program-90 : Cypress Testing
