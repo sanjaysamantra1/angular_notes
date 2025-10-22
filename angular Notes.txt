@@ -14,7 +14,7 @@ Angular installation
 		OR
    npm install -g @angular/cli@latest
 		OR
-   npm install -g @angular/cli@17
+   npm install -g @angular/cli@19
 Note: for MAC if the above command doesn't work plz add sudo (sudo npm install -g @angular/cli)
 
 5. check if angular CLI  is installed??
@@ -32,7 +32,7 @@ Note: for MAC if the above command doesn't work plz add sudo (sudo npm install -
 7. Run the project / Start the project
    in command prompt go to the project directory (ex: c:/users/sanjay/angular/project1)
    Run the Below command 
-   ng serve 
+   ng serve   		(step-8 is required)
 	  (OR)
    ng serve --open 
 	  (OR)
@@ -43,11 +43,14 @@ Note: for MAC if the above command doesn't work plz add sudo (sudo npm install -
     http://localhost:4200
   
 
--To Run the project in other port
+-To Run the project in other port              
 	ng serve --port 5000 --open
 
 
-npx @angular/cli new angular-internationalization-example --style=css --routing=false --skip-tests
+ng new angular-wheather-app --standalone --style=css --routing=false --skip-tests --defaults
+			(OR)
+npx @angular/cli new angular-wheather-app --standalone --style=css --routing=false --skip-tests
+
 
 
 
@@ -61,8 +64,8 @@ vscode extensions
 6. thunderclient
 
 
-Chrome Extensions
-=================
+Browser Extensions
+===================
 1. Mobile Simulator
 2. Angular DevTools
 3. Redux DevTools
@@ -72,10 +75,21 @@ Chrome Extensions
 
 Angular
 =======
--Angular is a platform and framework for building single-page client applications using HTML and TypeScript.
+-Angular is a framework for building single-page client applications using HTML and TypeScript.
 -A framework is a set of helper functions,tools and rules that help us to build our application.
 -Angular is a collection of well-integrated libraries that cover a wide variety of features including routing,forms management, client-server communication, and more
 -Angular is a suite of developer tools to help us develop, build, test, and update our code. (Angular CLI)
+
+
+SPA (Single Page Application)
+===
+-Loads a single HTML page initially, Dynamically updates content without refreshing the entire page.
+	Initial Load: Browser downloads one HTML, CSS, and JavaScript bundle.
+	Navigation: Instead of asking the server for a new page, JavaScript changes the view in the browser.
+	Data Fetching: Content is fetched asynchronously (AJAX/fetch/axios) from APIs.
+Advantages : Faster navigation, Better user experience
+Disadvantages : SEO challenges , Large initial load
+
 
 
 
@@ -148,12 +162,12 @@ important properties of module are:
 
 Component
 =========
--Components are the most basic UI building block of an Angular app. 
+-Components are building blocks of angular applications. Each component controls a part of the user interface.
 -An Angular app contains a tree of Angular components.
 -Each component defines a class that contains application data and logic, and is associated with an HTML template that defines a view to be displayed.
 -@Component() decorator identifies the class immediately below it as a component, and provides the template and related component-specific metadata.
 
-https://angular.io/api/core/Component#description
+https://angular.dev/api/core/Component
 
 @Component configuration options:
 --------------------------------
@@ -212,7 +226,7 @@ c: Component
 scaffold	usage
 ---------   --------
 project     ng new <ProjectName>
-Component	ng g component my-new-component
+Component	ng generate component my-new-component / ng g c my-new-component
 Directive	ng g directive my-new-directive
 Pipe	    ng g pipe my-new-pipe
 Service	    ng g service my-new-service
@@ -224,7 +238,7 @@ interceptor ng g interceptor my-interceptor
 Resolver    ng g resolver my-resolver
 Module	    ng g module my-new-module
 
-https://angular.io/cli/generate
+https://angular.dev/cli/generate
 
 
 
@@ -239,7 +253,7 @@ package-lock.json : 	Provides version information for all packages installed int
 src/			:  Source files for the root-level application project.
 node_modules/	: Provides npm packages to the entire workspace. Workspace-wide node_modules dependencies are visible to all projects.
 tsconfig.json	: The base TypeScript configuration for projects in the workspace. All other configuration files inherit from this base file. For more information, see the Configuration inheritance with extends section of the TypeScript documentation.
-tslint.json		: Default TSLint configuration for projects in the workspace.
+
 
 
 
@@ -264,8 +278,9 @@ How to Display Images from local folder
 
 Databinding
 ===========
--Databinding Connects the data of a component with its view/UI.
--Automatic synchronization of data between Component(TS) and view(HTML).
+-synchronization of data between Component(TS) and view(HTML).
+-Allows to bind component's properties/data to the view.
+-when component's properties/data change, the view is automatically updated.
 
 1.  interpolation  	 {{ }} (1-way)   (component-->view)
 2.  property Binding  [ ]  (1-way)   (component-->view)
@@ -276,8 +291,9 @@ Databinding
     bindon-ngModel
     Note:For 2-way bindning "FormsModule" should be imported
 	
-InterPolation: for concatenating strings;Doesn't work with boolean values
-Property: to set an element property to a non-string data value.
+InterPolation: to bind text-content/expressions to an element, converts the bound value to a string.
+Property: assigns the bound value to a DOM property, preserves the type of the bound value.
+2-way : When user updates the view, component's data is also updated, and vice versa.
 
 
 2-way Binding:
@@ -302,8 +318,7 @@ Attribute Binding
 -Attribute Binding is needed while working with HTML attributes that do not have corresponding DOM properties, such as colspan, aria-* , data-* attributes
 
 -attributes are defined by HTML and properties are defined by the DOM.
--The attribute’s main role is to initializes the DOM properties. once the DOM initialization complete, the
-attributes job is done.
+-The attribute’s main role is to initializes the DOM properties. once the DOM initialization complete, the attributes job is done.
 -Property values can change, whereas the attribute values don't change.
 -Property Reflects real-time state changes, whereas Attribute Doesn't change dynamically after creation.
 
@@ -402,7 +417,6 @@ ex:- encapsulation: ViewEncapsulation.Emulated(default)
 	 encapsulation: ViewEncapsulation.None
 	 encapsulation: ViewEncapsulation.ShadowDom
 	 
-
 Emulated: Global CSS--->parent Component (yes)
 		  Global CSS-->child component (yes)
 		  Parent(Emulated) --> child(Emulated) (No)
@@ -410,7 +424,7 @@ ShadowDom: Global CSS--->parent Component(shadowDOM) (No)
 		   Global CSS-->child component (No)
 		   Parent (shadowDOM) --> child(Emulated) (Yes)		   
 		   Parent (shadowDOM) --> child(ShadowDom) (No)		   
-None: index<--->parent Component(None)<-->child component
+None: Global CSS<--->parent Component(None)<-->child component
 	 
 
 
@@ -425,13 +439,10 @@ Directives
 
 1. Structural Directives : 
 	Directive which changes the layout/structure of the DOM.
-	* is used with structural directives.
-	only 1 structural directive can be applied to an element.
-
+	
 2. Attribute Directives : ([ngStyle],[ngClass])
 	Directive which changes behaviour/appearance of the DOM element.
-	[ ] is used with attribute direcives.
-	many attribute directives can be applied to an element.
+	
 
 Note : Compononent can also be considered as directive, because it powers up the html by creating Custom Element, but the directives cannot be considered as component because it does not have a View (template and templateUrl cannot be used in directives)
 
@@ -461,7 +472,7 @@ Switch Case
     @case (5) { <h1>Friday</h1> }
     @case (6) { <h1>Saturday</h1> }
     @case (7) { <h1>Sunday</h1> }
-    @default { <h1>Not a Valid number</h1>> }
+    @default { <h1>Not a Valid number</h1> }
 }
 
 
@@ -483,12 +494,8 @@ Switch Case
    @for (entry of myMap; track $index){
        <div>{{entry[0]}} === {{entry[1]}}</div>
 	}
-4. @for() with index
-	@for (item of items; track item; let index = $index) {
-		<li>{{ index }}: {{ item }}</li>
-    }
-   
 
+Local variables inside For Loop:
 -Before Angular 17 (index,first,last,even,odd)
 -After Angular 17 ($index,$first,$last,$even,$odd,$count)
 
@@ -508,14 +515,6 @@ ngFor trackBy
 Migrate/convert from old syntax to new syntax
 =============================================
 ng generate @angular/core:control-flow
-
-
-
-Assignment:
-==========
--Declare an array of users, display users in card & table format. 
- add a button/switch to toggle between table view and card view.
- https://jsonplaceholder.typicode.com/users
 
 
 
@@ -554,13 +553,37 @@ ngClass
 
 
 
+Directive Assignment:
+====================
+1. Declare an array of users, display users in card & table format. 
+ add a button/switch to toggle between table view and card view.
+ https://jsonplaceholder.typicode.com/users
+
+employees = [
+  { id: 1, name: 'John', role: 'Manager', salary: 85000, status: 'Active' },
+  { id: 2, name: 'Alice', role: 'Developer', salary: 45000, status: 'Active' },
+  { id: 3, name: 'Bob', role: 'Tester', salary: 30000, status: 'Inactive' },
+  { id: 4, name: 'Eve', role: 'HR', salary: 40000, status: 'Active' }
+];
+
+2. Display Array of employees in a table
+   a. Display Salary in green  if salary > 50000, else Display Salary in red, using [ngStyle]
+   b. Apply a CSS class "inactive" to employees whose status is "Inactive" using [ngClass]
+   c. Add bold font and blue color only for employees whose role is "Manager" using [ngClass]
+   d. Apply a different row background color based on employee role:
+		Manager = lightyellow , Developer = lightblue , Tester = lightpink
+   e. Show salary in a badge style with dynamic color
+      Green if salary > 70,000 , Orange if between 40,000–70,000, Red if < 40,000
+
+
 
 ng-template , ng-container
 ==========================
 -<ng-template> directive represents an Angular template.
 -content of this <ng-template> will contain part of a template, that can be composed together with other templates in order to form the final component template. 
 -Angular is already using <ng-template> under the hood in many of the structural directives that we use all the time: ngIf, ngFor and ngSwitch
- 
+
+-It’s a logical container that does not render any extra DOM element.
 -Angular <ng-container> is a grouping element that doesn't interfere with styles or layout because Angular doesn't put it in the DOM.
 -if we need a helper element for nested structural directives.<ng-container> can be used instead of creating an un-nscessary element(<div>).
 
@@ -568,10 +591,10 @@ ng-template , ng-container
 
 ng-content/ Content projection
 ==============================
--used to create configurable components.
--Components that are used in published libraries make use of <ng-content> to make themselves configurable.
--if We want to insert HTML elements or other components in a component, then We do that using the concept of content projection. 
--We achieve content projection using <ng-content></ng-content>
+-Create configurable components. 
+-Component with Dynamic Content.
+-way to pass HTML (content) from a parent component into a child component’s template.
+-content projection is achieved using <ng-content></ng-content> inside component’s template.
 https://www.freecodecamp.org/news/everything-you-need-to-know-about-ng-template-ng-content-ng-container-and-ngtemplateoutlet-4b7b51223691/
 
 
@@ -624,14 +647,16 @@ Read Data from a typescript file
 
 How to use font-awesome (https://fontawesome.com/v4/icons/)
 =======================
-1. ng add @fortawesome/angular-fontawesome / npm i @fortawesome/angular-fontawesome
+1. ng add @fortawesome/angular-fontawesome 
 			(OR)
-   npm install @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core 
-   npm install @fortawesome/free-solid-svg-icons @fortawesome/free-regular-svg-icons
+   npm i @fortawesome/angular-fontawesome @fortawesome/free-solid-svg-icons
+   npm i @fortawesome/angular-fontawesome @fortawesome/free-regular-svg-icons
+   npm i @fortawesome/angular-fontawesome @fortawesome/fontawesome-svg-core 
+ 
    
 2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
    import { faStar } from '@fortawesome/free-solid-svg-icons';  / import { faStar } from '@fortawesome/free-regular-svg-icons';
-   
+
    imports: [FontAwesomeModule]
    
    
@@ -658,7 +683,7 @@ ngxPagination
 Assignment:
 -Read data from a static array and display list of products in cards
   https://fakestoreapi.com/products
--use font-awesome to display any icons (star )
+-use font-awesome to display any icons (star icon for rating)
 -implement pagination
 -implement search functionality (Search By Title)
 -implement sort functionality (Price Asc, Price desc)
@@ -695,7 +720,7 @@ Assignment
 1. create 1 EmployeeCRUD component
 2. display list of employees in a table(data comes from an array)
 3. user should be able to delete Employee (ask user confirmation) 
-4. view the details of each employee in a modal (bootstrap Modal)
+4. view the details of selected employee in a modal (bootstrap Modal)
 5. add a new employee to the table (insert a new record to the array)
    use SnackBar to display message ('EmployAdded Successfully' - message should be maintained in a constant file)
 6. use font-awesome to display any icons (star , delete, edit)
@@ -706,10 +731,22 @@ Custom Directives
 =================
 -Create custom directives to attach custom behavior to elements in the DOM.
 -@Directive decorator is used to create a custom Directive.
--directives won't have templates, whereas components have templates.
+-Directives won't have templates, whereas components have templates.
 
--@HostBinding  -  Set a property on the host element.
--@HostListener  - Listen events from the host element.
+@HostBinding  -  Set a property on the host element.
+@HostListener  - Listen events from the host element.
+ElementRef - Binds directive state to host element
+
+
+@HostBinding vs ElementRef
+--------------------------
+ElementRef : Gives direct access to DOM element
+			 Usecases : Focus, scroll, measure, attach events
+			 this.ele.nativeElement.focus()
+HostBinding : Binds directive state to host element
+              Toggle CSS classes, styles, attributes
+			  @HostBinding('class.active') isActive = true;
+
 
 
 Component vs Directive
@@ -723,6 +760,7 @@ Custom Directive Assignment
 1. create a custom directive (zoomout) which scales the element by 150%.
 
 
+
 	
 Angular Pipes
 =============
@@ -732,6 +770,7 @@ Angular Pipes
             (OR)
 <div [innerHTML]='name | lowercase'></div>
 -To apply a pipe, use the pipe operator (|)  as shown in the above example.
+-To Use pipes, CommonModule needs to be imported
 
 -Angular provides built-in pipes,The following are commonly used built-in pipes for data formatting.
 1.lowercase
@@ -739,7 +778,7 @@ Angular Pipes
 3.titlecase
 4.currency
 5.date
-6.number
+6.number / decimal
 7.percent	
 8.json 
 9.keyvalue - Iterate Object
@@ -957,6 +996,10 @@ Assignment
 
 component lifecycle hooks/method 
 ================================
+-Components & Directives go through a series of lifecycle phases - from creation to destruction.
+-For Each Phase angular provides lifecycle hooks(methods)
+
+
 constructor - ngOnChanges - ngOnInit  - ngDoCheck - ngAfterContentInit - 
 ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - ngOnDestroy. (1+8)
 
@@ -994,14 +1037,15 @@ constructor()
 
 
 ngOnChanges()
+-Called after constructor and before ngOnInit
+-whenever @input() / inputs:[] property value changes
 -ngOnchanges() will not be invoked if the component doesn't have inputs:[]
--Invoked every time there is a change in one of the input properties of the component.
 -inside ngOnchanges() we can access previous and current value of a variable.
 
 
 ngOnInit()
 -Invoked for every component when a component gets Initialized. After Component's Properties have been initialized.
--This hook is called only once, after the first ngOnChanges.not after every ngOnchanges()
+-Called only once, after the first ngOnChanges. not after every ngOnchanges()
 -Time Consuming Logic goes here. Ex:- Fetching Data, Complex Computations
 
 
@@ -1014,7 +1058,7 @@ ngDoCheck()
 -By using ngDoCheck and KeyValueDiffer, we can monitor changes in complex objects that might not be caught by Angular's default change detection mechanism.
 
 
-ngAfterContentInit()
+ngAfterContentInit()  
 -Invoked after Angular performs any content projection into the components view 
 -Runs only once after the first ngDoCheck()
 -Use ngAfterContentInit to call something once after all of the content has been initialized
@@ -1027,10 +1071,9 @@ ngAfterContentChecked()
 
 
 ngAfterViewInit() 
--Invoked when the component’s view has been fully initialized.
--this is the best place for DOM manipulation.
+-Invoked when the component’s view(and child view) has been fully initialized.
 -is called once after ngAfterContentChecked.
--ngAfterViewInit() is called after all child components are initialized and checked.
+-this is the best place for DOM manipulation. Access template elements using @ViewChild
 
 
 ngAfterViewChecked() 
@@ -1046,26 +1089,29 @@ ngOnDestroy()
 
 Angular Change Detection Strategies
 ====================================
-there are 2 change detection strategies: 
+There are 2 change detection strategies: 
 		1. default  (CheckAlways)
 		2. onpush   (CheckOnce)
-		
-Default:
--------
--Angular runs change detection on all components when any asynchronous events occur.
--user events, HTTP requests, timers
+-By default, Angular uses the Default strategy.
+-In Default mode, whenever something happens (event, async call, input change, timer, etc.), Angular checks all components in the component tree to see if anything changed ? this can become slow in large apps.
 
 OnPush
-------
--The OnPush strategy can significantly improve performance by reducing the frequency of change detection runs
-- It tells Angular to run change detection for the component only when
-	An @Input property changes due to a reference change.
-	An event originated from the component or one of its children.
-	You manually trigger change detection.
-		
-Benefits of OnPush Change Detection:
-Performance: Reduces the number of change detection cycles, especially beneficial for large applications with many components.
-Predictability: Changes are only detected when input references change or when an event originates from the component, making the component behavior more predictable.
+======
+When we set a component’s change detection strategy to OnPush, Angular will only check that component when:
+	An @Input() property changes (new reference, not just mutation).
+	An event happens inside the component (like (click)).
+	we manually trigger detection (e.g., ChangeDetectorRef.markForCheck()).
+This reduces unnecessary re-rendering and makes your app faster.
+
+-With OnPush, mutatthis.employees[0].role = 'Team Lead';ing an object/array directly won’t trigger change detection. we must create a new reference.
+	ex:  // mutation of object (will NOT update)
+-This forces us to write immutable code, which is cleaner and more predictable.
+	ex: this.employees = [
+		  { ...this.employees[0], role: 'Team Lead' },
+		  ...this.employees.slice(1)
+		];
+
+
 
 
 
@@ -1112,16 +1158,17 @@ ViewContainerRef.createComponent()
 
 Angular Services
 ****************
-- share logic/data across components.
-- code Reusability
+-share logic/data across components.
+-code Reusability
 	(write once use that in multiple components)
-- Lazily instantiated
+-Lazily instantiated
 	(Angular only instantiates a service when a component depends on it)
-- Singletons
+-Singletons
 	(Each component dependent on a service gets a reference to the single instance generated by the service factory.
 	only one instance of the service gets created through-out the application)
+-Services are created to handle common usecases like : logging , Http , Auth
 
--create a service using angular CLI
+-Create a service using angular CLI
  ng generate service <serviceName>
 		
 
@@ -1134,12 +1181,11 @@ steps to create and use service
 	 
 2. use a service in component
    a. import service to component file
-   b. create a referrence variable for that service(inside constructor) / Dependency Injection
+   b. create an instance of the service(inside constructor) / Dependency Injection
    c. using the referrence variale make use of methos and properties from service
    
 	class MathComponent{
-		constructor(private mathObj : MathService){
-			
+		constructor(private mathObj : MathService){		
 		}
 	}
 			(OR)
@@ -1153,7 +1199,7 @@ steps to create and use service
 Dependency injection 
 =====================
 -Dependency injection (DI), is an application design pattern. 
--Dependency Injection framework provides declared/mentioned dependencies to a class when that class is instantiated.   
+-Provides mentioned dependencies to a class when that class is instantiated.   
 
 constructor(private myHttp:HttpClient){}
 	OR
@@ -1172,6 +1218,7 @@ Assignment
 3. Display List of Employees in a table / Card
    have a dropdown with 3 values- allEmployees , maleEmployees , femaleEmployees
    based on the dropdown value selected, employee data should be shown
+
 
 
 
@@ -1242,7 +1289,7 @@ Idempotent
 
 PUT vs PATCH
 ------------
--PUT is used to replace an existing resource.
+-PUT is used to replace a complete resource.
 -PATCH is used to apply partial modifications to a resource.
 
 		 
@@ -1258,7 +1305,7 @@ http status codes
 
 POSTMAN
 =======
--application / Chrome extension used to Test REST APIs.
+-application / Chrome extension used to Test APIs.
  https://www.postman.com/downloads/
 
 
@@ -1273,6 +1320,8 @@ Free Online REST API for Testing
 7. https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies
 8. https://api.publicapis.org/entries
 9. https://github.com/geertjanw/ojet-training/blob/master/employeeData.json
+10. http://endeavourtech.ddns.net:8095/stockanalytics/stocks/getAllStockFundamentalsJPA
+    http://endeavourtech.ddns.net:8095/stockanalytics/swagger-ui/index.html#/
 
 
 Create REST API with json-server
@@ -1478,7 +1527,7 @@ Combination			forkjoin, combineLatest, concat, merge,mergeAll, startWith ,zip, r
 Filtering			debounceTime, distinctUntilChanged, filter, take, takeUntil, first
 Transformation		bufferTime, concatMap, map, mergeMap/flatMap, scan, switchMap
 Utility				tap,delay,repeat
-Error Handling      catchError , retry, retryWhen
+Error Handling      catchError , retry, retryWhen, timeout
 Mathematical  		count, max , min , reduce
 
 
@@ -1502,9 +1551,10 @@ Mathematical  		count, max , min , reduce
    
 Digital Clock
 =============
-currentTime$ = new Observable<string>(publisher => {
-   setInterval(() => publisher.next(new Date().toLocaleTimeString()), 1000);
-});
+currentTime$: Observable<string> | undefined;
+digital_clock() {
+  this.currentTime$ = interval(1000).pipe(map(()=>new Date().toLocaleTimeString()))
+}
 
 
 
@@ -1513,9 +1563,10 @@ currentTime$ = new Observable<string>(publisher => {
 
 forkjoin()
 ---------
--forkJoin is an operator that takes any number of input observables passed as an array of input observables.
--This operator is best used when you have a group of observables and only care about the final emitted value of each.
--One common use case is if you wish to issue multiple requests on page load (or some other event) and only want to take action when a response has been received for all. this is similar to Promise.all()
+-forkJoin is an rxjs operator that takes array of observables.
+-Allows to run multiple API calls in parallel and get the response once all complete.
+-when we need to wait for several async tasks to finish.
+-works like Promise.all()
 
 
 
@@ -1526,7 +1577,7 @@ Map() :  For each value that the Observable emits we can apply a function in whi
 mergeMap() = map + mergeAll
 	-Merging values from two or more HTTP Calls.
     -MergeMap never cancels any of its inner observable. It waits for them to finish and emit value.
-	-MergeMap does not care about the order.
+	-MergeMap does not care about the order. (check the completion, ex:console)
 	-inner observables might finish in an order that is different from the order in which they are subscribed
 	-receive data from an observable (outer observable). For each of those values, we want to call another observable (inner observable) to get more data.
 	-mergeMap the movie into an http request to IMDB and by that, to enhance our movie cards with this additional data
@@ -1745,6 +1796,18 @@ https://pasquale-favella.github.io/blog/16
 
 
 
+Signal Assignment
+=================
+-Create a ToDo List Application using signal
+-declare a signal to maintain array of todos
+-declare 2 computed signals 1.completedToDos  2.remainingToDos
+-have a 'Toggle' button to toggle isCompleted Flag
+
+
+
+
+
+
 
 Forms in Angular
 ================
@@ -1946,8 +2009,7 @@ ex: this.myForm.patchValue({name:'UpdatedName'})
 	
 Routing
 =======
--Single-Page Applications (SPAs) are Web apps that load a single HTML page and 
-dynamically update that page as the user interacts with the application.
+-Single-Page Applications (SPAs) are Web apps that load a single HTML page and dynamically update that page as the user interacts with the application.
 -Complete page reload doesn't happen. only a portion of a page gets loaded.
 -Every time a link is clicked or the browser URL changes, Angular router makes sure our application reacts accordingly.
 
@@ -2012,7 +2074,7 @@ Note: all these routes:[] are used in app.config.ts
    
    
 4.  Add below code in Nav-bar.component.html  & import 'RouterLink' in Typescript file
-   <a class="nav-link" routerLink="home" routerLinkActive="active-link">Home</a>
+   <a class="nav-link" routerLink="home">Home</a>
    <a class="nav-link" routerLink="aboutus">Aboutus</a>
    <a class="nav-link" routerLink="careers">Careers</a>
    
@@ -2181,8 +2243,8 @@ Steps to use resolvers
 Lazy Loading of components
 ==========================
 -Lazy loading is the process of loading components, modules, or other assets of a website as they're required.
--Eager loading loads all of its components at once. This means that a lot of unnecessary libraries or modules might be loaded as well.
--For a small application this would be okay. But as the application grows the load time will increase if everything is loaded at once. 
+-Eager loading loads all of its components(main.js) at once. This means that a lot of unnecessary libraries or modules might be loaded as well.
+-For a small application eager Loading would be okay. But as the application grows the load time will increase if everything is loaded at once. 
 -Lazy loading allows Angular to load components and modules as and when they're needed.
 
 { 
@@ -2190,7 +2252,21 @@ path: 'products',
 loadComponent: () =>
             import('./components/product-list/product-list.component').then((x) => x.ProductListComponent)
 }
-		
+	
+	
+Lazy loading a standalone component
+===================================
+-Any route can lazily load its routed, standalone component by using loadComponent
+
+1. Remove the import at the top
+   import { ProductListComponent } from './components/product-list/product-list.component';
+2. use loadComponent() instead of component
+ { path: 'productlist', component: ProductListComponent }
+ 
+ {
+ path: 'admin', 
+ loadComponent: () => import('./components/product-list/product-list.component').then(response => response.ProductListComponent) 
+ }
 
 
 @defer()
@@ -2206,15 +2282,31 @@ ex: @loading (after 100ms; minimum 1s)
 -@error block allows you to declare content that will be shown if deferred loading fails.
  
 
-
 @defer {
   <large-component />
 } @placeholder (minimum 500ms) {
   <p>Placeholder content</p>
 }
 
- 
- 
+Note:
+@defer alone  : delays rendering, but no separate bundle.
+@defer + dynamic import() :  delays rendering and triggers code-splitting (separate bundle).
+
+ex: 
+1. import the component dynamically(home.component.ts)
+   largeComponent:any;
+  constructor() {
+    import('../large-component/large-component').then(m => {
+      this.largeComponent = m.LargeComponent;
+    });
+  }
+2. Render the component using ng-container
+	@defer {
+		<ng-container *ngComponentOutlet="largeComponent"></ng-container>
+	} @placeholder (minimum 500ms) {
+		<p>Placeholder content</p>
+	}
+
 
 
 Angular Preloading Strategy
@@ -2240,19 +2332,7 @@ https://www.tektutorialshub.com/angular/angular-preloading-strategy/
 
 
 
-Lazy loading a standalone component
-===================================
--Any route can lazily load its routed, standalone component by using loadComponent
 
-1. Remove the import at the top
-   import { ProductListComponent } from './components/product-list/product-list.component';
-2. use loadComponent() instead of component
- { path: 'productlist', component: ProductListComponent }
- 
- {
- path: 'admin', 
- loadComponent: () => import('./components/product-list/product-list.component').then(response => response.ProductListComponent) 
- }
 
 
 
@@ -2370,15 +2450,17 @@ Hostinger
 
 Deploy Angular Application in GitHub
 ====================================
-   git checkout -b mybranch1
-1. 	 (OR)
-   ng add angular-cli-ghpages
-2. 
-	ng build --base-href angular_project_feb_2025 --configuration=production
-	ng build --output-path docs --base-href angular_project_feb_2025 --configuration=production
-3. ngh --dir dist/angular_project_feb_2025/browser
+1. switch to a branch
+	git checkout -b mybranch1
+2. Add angular-cli-ghpages package
+    ng add angular-cli-ghpages / npm i -g angular-cli-ghpages
+3. Build & Deploy
+	ng build --base-href angular_project_feb_2025 
+	ng build --output-path docs --base-href angular_project_feb_2025
+4. ngh --dir dist/angular_project_feb_2025/browser     /   ngh --dir docs/browser  
    go to github website & open your Repository
-   Settings Tab --> pages --> you should see the live URL
+   Settings Tab --> pages --> SelectBranch & Folder(gh-pages & root)
+   you should see the live URL
 
 			(OR)
 1. Create a GitHub repository for your project.   
@@ -2400,6 +2482,8 @@ Deploy Angular Application in GitHub
    wait for 1 min project will be deployed, and live url will be seen 
 
 
+
+
   
 Unit Testing Using Jasmine and karma
 ====================================
@@ -2407,10 +2491,10 @@ Unit Testing Using Jasmine and karma
 -The purpose is to validate that each unit of the software code performs as expected. 
 -Unit Testing is done during the development (coding phase) of an application by the developers. 
 -Unit Tests isolate a section of code and verify its correctness. 
--A unit may be an individual function ,block, component, pipe , or directive.
+-A unit may be an individual function ,block, component, pipe , or directive, service.
  
 
--jasmine is framework for testing javascript code.
+-jasmine is framework for testing javascript code. (https://jasmine.github.io/tutorials/your_first_suite)
 -karma is a test runner ( Runs the test cases & generates Report)
 
 ng test/t --code-coverage=true
@@ -2443,10 +2527,10 @@ toContain()
 Set-up & tear-down
 Jasmine Global Functions
 ------------------------
-beforeAll()
-beforeEach()
-afterEach()
-afterAll()
+beforeAll()    1
+beforeEach()   N Times
+afterEach()    N Times
+afterAll()     1
 
 
 fdescribe() - focused describe. If it exists, jasmine will run only fdescribe spec and ignore other type of describe (describe and xdescribe).
@@ -2742,7 +2826,7 @@ Angular Material
 ================
 -Material Design components for Angular.
 -Angular Material offers a wide variety of UI components based on the Material Design specification.
--Autocomplte, Badge, Button, Card, DatePicker, Dialog, Icon, Menu, Paginator
+-Autocomplete, Badge, Button, Card, DatePicker, Dialog, Icon, Menu, Paginator
 
 
 How to use Angular-Material
@@ -2824,7 +2908,7 @@ store-devtools (https://ngrx.io/guide/store-devtools)
 ==============
 1. add 'Redux Devtools Extension' in browser (chrome)
 2. ng add @ngrx/store-devtools
-3. add the below code in app.config.ts
+3. add/verify the below code in app.config.ts
    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
 
 
@@ -2840,11 +2924,26 @@ https://angular.dev/tools/cli/environments
   
 GraphQL
 =======
+-GraphQL is a query language for APIs developed by Facebook.
 -GraphQL overcomes major shortcomings of REST.
--A query language for your API.
--in REST, the client makes an HTTP request and data is sent as an HTTP Response.
+-in REST for each resource we define multiple endpoints (GET,POST PUT,PATCH,DELETE)
+-Instead of multiple endpoints, we expose a single /graphql endpoint where clients ask exactly for what they need
 -in GraphQL,the client Requests the data with queries.
--it allows the client to query only the data that they need.
+
+
+
+How It Works
+============
+-Clients send a query specifying exactly which fields and nested relationships they want.
+-The server returns just that data in a single response.
+-Strongly typed schema defines all possible queries and data types.
+
+Advantages
+=========
+-No over-fetching or under-fetching: Clients get only what they ask for.
+-Single request for complex nested data: Reduces network chatter.
+-Strongly typed schema: Great for auto-generating documentation, validation, and tooling.
+-Easier to evolve APIs: Adding fields doesn’t break clients.
 
 -The most popular  GraphQL library is Apollo Client.  
 
@@ -2953,8 +3052,7 @@ Angular application with security
  
 TreeShaking
 ===========
--tree shaking is a good mechanism for reducing the size of an Angular application.
--Tree shaking is the ability to remove any code that we are not actually using in our application from the final bundle. 
+-It's dead code elimination process.
 -It's a step in build process that removes unused code. 
 -The 'target'&'module' of the compilerOptions are key for tree shaking. 
 -We are telling Typescript to transpile our code to ES5 ("target": "es5") while preserving  the import keyword for our modules ("module": "es2015"). 
@@ -2976,21 +3074,33 @@ Traceur Compiler
 
 
 
-CORS
+CORS(Cross-Origin-Resource-Sharing)
 ====
-1. create proxy.conf.json inside src folder & add the below code
-	{
-	  "/api/*": {
-		"target": 'http://localhost:3000',
-		"secure": false
-	  }
-	}
-2. Add a proxyConfig key to angular.json
-   "options": {
-      "browserTarget": "your-application-name:build",
-      "proxyConfig": "src/proxy.conf.json"
-    },
-3. ng serve 
+-CORS (Cross-Origin Resource Sharing) is a security feature implemented by web browsers to prevent harmful cross-origin requests. 
+-It blocks requests made from one origin(domain/protocol,port) to another origin unless explicitly allowed by the server.
+-CORS allows servers to specify which domains can access their resources/API.
+
+A cross-origin request happens when:
+The protocol (HTTP/HTTPS), domain (example.com), or port (8080) differs from the origin where the browser is loading the page from.
+For example, if a webpage at http://localhost:3000 tries to make an API request to http://api.example.com, this is considered a cross-origin request.
+
+
+Key Features:
+-Prevents unauthorized cross-origin requests: 
+	By default, browsers block requests made from one domain to another (a different origin). The cors middleware enables specific domains or all domains to access your resources.
+-Customizable origin policies: 
+	We can whitelist specific origins, methods, and headers that are allowed to interact with your server.
+ 
+
+
+How Does CORS Work
+------------------
+-When a browser detects a cross-origin request, it sends an HTTP OPTIONS request (Preflight request) before making the actual request. 
+-The server must respond with appropriate CORS headers to indicate whether the request is allowed.
+	Access-Control-Allow-Origin: https://example.com
+	Access-Control-Allow-Methods: GET, POST, PUT, DELETE
+	Access-Control-Allow-Headers: Content-Type, Authorization
+These headers tell the browser which domains, methods, and headers are permitted.
 
 
 
@@ -3004,7 +3114,74 @@ APP_INITIALIZER
 -Used for below use cases
 	Fetching remote configurations.
 	Authenticating a user via token.
-	Initializing feature flags or other global state.
+	Initializing feature flags or other global state
+
+
+
+Progressive Web App (PWA)
+==========================
+-A Progressive Web App is a web app that behaves like a native app
+    Application opens offline after first load
+	Offline Support via service workers
+	installables (Add to Home Screen)
+	Faster Loading
+	Background Sync
+	Cross Platform - browser / OS / device
+	Push Notification
+	
+-PWA = Web + Native App Feel + Offline + Installable
+
+-Angular has built-in tooling to turn any project into a PWA quickly.
+ angular automatically configures service worker, manifest and icons
+ 
+
+
+
+
+
+
+
+Angular application Performance Improvement 
+============================================
+1. trackBy in ngFor 
+   -without trackBy, angular re-renders the whole list when an item changes in the list, 
+   -use trackBy to optimize rendering.
+   
+   @for (item of statesArr;track $index){}	
+
+2. Change detection Startegy 
+   changeDetection: ChangeDetectionStrategy.OnPush
+	
+3. Lazy Loading 
+   Load module/component only when needed, not upfront when application starts
+   dynamic Import makes a component to load lazily
+   
+4. Preloading Strategy
+   
+ 
+
+
+
+Security Threats
+=================
+1. Cross-Site Scripting (XSS)
+	-malicious scripts injected into our app that run in user's browser.
+	-Angular automatically escapes HTML {{}}
+	-avoid using innerHTML
+	-sanitize DomSanitizer
+	-use dompurify(npm package) if we have to render rich HTML content
+
+2. Cross-Site Request Forgery (CSRF)
+   SameSite Cookies
+
+3. Insecure Storage
+   -storing sensitive data(JWT,Password) in plain text in localstorage / session storage
+   -use encrypted storage
+   -do not store passwords on client side
+   -clear sensitive data on logout
+
+4. ClickJacking
+   
 
 
 
@@ -3013,7 +3190,16 @@ APP_INITIALIZER
 
 
 
-ng add @angular-eslint/schematics@14
+
+ 
+   
+========================================================================
+ 
+   
+REST EndPoints : 
+1. public APIs : APIs returns data before authentication
+2. private APIs : APIs returns data after authentication
+
 
 
 
@@ -3028,3 +3214,4 @@ https://angular.dev/tools/devtools
 https://testbook.com/interview/angular-architecture-interview-questions
 https://desireinfotech.biz/assets/download/Angular-Course.pdf
 https://v2.angular.io/docs/ts/latest/guide/lifecycle-hooks.html
+ng add @angular-eslint/schematics@14

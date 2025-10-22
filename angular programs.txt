@@ -5,6 +5,10 @@ program-1:Use bootstrap
 	@import 'bootstrap/dist/css/bootstrap.css';
 3. add "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" in angular.json
    projects ->architect->build->scripts:[]  
+   
+Note: As alternate to point-3, the below code can be added in index.html
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
 
 
 program-2:display Local image
@@ -16,7 +20,7 @@ program-2:display Local image
 
 
 	
-program-3:interpolation and property binding
+program-3:interpolation and property escribe
 ----------------------------------------
 import { Component } from '@angular/core';
 @Component({
@@ -116,12 +120,12 @@ program-7:Property-Binding vs Attribute-Binding
 
 Program-8:Dark/Light Mode
 =========================
-toggleMode() {
+changeTheme() {
     this.flag = !this.flag;
     if (this.flag) {
-      document.body.classList.add('dark');
+      document.body.style.backgroundColor = 'white';
     } else {
-      document.body.classList.remove('dark');
+      document.body.style.backgroundColor = 'black';
     }
 }
 
@@ -390,7 +394,6 @@ export class AppComponent {
         }
     </datalist>
 <div>Selected state: {{selectedState}}</div>		
-		
 		
 		
 
@@ -1406,6 +1409,59 @@ export class AppComponent {
 
 
 
+Clock Service
+=============
+import { Injectable } from '@angular/core';
+@Injectable({
+  providedIn: 'root'
+})
+export class ClockService {
+  private format24Hour = true;
+  private paused = false;
+  private intervalId: any = null;
+  private currentTime: string = '';
+  private listeners: ((time: string) => void)[] = [];
+  constructor() {
+    this.start();
+  }
+  private start() {
+    this.intervalId = setInterval(() => {
+      if (!this.paused) {
+        this.currentTime = this.getFormattedTime();
+        this.notifyListeners();
+      }
+    }, 1000);
+  }
+  private getFormattedTime(): string {
+    const now = new Date();
+    if (this.format24Hour) {
+      return now.toLocaleTimeString('en-GB'); // 24-hour
+    } else {
+      return now.toLocaleTimeString('en-US'); // 12-hour
+    }
+  }
+  onTick(callback: (time: string) => void) {
+    this.listeners.push(callback);
+    callback(this.currentTime); // send immediately
+  }
+  private notifyListeners() {
+    this.listeners.forEach(cb => cb(this.currentTime));
+  }
+  toggleFormat() {
+    this.format24Hour = !this.format24Hour;
+  }
+  pause() {
+    this.paused = true;
+  }
+  resume() {
+    this.paused = false;
+  }
+  getTodayDate(): string {
+    return new Date().toLocaleDateString();
+  }
+}
+
+
 
 
 program-45: httpClient example
@@ -1582,10 +1638,11 @@ export class Employee {
 
 
 getEmployees(): Observable<Employee[]> {
-    return this.httpClient.get<Employee[]>(this.url, { observe: 'body' }).pipe(
-      map((response: Employee[]) => {
-        return response.map((emp: Employee) => {
-          return new Employee(emp.id, emp.firstName, emp.lastName, emp.sal);
+    return this.httpClient.get<Employee[]>(this.url).pipe(
+      map((responseArr: Employee[]) => {
+        return responseArr.map((empInfo: Employee) => {
+		  let { id, firstName, lastName, salary, gender } = empInfo;
+          return new Employee(id, firstName, lastName, salary, gender);
         });
       })
     );
@@ -1766,7 +1823,7 @@ zipDemo() {
 program-57 : forkjoin()
 ========================
 fetchDataFromMultipleAPIs() {
-    let userNames = ['sanjaysamantra1', 'ushamahesh818', 'seun035'];
+    let userNames = ['sanjaysamantra1', 'ushamahesh818', 'seun035','vamshi5454'];
     let requests = userNames.map(userName => {
       return this.httpClient.get(`https://api.github.com/users/${userName}`)
     });
@@ -1937,6 +1994,7 @@ export class ObservableDemo3Component {
   }
 }
 
+
 --------------------------------
 <div class="jumbotron">
     <h1>Search Something</h1>
@@ -1947,7 +2005,9 @@ export class ObservableDemo3Component {
         <tbody>
             @for(user of searchResult$ | async ; track $index;){
                 <tr>
-                    <td>{{user.name}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.phone}}</td>
                     <td>{{user.gender}}</td>
                     <td>{{user.height}}</td>
                 </tr>
@@ -2387,6 +2447,22 @@ Program-67 : effects
   incrementUserId() {
     this.userId.update(val => val + 1);
   }
+--------------------------------
+<h3 class="text-center">Let's Learn Signal & Effects</h3>
+<div class="col-sm-4 offset-4">
+  <div class="card">
+    <div class="card-body text-center">
+      <h5 class="card-title">{{userData.id}}</h5>
+      <h5 class="card-title">{{userData.username}}</h5>
+      <p class="card-text">{{userData.email}}</p>
+      <p class="card-text">{{userData.phone}}</p>
+      <p class="card-text">{{userData.address.city}}</p>
+      <p class="card-text">{{userData.website}}</p>
+      <button class="btn btn-primary" (click)="incrementUserId()">Increment</button>
+      <button class="btn btn-danger mx-2" (click)="destroyEffect()">Destroy Effect</button>
+    </div>
+  </div>
+</div>
 
 
 
@@ -2747,7 +2823,7 @@ export class AppComponent {
                             <input type="text" formControlName="exp" />
 
                             <button (click)="removeEmployeeSkill(empIndex,skillIndex)">
-                                Remove
+                                X
                             </button>
                         </div>
                     </div>
@@ -2919,89 +2995,32 @@ Program-76 : Password Generator
 
 program-77 : routing
 =====================
-1. Specify the Base URL: <base href="/"> in index.html
-2. Import RouterModule from '@angular/router'
-3. Define the routes
+1. create components
+	ng g c home
+	ng g c aboutus
+	ng g c career
+	ng g c notfound
 
-app.module.ts
--------------
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+2. in app.routes.ts configure all the routes.
+	const routes: Routes = [
+	  { path: 'home', component: HomeComponent },
+	  { path: 'aboutus', component: AboutusComponent },
+	  { path: 'careers', component: CareersComponent },
+	  { path: '', component: HomeComponent },
+	  { path: '**', component: NotfoundComponent },
+	];
 
-import { AppComponent } from './app.component';
-import { HomeComponent } from './home/home.component';
-import { AboutusComponent } from './aboutus/aboutus.component';
-import { CareerComponent } from './career/career.component';
+Note: all these routes:[] are used in app.config.ts
+     provideRouter(routes)
 
-import { appRoutes } from './routerConfig'
-
-@NgModule({
-    declarations: [
-        AppComponent,
-        HomeComponent,
-        AboutusComponent,
-        CareerCompon ent,
-    ],
-    imports: [
-        BrowserModule, RouterModule.forRoot(appRoutes)
-    ],
-    providers: [],
-    bootstrap: [AppComponent]
-})
-export class AppModule { }
-
-routerconfig.ts
-----------------
-import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { AboutusComponent } from './aboutus/aboutus.component';
-import { CareerComponent } from './career/career.component';
-
-export const appRoutes: Routes = [
-
-    {
-        path: 'home',
-        component: HomeComponent
-    },
-    {
-        path: 'aboutUs',
-        component: AboutusComponent
-    },
-    {
-        path: 'career',
-        component: CareerComponent
-    },
-    {
-        path: '',
-        //redirectTo: 'home',
-        component:HomeComponent,
-        //pathMatch: 'full'
-    },
-	{
-        path: '**',
-        component: notFoundComponent
-    }
-]
-
-
-app.component.html
--------------------
-	<div style="text-align: center">
-	  <h1>This is {{title}}</h1>
-	  <nav>
-		<a routerLink="home">Home</a> <br><br>
-		<a routerLink="aboutUs">About Us</a> <br><br>
-		<a routerLink="career">Career</a>
-	  </nav>
-	  <hr>
-	  <router-outlet></router-outlet>
-	</div>
-
-N.P:- Create 3 components
-	  ng g c home
-	  ng g c aboutUs
-	  ng g c career
+3. use router-outlet in HTML & import 'RouterOutlet' in Typescript file
+    <router-outlet></router-outlet>
+   
+   
+4.  Add below code in Nav-bar.component.html  & import 'RouterLink' in Typescript file
+   <a class="nav-link" routerLink="home">Home</a>
+   <a class="nav-link" routerLink="aboutus">Aboutus</a>
+   <a class="nav-link" routerLink="careers">Careers</a>
 
 
 	
@@ -3041,18 +3060,20 @@ Program-78 : Path Param Example
 
 program-79 : Query-param example
 =================================
-1. create a new route and add in route configuration
+1. create productDetailsComponent
+    ng g c productDetails
+	
+2. add the component in route configuration
    {
     path: 'productdetails', 
     component: ProductdetailsComponent
   }
   
-2. add the below code in products.html
-   <button class="btn btn-primary" [routerLink]="['/productdetails']" 
-   [queryParams]="{id:x.id,name:x.name,price:x.price}">
-       View Details</button>
+3. add the below code in products.html
+   <button class="btn btn-primary mx-1" [routerLink]="['/productdetails']"
+            [queryParams]="{id:product.id,name:product.title,price:product.price}">Details</button>
 		
-3. add the below code in productdetails.comp.ts
+4. add the below code in productdetails.comp.ts
 	constructor(public activatedRoute: ActivatedRoute) {		
 	}
 	ngOnInit(){
@@ -3287,58 +3308,6 @@ export class TrafficSignalComponent {
 
  
 
-Program-84 : jasmine karma
-==========================
-import { JasmineComponent } from './jasmine.component';
-
-describe('I am testing Jasmine component', () => {
-  var obj = new JasmineComponent();
-
-  it('I am testing add method', () => {
-    expect(obj.add(2, 3)).toBe(5);
-  })
-  it('I am testing sub method', () => {
-    expect(obj.sub(2, 3)).toBe(-1);
-  })
-  it('I am testing even method', () => {
-    expect(obj.isNumberEven(8)).toBe(true);
-    expect(obj.isNumberEven(3)).toBe(false);
-  })
-  it('I am testing odd method', () => {
-    expect(obj.isNumberOdd(8)).toBe(false);
-    expect(obj.isNumberOdd(13)).toBe(true);
-  })
-})
-****************
-import { Component, OnInit } from '@angular/core';
-
-@Component({
-  selector: 'app-jasmine',
-  templateUrl: './jasmine.component.html',
-  styleUrls: ['./jasmine.component.css']
-})
-export class JasmineComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-  public add(a, b) {
-    return a + b;
-  }
-  public sub(a, b) {
-    return a - b;
-  }
-  public isNumberEven(num){
-    return num%2 === 0;
-  }
-  public isNumberOdd(num){
-    return num%2 !== 0;
-  }
-}
-
-
 Program-85  : Testing Service with HttpClient
 ================================================
 import { TestBed } from '@angular/core/testing';
@@ -3355,6 +3324,7 @@ describe('UserService', () => {
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
+        provideZonelessChangeDetection()
       ]
     });
     service = TestBed.inject(UserService);
@@ -3514,13 +3484,13 @@ Program-86 : Counter App using NgRx
 	);
 4. Provide the Store to the whole application(app.config.ts)
    providers: [
-    provideStore({ count: counterReducer })
+    provideStore({counterReducer })
   ]
 
 5. Create Counter Component (counter.component.ts)
   count$: Observable<number>;
-  constructor(private store: Store<{ count: number }>) {
-    this.count$ = store.select('count');
+  constructor(private store: Store) {
+    this.count$ = store.select((state: any) => state.counterReducer);
     console.log(this.count$)
   }
   increment() {
@@ -3588,7 +3558,7 @@ Program-87 : ToDo App using NgRx
   
 6. todocrud.component.html
     <h3 class="text-center">This is Todo CRUD Component using NGRX</h3>
-	<div class="border p-2 text-center col-sm-4 offset-4">
+	<div class="border border-3 p-2 text-center col-sm-4 offset-4">
 		<ol>
 			@for(todo of todos$|async;track $index){
 			<li class="my-2">
@@ -3863,3 +3833,24 @@ export class AppComponent implements OnInit {
   }
 }
 
+
+
+
+Progressive Web App (PWA)
+=========================
+1. ng add @angular/pwa
+   -adds ngsw-config.json (Service Worker Config)
+   -adds manifest.webmanifest
+   -adds icons
+   
+2. Enable Service Worker (app.config.ts)
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
+	
+3. Build And Test
+   ng build --configuration production
+   npx http-server -p 8080 -c-1 dist/angular_project_unit_testing/browser
+   npx http-server -p 8080 -c-1 dist/task-tracker
+   
