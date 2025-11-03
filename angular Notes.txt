@@ -133,9 +133,8 @@ steps to bootstrap the application:
 1. Load index.html
 2. Load Angular, Other Libraries, and Application Code
 3. Execute main.ts File
-4. Load Application-Level Module
-5. Load Application-Level Component
-6. Process Template
+4. Load Application-Level Component
+5. Process Template
 
 
 Modules
@@ -284,7 +283,7 @@ Databinding
 
 1.  interpolation  	 {{ }} (1-way)   (component-->view)
 2.  property Binding  [ ]  (1-way)   (component-->view)
-	bind-property (bind-innerHTML)
+	bind-property (bind-innerHTML / bind-src)
 3.  Event Binding     ( )  (1-way)   (view-->component)
 	(click)   /  on-click
 4.  2-way Binding  [(ngModel)] (2-way) (component<-->view)
@@ -336,6 +335,8 @@ console.log(value1, value2); // type something in the box & run these again
  <tr><td [colspan]="1 + 1">One-Two</td></tr>   Wrong
  
 Note: 'colspan' is attribute whereAs 'colSpan' is property. 
+
+
 
 
 Variables in templates
@@ -555,18 +556,38 @@ ngClass
 
 Directive Assignment:
 ====================
-1. Declare an array of users, display users in card & table format. 
- add a button/switch to toggle between table view and card view.
- https://jsonplaceholder.typicode.com/users
+1. Create an array of task objects, and display them using @for
+   Every Element Should have a checkbox, When a checkbox is clicked, toggle completion status(true/false)
+   for completed tasks show them as striked-out
+   add a dropdown with 3 values 'All','Completed','Pending' , based on the value selected, show the tasks
 
-employees = [
-  { id: 1, name: 'John', role: 'Manager', salary: 85000, status: 'Active' },
-  { id: 2, name: 'Alice', role: 'Developer', salary: 45000, status: 'Active' },
-  { id: 3, name: 'Bob', role: 'Tester', salary: 30000, status: 'Inactive' },
-  { id: 4, name: 'Eve', role: 'HR', salary: 40000, status: 'Active' }
+tasks = [
+  { id: 1, title: 'Complete Angular assignment', completed: false },
+  { id: 2, title: 'Review pull requests', completed: true },
+  { id: 3, title: 'Prepare project report', completed: false },
+  { id: 4, title: 'Attend team meeting', completed: true },
+  { id: 5, title: 'Update documentation', completed: false },
+];
+ 
+2. Create an array of products (https://fakestoreapi.com/products)
+	Display the products in card format
+	Show a dropdown for categories.
+	When a category is selected, filter products.
+	Use @empty when no products match. 
+	
+3. Maintain a cart array
+	Show each item with quantity controls (+ and – buttons).
+	Use @for to display all cart items.
+	Calculate and display the total price.
+cartItems = [
+  { id: 1, name: 'Wireless Headphones', price: 2499, qty: 1},
+  { id: 2, name: 'Smart Watch', price: 4999, qty: 2 },
+  { id: 3, name: 'Bluetooth Speaker', price: 1999, qty: 1 },
+  { id: 4, name: 'Power Bank', price: 1299, qty: 3 }
 ];
 
-2. Display Array of employees in a table
+
+4. Display Array of employees in a table
    a. Display Salary in green  if salary > 50000, else Display Salary in red, using [ngStyle]
    b. Apply a CSS class "inactive" to employees whose status is "Inactive" using [ngClass]
    c. Add bold font and blue color only for employees whose role is "Manager" using [ngClass]
@@ -2384,32 +2405,12 @@ AOT
 -More secure, original source not disclosed.
 -Suitable for production builds.
   
-  
-files
------
-Main.js : it contains all our application code. 
-		  (components,pipes,services,directives,guards,resolvers)
-		  
-scripts.js: It contains the scripts you declare in the scripts section of your angular.json file.
-		
-runtime.js: it contains all the web-pack configuration details.
+ 
+Build & Deploy
+===============
+Build : preparing the application for browser
+		Converting Source code in to optimized files 
 
-polyfills.js: it contains the code which make sure our application
-			  runs in all browsers.
-
-vendor.js: it contains all the 3rd party library deatils.
-			(bootstrap,d3chart,ngx-pagination,ng2-search,sweetalert2)
-			
-styles.css   application css
-
-lazy-loaded  components  (chunk-ABCDEF.js)
-
-			
-web-pack:
----------
--Webpack is an open-source JavaScript module bundler.
--Its main purpose is to bundle JavaScript files for usage in a browser.
--it is capable of transforming, bundling, or packaging any resource or asset.
 
 
 > ng serve:
@@ -2423,7 +2424,6 @@ compiles an application and stores the generated files in dist folder.
 	1. It creates a dist folder
 	2. generated files are be  stored in dist(that can be moved)
 	3. generated dist folder can be placed in any server and application can be run. (tomcat/weblogic)
-
 
 
 
@@ -2458,7 +2458,8 @@ Deploy Angular Application in GitHub
 	ng build --base-href angular_project_feb_2025 
 	ng build --output-path docs --base-href angular_project_feb_2025
 4. ngh --dir dist/angular_project_feb_2025/browser     /   ngh --dir docs/browser  
-   go to github website & open your Repository
+
+5. go to github website & open your Repository
    Settings Tab --> pages --> SelectBranch & Folder(gh-pages & root)
    you should see the live URL
 
@@ -2906,8 +2907,9 @@ State is accessed with the Store, an observable of state and an observer of acti
 
 store-devtools (https://ngrx.io/guide/store-devtools)
 ==============
-1. add 'Redux Devtools Extension' in browser (chrome)
-2. ng add @ngrx/store-devtools
+1. Add 'Redux Devtools Extension' in browser (chrome)
+2. Add below package in our project
+   ng add @ngrx/store-devtools
 3. add/verify the below code in app.config.ts
    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
 
