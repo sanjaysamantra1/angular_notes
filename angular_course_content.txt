@@ -26,5 +26,5 @@ Angular Course Content
 -NgRx (State management)
 -Build & Deploy
 -Angular Material
--Unit testing (Jasmine + Karma)
+-Unit testing 
 
