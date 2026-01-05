@@ -222,6 +222,7 @@ c: Component
 --inline-style : No external CSS file
 --dry-run : Will display the update without execution
 
+
 scaffold	usage
 ---------   --------
 project     ng new <ProjectName>
@@ -335,6 +336,7 @@ console.log(value1, value2); // type something in the box & run these again
  <tr><td [colspan]="1 + 1">One-Two</td></tr>   Wrong
  
 Note: 'colspan' is attribute whereAs 'colSpan' is property. 
+      'maxlength' is attribute whereAs 'maxLength' is property
 
 
 
@@ -374,15 +376,19 @@ Template Reference variables
 
 
 Assignments: 
-1. Have a paragraph & a toggle button, on click of the button control the visibility(Show/Hide) of the paragraph
-2. Create a text-area with maxLength=100, as the user keeps typing display updated Remaining characters.
-3. Create dropdown with state names, when user changes dropdown value, print the selected dropdown value in a div
-4. have 2 inputBoxes, and a dropdown(+,-,*,/) and perform arithmetic operations
+1. Have a paragraph and a toggle button; on clicking the button, control the visibility (Show / Hide) of the paragraph.
+2. Create a textarea with maxLength = 100; as the user keeps typing, display the updated remaining characters.
+3. Create a textarea; as the user keeps typing, count and display how many words and how many characters are typed.
+4. Create a dropdown with state names; when the user changes the dropdown value, print the selected value in a div.
 5. create a input box, toggle the type of that input box to (text/password)
-6. create a counter example with 3 controls(increment,decrement,reset)
-7. Have a toggle button and control Dark/Light theme of a page.
-8. Temperature Converter (celcius to fahrenheit)
+6. Create a counter example with three controls: Increment, Decrement, and Reset.
+7. Create a temperature converter to convert Celsius to Fahrenheit.
+8. Create two input boxes and a dropdown (+ , - , * , /) and perform arithmetic operations based on the selected operator.
+9. Create a button that increases font size and another button that decreases font size for a paragraph.
+10. Create a dropdown with colors and change the background color of a div based on selection.
 
+	
+	
 	
 CSS
 ****
@@ -561,13 +567,13 @@ Directive Assignment:
    for completed tasks show them as striked-out
    add a dropdown with 3 values 'All','Completed','Pending' , based on the value selected, show the tasks
 
-tasks = [
-  { id: 1, title: 'Complete Angular assignment', completed: false },
-  { id: 2, title: 'Review pull requests', completed: true },
-  { id: 3, title: 'Prepare project report', completed: false },
-  { id: 4, title: 'Attend team meeting', completed: true },
-  { id: 5, title: 'Update documentation', completed: false },
-];
+	tasks = [
+	  { id: 1, title: 'Complete Angular assignment', completed: false },
+	  { id: 2, title: 'Review pull requests', completed: true },
+	  { id: 3, title: 'Prepare project report', completed: false },
+	  { id: 4, title: 'Attend team meeting', completed: true },
+	  { id: 5, title: 'Update documentation', completed: false },
+	];
  
 2. Create an array of products (https://fakestoreapi.com/products)
 	Display the products in card format
@@ -576,15 +582,15 @@ tasks = [
 	Use @empty when no products match. 
 	
 3. Maintain a cart array
-	Show each item with quantity controls (+ and – buttons).
 	Use @for to display all cart items.
-	Calculate and display the total price.
-cartItems = [
-  { id: 1, name: 'Wireless Headphones', price: 2499, qty: 1},
-  { id: 2, name: 'Smart Watch', price: 4999, qty: 2 },
-  { id: 3, name: 'Bluetooth Speaker', price: 1999, qty: 1 },
-  { id: 4, name: 'Power Bank', price: 1299, qty: 3 }
-];
+	Show each item with quantity controls (+ and – buttons)
+	Calculate and display the total price
+	cartItems = [
+	  { id: 1, name: 'Wireless Headphones', price: 2499, qty: 1},
+	  { id: 2, name: 'Smart Watch', price: 4999, qty: 2 },
+	  { id: 3, name: 'Bluetooth Speaker', price: 1999, qty: 1 },
+	  { id: 4, name: 'Power Bank', price: 1299, qty: 3 }
+	];
 
 
 4. Display Array of employees in a table
@@ -595,6 +601,16 @@ cartItems = [
 		Manager = lightyellow , Developer = lightblue , Tester = lightpink
    e. Show salary in a badge style with dynamic color
       Green if salary > 70,000 , Orange if between 40,000–70,000, Red if < 40,000
+	  
+	  employees = [
+		  { id: 1, name: 'Amit Sharma', role: 'Manager', salary: 85000, status: 'Active' },
+		  { id: 2, name: 'Priya Verma', role: 'Developer', salary: 65000, status: 'Active' },
+		  { id: 3, name: 'Rahul Mehta', role: 'Tester', salary: 38000, status: 'Inactive' },
+		  { id: 4, name: 'Sneha Iyer', role: 'Developer', salary: 42000, status: 'Inactive' },
+		  { id: 5, name: 'Karan Singh', role: 'Manager', salary: 52000, status: 'Active' },
+		  { id: 6, name: 'Neha Gupta', role: 'Tester', salary: 72000, status: 'Active' }
+		];
+
 
 
 
@@ -719,7 +735,7 @@ How to use SweetAlert (https://sweetalert2.github.io/)
 3. on button click call a function, which has the below code	
    Swal.fire('Good job!', 'You clicked the button!', 'success');
 			(OR)
-  Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question",timer:5000});
+  Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question",timer:5000,draggable: true});
 
 
 
@@ -809,25 +825,39 @@ Angular Pipes
 
 curreny
 -------                  
-{{ 5000 | currency}}
-{{ 5000 | currency : 'USD' }} 
-{{ 5000 | currency : 'USD' : 'symbol' }}
-{{ 5000 | currency : 'USD' : 'code' }} 
-{{ 5000 | currency : 'INR' }}
-{{mySal | currency : '&euro;'}}
-  input | pipeName : arguement
+  <div>{{ salary }}</div>
+  <div>{{ salary | currency }}</div>
+  <div>{{ salary | currency : 'USD' }}</div>
+  <div>{{ salary | currency : 'INR' }}</div>
+  <div>{{ salary | currency : '&euro;' }}</div>
+  <div>{{ salary | currency : '&#xa5;' }}</div>
+  <div>{{ salary | currency : 'USD' : 'code' }}</div>
+  <div>{{ salary | currency : 'USD' : 'symbol' }}</div>
+    <!-- input | pipeName : argument1 : argument2 -->
+  
+  
   
 Date
 -----
-<h5>{{today | date : 'shortDate'}}</h5>
-<h5>{{today | date : 'mediumDate'}}</h5>
-<h5>{{today | date : 'longDate'}}</h5>
-<h5>{{today | date : 'fullDate'}}</h5>
+  <div>Date pipes::</div>
+  <div>{{ dateObj }}</div>
+  <div>{{ dateObj | date }}</div>
+  <div>{{ dateObj | date :'short'}}</div>  <!-- Short Date + Short Time -->
+  <div>{{ dateObj | date : 'shortDate' }}</div>
+  <div>{{ dateObj | date : 'mediumDate' }}</div>
+  <div>{{ dateObj | date : 'longDate' }}</div>
+  <div>{{ dateObj | date : 'fullDate' }}</div>
+  <div>{{ dateObj | date : 'shortTime' }}</div>
+  <div>{{ dateObj | date : 'mediumTime' }}</div>
+  <div>{{ dateObj | date : 'longTime' }}</div>
+  <div>{{ dateObj | date : 'fullTime' }}</div>
+  <div>{{ dateObj | date : 'dd-MMM-yyyy' }}</div>
+  
+  <div>{{today | date : 'short' }}</div>
+  <div>{{today | date : 'HH:mm' }}</div>
 
-<div>{{today | date : 'short' }}</div>
-<div>{{today | date : 'HH:mm' }}</div>
+  <div>{{ today | date: "fullTime":"UTC" }}</div>
 
-<h4>{{ today | date: "fullTime":"UTC" }}</h4>
 
 
 decimal/number
@@ -1326,7 +1356,7 @@ http status codes
 
 POSTMAN
 =======
--application / Chrome extension used to Test APIs.
+-application used to Test APIs.
  https://www.postman.com/downloads/
 
 
@@ -1354,7 +1384,7 @@ https://medium.com/@devmrin/create-a-rest-api-json-server-in-less-than-1-minute-
 2.create a json file with some data(not necessarily inside an angular project)
     employees.json (filename can be anything.json) (copy con employees.json)(MAC: touch employees.json)
 3.start json server(go to the folder where json file is present,run the below command in cmd)
-   json-server --watch employees.json
+   json-server employees.json
    
 http://localhost:3000/employees   
 GET    /employees
@@ -1459,7 +1489,7 @@ Class As Model:
 
 Http Interceptor
 ================
--interceptors are used to pre-process and post-process the HTTP request.
+-interceptors are used to manipulate HTTP requests and responses.
 -Used before sending request and after getting response from the server. 
 
 Angular Service/Component Triggers API--> Interceptor --> modifies the Request --> Backend Server
@@ -1715,6 +1745,8 @@ Assignment
 
 
 
+
+
 What are signals
 ================
 -A signal is a special type of variable that holds a value. it also provides notification when the variable value changes
@@ -1779,10 +1811,11 @@ const count: WritableSignal<number> = signal(0);
 const doubleCount: Signal<number> = computed(() => count() * 2);
 
 
+
 Effects
 =======
 -Signals are useful because they notify interested consumers when they change. 
--An effect is an operation that runs whenever one or more signal values change.
+-An effect is an operation that runs/executes whenever the signals that it reads changes.
  someEffect = effect(() => {
   console.log(`The current count is: ${count()}`);
   
@@ -1819,10 +1852,12 @@ https://pasquale-favella.github.io/blog/16
 
 Signal Assignment
 =================
--Create a ToDo List Application using signal
--declare a signal to maintain array of todos
--declare 2 computed signals 1.completedToDos  2.remainingToDos
--have a 'Toggle' button to toggle isCompleted Flag
+-Declare a signal to maintain array of todos
+-Declare 2 computed signals 1.completedToDos  2.remainingToDos
+-Display the todo list in a table or list format.
+-Add a Toggle button for each row to toggle the isCompleted flag.
+-Add a Delete button for each todo, to delete todo
+
 
 
 
@@ -2075,7 +2110,7 @@ routing Program:
 1. create components
 	ng g c home
 	ng g c aboutus
-	ng g c career
+	ng g c careers
 	ng g c notfound
 
 2. in app.routes.ts configure all the routes.
@@ -2149,7 +2184,7 @@ Navigate Previous / Next Route
    this.location.historyGo(-2)
    this.location.historyGo(2)
    
-	
+   
   
 Route-Parameter
 ---------------
@@ -2159,6 +2194,66 @@ Route-Parameter
 2. Query param
 	ex:- /search?searchWord=skybag&filter=something
 	
+
+
+Path Param
+===========
+1. create productDetailsComponent
+   ng g c productDetails
+   
+2. add the below code in app.routes.ts
+   {
+    path: 'productdetails/:id', 
+    component: ProductdetailsComponent
+   }
+  
+3. add the below code in products.html
+   <button class="btn btn-primary" [routerLink]="['/productdetails', x.id]">
+        View Details</button>
+		
+4. add the below code in productdetails.comp.ts
+   constructor(private activatedRoute: ActivatedRoute) 
+   {
+   }
+   ngOnInit() {
+    this.activatedRoute.params.pipe(switchMap((params: any) =>
+        this.http.get(`https://jsonplaceholder.typicode.com/users/${params.id}`)
+      )).subscribe((userResponse: any) => {
+      this.user = userResponse;
+    });
+  }	
+
+5. add the below code in productdetails.component.html
+	<h1>This is details for product- {{id}}
+
+
+
+
+
+Query Param
+===========
+1. create productDetailsComponent
+    ng g c productDetails
+	
+2. add the component in route configuration
+   {
+    path: 'productdetails', 
+    component: ProductdetailsComponent
+  }
+  
+3. add the below code in products.html
+   <button class="btn btn-primary mx-1" [routerLink]="['/productdetails']"
+            [queryParams]="{id:product.id,name:product.title,price:product.price}">Details</button>
+		
+4. add the below code in productdetails.comp.ts
+	constructor(public activatedRoute: ActivatedRoute) {		
+	}
+	ngOnInit(){
+		this.activatedRoute.queryParams.subscribe((queryparams) => {
+		  console.log(queryparams);
+		  this.prod = queryparams;
+		});
+	}
 
 
 
@@ -2314,7 +2409,7 @@ Note:
 @defer + dynamic import() :  delays rendering and triggers code-splitting (separate bundle).
 
 ex: 
-1. import the component dynamically(home.component.ts)
+1. import the component dynamically(home.component.ts) // Import CommonModule
    largeComponent:any;
   constructor() {
     import('../large-component/large-component').then(m => {
@@ -2450,7 +2545,7 @@ Hostinger
 
 Deploy Angular Application in GitHub
 ====================================
-1. switch to a branch
+1. switch to a branch(optional)
 	git checkout -b mybranch1
 2. Add angular-cli-ghpages package
     ng add angular-cli-ghpages / npm i -g angular-cli-ghpages
@@ -2908,7 +3003,7 @@ State is accessed with the Store, an observable of state and an observer of acti
 store-devtools (https://ngrx.io/guide/store-devtools)
 ==============
 1. Add 'Redux Devtools Extension' in browser (chrome)
-2. Add below package in our project
+2. Add below package in your angular project
    ng add @ngrx/store-devtools
 3. add/verify the below code in app.config.ts
    provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })

@@ -7,7 +7,7 @@ program-1:Use bootstrap
    projects ->architect->build->scripts:[]  
    
 Note: As alternate to point-3, the below code can be added in index.html
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
 
 
@@ -590,6 +590,7 @@ export class NumberonlyDirective {
   @HostListener('keyup', ['$event.target.value'])
   handleKeyUp(value: string) {
     let regex = new RegExp(/^[0-9]*$/);
+	// let regex = new RegExp(/^[a-z]+$/);   // Text Only
     if (!regex.test(value)) {
       this.myBgColor = 'red';
     } else {
@@ -1721,14 +1722,14 @@ export class LoadingService {
 program-54 : Error Interceptor
 ==============================
 import { HttpInterceptorFn } from '@angular/common/http';
-import { inject } from '@angular/core';
-import { EMPTY, catchError } from 'rxjs';
-import { ToastService } from '../services/toast.service';
+import { catchError, EMPTY } from 'rxjs';
+import Snackbar from 'awesome-snackbar';
 
-export const myErrorInterceptor: HttpInterceptorFn = (req, next) => {
-  const toastService = inject(ToastService);
+export const errorInterceptor: HttpInterceptorFn = (req, next) => {
   return next(req).pipe(catchError((error) => {
-    toastService.showError(error.message);
+    new Snackbar(`${error.message}`,
+      { position: 'top-center', theme: 'light', timeout: 5000, actionText: 'X' }
+    );
     return EMPTY;
   }));
 };
@@ -2368,7 +2369,7 @@ Program : Signal
   butter = computed(() => this.cookieCount() * 0.1);
   sugar = computed(() => this.cookieCount() * 0.05);
   flour = computed(() => this.cookieCount() * 0.2);
-  update(event: Event) {
+  updateCookieCount(event: Event) {
     const input = event.target as HTMLInputElement;
     this.cookieCount.set(parseInt(input.value));
   }
@@ -2376,7 +2377,7 @@ Program : Signal
 	<h2>Cookie recipe</h2>
     <label>
       # of cookies:
-      <input type="range" min="10" max="100" step="10" [value]="cookieCount()" (input)="update($event)" />
+      <input type="range" min="10" max="100" step="10" [value]="cookieCount()" (input)="updateCookieCount($event)" />
       {{ cookieCount() }}
     </label>
     <p>Butter: {{ butter() }} cup(s)</p>
@@ -3343,7 +3344,7 @@ describe('UserService', () => {
       { id: 1, name: 'Leanne Graham' },
       { id: 2, name: 'Ervin Howell' }
     ];
-    service.getAllUsers().subscribe(users => {
+    service.getAllUsers().subscribe((users:any) => {
       expect(users).toEqual(dummyUsers);
       expect(users.length).toBe(2);
     });
@@ -3464,7 +3465,7 @@ describe("WeatherProcessor", function () {
 Program-86 : Counter App using NgRx
 ===================================
 1. Install NgRx Store in the project
-   ng add @ngrx/store
+    ng add @ngrx/store
    
 2. Create action File (counter.actions.ts)
 	import { createAction } from '@ngrx/store';
@@ -3614,7 +3615,7 @@ Program-88 : Employee CRUD using NgRx
 	import { Actions, createEffect, ofType } from '@ngrx/effects';
 	import { of } from 'rxjs';
 	import { map, exhaustMap, catchError } from 'rxjs/operators';
-	import { EmployeeService } from '../../services/employee.service';
+	import { EmployeeService } from '../../services/employee-service';
 	import { addEmployee, deleteEmployee, fetchEmployees } from '../actions/employee.actions';
 	
 	@Injectable()
