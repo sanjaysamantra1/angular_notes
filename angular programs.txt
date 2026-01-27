@@ -20,7 +20,7 @@ program-2:display Local image
 
 
 	
-program-3:interpolation and property escribe
+program-3:interpolation and property binding
 ----------------------------------------
 import { Component } from '@angular/core';
 @Component({
@@ -443,6 +443,43 @@ export class AppComponent {
         </table>
     </div>
  <button class="btn btn-primary" (click)="updateEmployeeData()">Click Me</button>
+
+
+
+
+
+
+
+Program- Toggle Tasks
+=====================
+ tasks= [
+    { id: 1, title: 'Learn Angular @for', completed: false },
+    { id: 2, title: 'Build Todo App', completed: true },
+    { id: 3, title: 'Practice Components', completed: false }
+  ];
+  filter: 'All' | 'Completed' | 'Pending' = 'All';
+  toggleTask(task) {
+    task.completed = !task.completed;
+  }
+  get filteredTasks() {
+    switch (this.filter) {
+      case 'Completed':
+        return this.tasks.filter(t => t.completed);
+      case 'Pending':
+        return this.tasks.filter(t => !t.completed);
+      default:
+        return this.tasks;
+    }
+  }
+  get pendingCount(): number {
+    return this.tasks.filter(t => !t.completed).length;
+  }
+  get totalCount(): number {
+    return this.tasks.length;
+ }
+ 
+ 
+
 
 
 
@@ -890,6 +927,19 @@ export class AppComponent {
   sal = 5000;
   formattedSal1 = this.currencyPipe.transform(this.sal);
   formattedSal2 = this.currencyPipe.transform(this.sal, '$');
+}
+
+
+
+
+Program- Custom Pipe (File Size)
+=================================
+transform(bytes: number): string {
+  if (bytes === 0) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
 }
 
 

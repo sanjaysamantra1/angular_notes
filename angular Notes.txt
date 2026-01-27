@@ -2,6 +2,8 @@ Angular installation
 ====================
 1. download Nodejs and install 
    https://nodejs.org/en/download/
+   Need Nodejs to build, develop, test and manage the packages in angular application
+   nodejs helps for tooling , not the execution environment for angular
 
 2. check nodejs is installed	 
    node -v (in command prompt)
@@ -361,6 +363,8 @@ Angular automatically keeps the variable's value up-to-date with the given expre
 @let coordinates = {x: 50, y: 100};
 
 
+
+
 Template Reference variables
 ============================
 -allows to reference DOM elements present in the template
@@ -377,8 +381,7 @@ Template Reference variables
 
 Assignments: 
 1. Have a paragraph and a toggle button; on clicking the button, control the visibility (Show / Hide) of the paragraph.
-2. Create a textarea with maxLength = 100; as the user keeps typing, display the updated remaining characters.
-3. Create a textarea; as the user keeps typing, count and display how many words and how many characters are typed.
+3. Create a textarea with maxLength = 100; as the user keeps typing, count and display how many words and how many characters are typed and  remaining characters.
 4. Create a dropdown with state names; when the user changes the dropdown value, print the selected value in a div.
 5. create a input box, toggle the type of that input box to (text/password)
 6. Create a counter example with three controls: Increment, Decrement, and Reset.
@@ -419,19 +422,29 @@ applicable to any HTML element of the application
 3. shadowDOM - Use shadowDOM for style encapsulation (only component css will be applied)
 			   1. CSS won't come from main HTML to Component.
 			   2. css will be provided from parent to child component.
+			   
+4. ExperimentalIsolatedShadowDom : fully isolated Shadow DOM behavior, for Building Web Components, micro frontEnd 
 
 ex:- encapsulation: ViewEncapsulation.Emulated(default) 
 	 encapsulation: ViewEncapsulation.None
 	 encapsulation: ViewEncapsulation.ShadowDom
+	 encapsulation: ViewEncapsulation.ExperimentalIsolatedShadowDom
 	 
 Emulated: Global CSS--->parent Component (yes)
 		  Global CSS-->child component (yes)
 		  Parent(Emulated) --> child(Emulated) (No)
+		   
+None: Global CSS<--->parent Component(None)<-->child component
+
 ShadowDom: Global CSS--->parent Component(shadowDOM) (No)
 		   Global CSS-->child component (No)
 		   Parent (shadowDOM) --> child(Emulated) (Yes)		   
-		   Parent (shadowDOM) --> child(ShadowDom) (No)		   
-None: Global CSS<--->parent Component(None)<-->child component
+		   Parent (shadowDOM) --> child(ShadowDom) (No)
+		   
+ExperimentalIsolatedShadowDom: Global CSS--->parent Component(shadowDOM) (No)
+		   Global CSS-->child component (No)
+		   Parent (shadowDOM) --> child(Emulated) (Yes)		   
+		   Parent (shadowDOM) --> child(ShadowDom) (No)		  
 	 
 
 
@@ -445,10 +458,10 @@ Directives
 -After angular-17  (@if , @else , @switch , @case , @default , @for, @empty , @let)
 
 1. Structural Directives : 
-	Directive which changes the layout/structure of the DOM.
+   Directive which changes the layout/structure of the DOM.
 	
 2. Attribute Directives : ([ngStyle],[ngClass])
-	Directive which changes behaviour/appearance of the DOM element.
+   Directive which changes behaviour/appearance of the DOM element.
 	
 
 Note : Compononent can also be considered as directive, because it powers up the html by creating Custom Element, but the directives cannot be considered as component because it does not have a View (template and templateUrl cannot be used in directives)
@@ -602,14 +615,14 @@ Directive Assignment:
    e. Show salary in a badge style with dynamic color
       Green if salary > 70,000 , Orange if between 40,000–70,000, Red if < 40,000
 	  
-	  employees = [
-		  { id: 1, name: 'Amit Sharma', role: 'Manager', salary: 85000, status: 'Active' },
-		  { id: 2, name: 'Priya Verma', role: 'Developer', salary: 65000, status: 'Active' },
-		  { id: 3, name: 'Rahul Mehta', role: 'Tester', salary: 38000, status: 'Inactive' },
-		  { id: 4, name: 'Sneha Iyer', role: 'Developer', salary: 42000, status: 'Inactive' },
-		  { id: 5, name: 'Karan Singh', role: 'Manager', salary: 52000, status: 'Active' },
-		  { id: 6, name: 'Neha Gupta', role: 'Tester', salary: 72000, status: 'Active' }
-		];
+	 let employees = [
+        { id: 1, name: 'Amit Sharma', role: 'Manager', salary: 85000, status: 'Active', gender: 'male' },
+        { id: 2, name: 'Priya Verma', role: 'Developer', salary: 65000, status: 'Active', gender: 'female' },
+        { id: 3, name: 'Rahul Mehta', role: 'Tester', salary: 38000, status: 'Inactive', gender: 'male' },
+        { id: 4, name: 'Sneha Iyer', role: 'Developer', salary: 42000, status: 'Inactive', gender: 'female' },
+        { id: 5, name: 'Karan Singh', role: 'Manager', salary: 52000, status: 'Active', gender: 'male' },
+        { id: 6, name: 'Neha Gupta', role: 'Tester', salary: 72000, status: 'Active', gender: 'female' }
+     ];
 
 
 
@@ -623,6 +636,16 @@ ng-template , ng-container
 -It’s a logical container that does not render any extra DOM element.
 -Angular <ng-container> is a grouping element that doesn't interfere with styles or layout because Angular doesn't put it in the DOM.
 -if we need a helper element for nested structural directives.<ng-container> can be used instead of creating an un-nscessary element(<div>).
+
+<tr *ngFor="let emp of employees" *ngIf="emp.status === 'Active'">
+only 1 structural directive is allowed per element
+
+<ng-container *ngFor="let emp of employees">
+  <tr *ngIf="emp.status === 'Active'">
+    <td>{{ emp.name }}</td>
+  </tr>
+</ng-container>
+
 
 
 
@@ -649,31 +672,40 @@ parent
 
 
 
+
+
 Read data from a JSON file 
 ==========================
-1. create a JSON file (employees.json/products.json/users.json)
-   [ {},{},{} ]
+1. create a JSON file (users.json)
+   Paste the content from https://jsonplaceholder.typicode.com/users
+   
 2. in tsconfig.json add the below option  under 'compilerOptions'
     "resolveJsonModule": true,
-3. import the data & use in component file (products.component.ts)
-   import * as data from './products.json';
+	
+3. import the data & use in component file (users.component.ts)
+   import * as data from './user-data.json';
    
-   myProducts = (data as any).default;  // inside the class
+   userArr = (data as any).default; // inside class
    
 4. use 'myProducts' in HTML file
-   @for(product of productsArr;track product.id){
-	<div></div>
-   }
+   @for (user of userArr; track $index) {
+      <div class="col-sm-3">user</div>
+    }
    
    
-Read Data from a typescript file
-=================================
+   
+Read Data from a typescript file (https://fakestoreapi.com/products)
+================================= 
 1. create a typeascript file and export the data (employees.ts/products.ts)
    let productDate = [ {},{},{} ];
-   export default productData;				
+   export default productData;	
+			(OR)
+   export default [ {}, {}, {} ]
+   
 2. import the data & use in component file (products.component.ts)
    import productData from './products_data';  
    productsArr = productData;  // inside the class
+   
 3. use 'myProducts' in HTML file
    @for(product of productsArr;track product.id){
 	<div></div>
@@ -724,6 +756,7 @@ Assignment:
 -implement pagination
 -implement search functionality (Search By Title)
 -implement sort functionality (Price Asc, Price desc)
+-Show a dropdown for categories, When a category is selected, filter products.
 
 
 
@@ -732,10 +765,10 @@ How to use SweetAlert (https://sweetalert2.github.io/)
 1. npm i sweetalert2	
 2. import sweet-Alert in our component
    import Swal from 'sweetalert2';	
-3. on button click call a function, which has the below code	
+3. on button click call a function, function should have the below code	
    Swal.fire('Good job!', 'You clicked the button!', 'success');
 			(OR)
-  Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question",timer:5000,draggable: true});
+   Swal.fire({title: "The Internet?",text: "That thing is still around?",icon: "question",timer:5000,draggable: true});
 
 
 
@@ -756,58 +789,69 @@ Assignment
 =========
 1. create 1 EmployeeCRUD component
 2. display list of employees in a table(data comes from an array)
-3. user should be able to delete Employee (ask user confirmation) 
-4. view the details of selected employee in a modal (bootstrap Modal)
+3. every row should have 'delete' button to delete Employee (ask user confirmation) 
+4. every row should have 'view' button , view the details of selected employee in a modal (bootstrap Modal)
 5. add a new employee to the table (insert a new record to the array)
-   use SnackBar to display message ('EmployAdded Successfully' - message should be maintained in a constant file)
+   use SnackBar to display message ('Employee Added Successfully' - message should be maintained in a constant file)
 6. use font-awesome to display any icons (star , delete, edit)
 
 
 
 Custom Directives
 =================
--Create custom directives to attach custom behavior to elements in the DOM.
--@Directive decorator is used to create a custom Directive.
--Directives won't have templates, whereas components have templates.
+-Custom directives are Created/used to attach custom behavior to elements in the DOM.
+-Usecases: 
+	auto-focus input
+	change style on hover
+	restrict input characters
+	show tooltip
+	role based enable/disable
+
+
+Component vs Directive
+----------------------
+-Components are used for re-usable UI , Directives are used to add re-usable behavior to an existing DOM element
+-Component has View/Template  where as Directives won't have View/Template.
+
+
 
 @HostBinding  -  Set a property on the host element.
 @HostListener  - Listen events from the host element.
-ElementRef - Binds directive state to host element
+ElementRef - Gives direct access to DOM element
+Renderer2 - Renderer2 is angular's safe abstraction for DOM manipulation
 
 
 @HostBinding vs ElementRef
 --------------------------
 ElementRef : Gives direct access to DOM element
-			 Usecases : Focus, scroll, measure, attach events
+			 Usecases : Focus, scroll, attach events
 			 this.ele.nativeElement.focus()
 HostBinding : Binds directive state to host element
               Toggle CSS classes, styles, attributes
 			  @HostBinding('class.active') isActive = true;
 
 
-
-Component vs Directive
-----------------------
--Component has View/Template  where as Directives won't have View/Template.
--Components are used to create UI widgets , Directives are used to add behavior to an existing DOM element.
-
-
 Custom Directive Assignment
 ============================
 1. create a custom directive (zoomout) which scales the element by 150%.
+   ng g d custom-directives/zoomout
 
 
 
 	
 Angular Pipes
 =============
--Transform strings, currency amounts, dates, and other data for display.
--Pipes are used in template expressions to accept an input value and return a transformed value.
+-Angular Pipes transform the data in templates without changing the original value.
+-Pipes are used in template file, pipes take input data and return a transformed value.
+-Transform strings, currency amounts, dates  etc.
+-Pipes are part of CommonModule
+
+
  ex: {{ 5000 | currency }}    output: $5,000.00
             (OR)
 <div [innerHTML]='name | lowercase'></div>
--To apply a pipe, use the pipe operator (|)  as shown in the above example.
--To Use pipes, CommonModule needs to be imported
+
+Note : To Use pipes, CommonModule needs to be imported
 
 -Angular provides built-in pipes,The following are commonly used built-in pipes for data formatting.
 1.lowercase
@@ -817,7 +861,7 @@ Angular Pipes
 5.date
 6.number / decimal
 7.percent	
-8.json 
+8.json  
 9.keyvalue - Iterate Object
 10.slice
 11.async(Observable)
@@ -839,42 +883,41 @@ curreny
   
 Date
 -----
-  <div>Date pipes::</div>
-  <div>{{ dateObj }}</div>
+  <h5>Date pipe:</h5>
   <div>{{ dateObj | date }}</div>
-  <div>{{ dateObj | date :'short'}}</div>  <!-- Short Date + Short Time -->
+  <div>{{ dateObj | date :'short'}}</div> <!-- Short Date + Short Time -->
+  <div>{{ dateObj | date :'medium'}}</div> <!-- medium Date + medium Time -->
+  <div>{{ dateObj | date :'long'}}</div> <!-- long Date + long Time -->
+  <div>{{ dateObj | date :'full'}}</div> <!-- full Date + full Time -->
+  ==================
   <div>{{ dateObj | date : 'shortDate' }}</div>
   <div>{{ dateObj | date : 'mediumDate' }}</div>
   <div>{{ dateObj | date : 'longDate' }}</div>
   <div>{{ dateObj | date : 'fullDate' }}</div>
+  =================
   <div>{{ dateObj | date : 'shortTime' }}</div>
   <div>{{ dateObj | date : 'mediumTime' }}</div>
   <div>{{ dateObj | date : 'longTime' }}</div>
   <div>{{ dateObj | date : 'fullTime' }}</div>
+  ==============
   <div>{{ dateObj | date : 'dd-MMM-yyyy' }}</div>
-  
-  <div>{{today | date : 'short' }}</div>
-  <div>{{today | date : 'HH:mm' }}</div>
-
-  <div>{{ today | date: "fullTime":"UTC" }}</div>
+  <div>{{ dateObj | date : 'HH:mm' }}</div>
+  <div>{{ dateObj | date: "fullTime":"UTC" }}</div>
 
 
 
 decimal/number
 -------------
-<h4>{{ 12.111222333 | number: "3.2-5" }}</h4>     
-012.11122
-
-<h4>{{ 12.1 | number: "3.2-5" }}</h4>
-o/p:- 012.10
-
-<p>{{0.5 | number:'3.2-5'}} </p> 
-o/p:- 000.50 
+<div>{{ 12.111222333 | number: "3.2-5" }}</div>
+<div>{{ 12.1 | number: "3.2-5" }}</div>
+<div>{{0.5 | number:'3.2-5'}}</div>
 
 Use format '3.2-5' : 
 minIntegerDigits = 3 
 minFractionDigits = 2 
 maxFractionDigits = 5 
+
+
 
 Percent Pipe
 -------------
@@ -885,7 +928,11 @@ Percent Pipe
 
 keyvalue
 --------
-@for(entry of user | keyvalue;track $index){
+keepOriginalOrder = ()=>0; // this function disables sorting of keys
+sortByKeyAsc = (a:any,b:any)=>a.key.localeCompare(b.key);
+sortByValueAsc = (a:any,b:any)=>a.value - b.value;
+
+@for(entry of user | keyvalue : keepOriginalOrder;track $index){
    <h5>{{entry.key}}---{{entry.value}}</h5>
 }
 
@@ -894,21 +941,26 @@ slice pipe
 -----------
 -slice pipe can be used with array and string
 <h4>{{cars | slice : 2 : 4}}</h4>
-<h4>{{myName | slice : 2 : 4}}</h4>
-<h4>{{myName | slice : 2 : -1}}</h4>
+<div>{{'Angular is a Framework' | slice : 0 : 7}}</div>
+<div>{{'Angular is a Framework' | slice : 0 : -4}}</div>
 
 
 
 Pipe Chaining
 =============
+-Applying multiple pipes sequentially, where output of one pipe becomes input of the next pipe
+
 <div>{{ price | number : '1.2-2' | currency }}</div>
 <div>{{ name | titlecase | slice : 0 : 10 }}</div>
 <div>{{ today | date | uppercase }}</div>
+<div>{{ user$ | async | json}}</div>
 
 
 
 Custom Pipe
 ===========
+-Custom Pipe allows to create our own data transformation logic and use it directly in angular template.
+
 1. ng generate pipe remaining
 2. every angular pipe implements PipeTransform Interface
   class RemainingPipe implements PipeTransform {
@@ -922,7 +974,8 @@ Custom Pipe
 Assignment
 ==========
 1. Create a custom pipe(ordinal) which takes a number as input and returns in ordinal format
-   input : 21,22,23,24  output : 21st, 22nd , 23rd, 24th
+   input : 21,22,23,24  
+   output : 21st, 22nd , 23rd, 24th
 2. create a custom pipe(Roman) which takes a number as input and returns its equivalent roman value
    input :  4    8     9   
    output : IV  VIII   IX 
@@ -939,33 +992,31 @@ Assignment
 Pure & Impure Pipe
 ------------------
 -By Default every custom pipe we create is pure pipe.
-
--A pure pipe's transform() is only called when Angular detects a change in the value or the parameters passed to a pipe.
-
--An impure pipe's transform() is called for every change detection cycle
- no matter whether the value or parameters change.transform() gets called if any variable in the page chages.
- 
--If the pipe has internal state (result depends on state other than its arguments), set pure to false. 
-In this case, the pipe is invoked on each change-detection cycle, even if the arguments have not changed.
- 
+-Pure Pipes execute only when input variable changes, better Performance
+-ImPure Pipes execute on every change detection, Performance Expensive
 -to make a pipe impure
   @Pipe({
 		name : 'account',
 		pure : false
 	})
 
+Need Of Impure Pipe:
+-------------------
+-Pure pipes don't run when : Data Changes without reference change (push data in an array, change object prop)
+-in such cases , angular cannot detect changes, UI doesn't get updated	
+-Impure pipe solves this problem by running that pipe on every change detection
+
+
+
 	
 Use pipes in component file
 ---------------------------
 1. import pipe class to the component	
-   import { UpperCasePipe } from '@angular/common'
-   
+   import { UpperCasePipe } from '@angular/common'  
 2. register that pipe service in component
-    providers: [UpperCasePipe]
-	
+    providers: [UpperCasePipe]	
 3. inject that service to the component
-   constructor(private upperCasePipeObj: UpperCasePipe)
-   
+   constructor(private upperCasePipeObj: UpperCasePipe)  
 4. use the pipe using transform()
    this.b = this.upperCasePipeObj.transform(this.a);
 	
@@ -973,8 +1024,7 @@ Use pipes in component file
 Use custom pipes in component file
 ----------------------------------
 1. import pipe class to the component	
-   import { RemainingPipe } from 'src/app/custom-pipes/remaining.pipe';
-   
+   import { RemainingPipe } from 'src/app/custom-pipes/remaining.pipe';  
 2. create an instance of that pipe and call transform() with that instance
    const pipeObj = new RemainingPipe();
    const remainingChar = pipeObj.transform('hello', 100);
@@ -1140,6 +1190,19 @@ ngOnDestroy()
 
 Angular Change Detection Strategies
 ====================================
+-Change Detection is Angular’s mechanism for tracking data changes and updating the UI accordingly, ensuring the view always reflects the latest state.
+
+Role of Zone.js:
+-Angular relies on Zone.js to detect asynchronous events such as clicks, timers, promises, and HTTP responses. Zone.js patches browser APIs and notifies Angular when these events complete. Angular then triggers a change detection cycle, starting from the root component and checking the entire component tree.
+-Zone.js cannot identify which specific component changed, so Angular must check all components. This can cause performance overhead, especially in large applications. This default behavior is known as the Default Change Detection Strategy.
+
+
+A component is marked dirty when:
+-An event occurs within the component or its children
+-One of its input properties changes
+-The developer manually triggers it using ChangeDetectorRef
+
+
 There are 2 change detection strategies: 
 		1. default  (CheckAlways)
 		2. onpush   (CheckOnce)
@@ -1148,19 +1211,7 @@ There are 2 change detection strategies:
 
 OnPush
 ======
-When we set a component’s change detection strategy to OnPush, Angular will only check that component when:
-	An @Input() property changes (new reference, not just mutation).
-	An event happens inside the component (like (click)).
-	we manually trigger detection (e.g., ChangeDetectorRef.markForCheck()).
-This reduces unnecessary re-rendering and makes your app faster.
-
--With OnPush, mutatthis.employees[0].role = 'Team Lead';ing an object/array directly won’t trigger change detection. we must create a new reference.
-	ex:  // mutation of object (will NOT update)
--This forces us to write immutable code, which is cleaner and more predictable.
-	ex: this.employees = [
-		  { ...this.employees[0], role: 'Team Lead' },
-		  ...this.employees.slice(1)
-		];
+-When Zone.js triggers change detection, Angular starts from the root component and traverses the component tree. If it encounters an OnPush component, Angular checks whether it is marked as dirty. Only dirty components (and their children) are checked; otherwise, they are skipped, reducing unnecessary computations.
 
 
 
@@ -1217,7 +1268,7 @@ Angular Services
 -Singletons
 	(Each component dependent on a service gets a reference to the single instance generated by the service factory.
 	only one instance of the service gets created through-out the application)
--Services are created to handle common usecases like : logging , Http , Auth
+-Services are created to handle common usecases like : logging , Http , Authentication, utitlity
 
 -Create a service using angular CLI
  ng generate service <serviceName>
@@ -1265,7 +1316,7 @@ Assignment
 1. create an EmployeeService
 	Service should have 1 variable.  ex: employees = [ {}, {}, {} {}]   
 	Service should have 3 methods.   ex: getAllEmployees(), getMaleEmployees(), getFemaleEmployees()
-2. inject that service in EmployeeComponent
+2. inject EmployeeService in EmployeeComponent
 3. Display List of Employees in a table / Card
    have a dropdown with 3 values- allEmployees , maleEmployees , femaleEmployees
    based on the dropdown value selected, employee data should be shown
@@ -1305,20 +1356,31 @@ Communicating with backend services using HTTP
 
 HTTP Methods
 ============
-GET - Retrieve a resource/Retrieve data from DB
-	  search
+GET - Fetch Data from the server (ex: search products)
+      Doesn't change Data
+	  Safe, Idempotent, No Request Body
 	  
-POST - to send data to server  ( sign up ) 
-	   create a resource/create a new record in DB
-	   to fetch data securly    (send params in body not in URL)
+POST - Send Data to create a new resource( sign up )
+	   Fetch data securly    (send params in body not in URL)
+	   Not Idempotent, Request Body
 
-PUT - update data/create or replace a resource  
+PUT - Replace an existing resource completely
+      Idempotent, Full Update , Complete Object in Request Body
 	    
-PATCH - update/modify a resource
+PATCH - Update only specific fields of a resource
 		update password/update mobile number 
+		Idempotent, Partial Update , More Efficient than PUT
 
 DELETE - remove a resource/delete a record from DB 
 		 Delete naukri account
+		 Idempotent, No Body
+		 
+HEAD - Get Headers only	, Same as GET but no response body
+       Used For Checking existance, performance checks
+	   
+OPTIONS - Returns Supported HTTP Methods
+          Used in CORS
+          Browser preflight requests		  
 		 
 
 PUT vs POST
@@ -1334,7 +1396,23 @@ PUT vs POST
 
 Idempotent
 ----------
--It ensures that multiple identical requests will have similar response no matter how many times they get called.
+-An HTTP methos id idempotent if making the same request multiple times results in the same server state.
+-The response may be same or different, but the data on the server doesnt change after the first request.
+-POST is non-idempotent, Whereas GET,PUT,PATCH,DELETE are idempotent
+
+POST /users
+{'name':'sanjay','address':'Bangalore'}
+1st request --> User Created ( id=10 )
+2nd request --> User Created ( id=11 )
+3rd request --> another User Created ( id=12 )
+-Server state changes every time, POST is non-idempotent
+
+PUT /users/1 
+{'name':'sanjay','address':'Bangalore'}
+1st request --> user becomes  (Sanjay,Bangalore)
+2nd request --> user is still  (Sanjay,Bangalore)
+10th request --> user is still  (Sanjay,Bangalore)
+-Server state stays the same, PUT is idempotent
 
 
 
@@ -1373,6 +1451,7 @@ Free Online REST API for Testing
 9. https://github.com/geertjanw/ojet-training/blob/master/employeeData.json
 10. http://endeavourtech.ddns.net:8095/stockanalytics/stocks/getAllStockFundamentalsJPA
     http://endeavourtech.ddns.net:8095/stockanalytics/swagger-ui/index.html#/
+11. https://httpbin.org/delay/5
 
 
 Create REST API with json-server
@@ -1569,7 +1648,7 @@ Observables:
 
 RxJS
 ====
--RxJS is a library for composing asynchronous and event-based programs by using observable sequences.
+-RxJS is a library for asynchronous and event-based programs by using observable sequences.
 
 RxJS Operators
 --------------
@@ -1661,8 +1740,7 @@ switchMap() = map + switch
 
    
 ExhaustMap()
-	-Map to inner observable, ignore other values until that observable completes.
-	-“Do not disturb!” operator.
+	-Ignore new requests until the cureent one finishes. "Do not disturb!" operator.
 	-we have a login screen with a login button, where each click is mapped to 1 login request.
 	-If the user clicks more than once on the login button, it will cause multiple calls to the server.
 	-use exhaustMap to temporarily “disable” the mapping while the first http request is still on the go.
@@ -1681,22 +1759,14 @@ Hot and Cold Observables
 		
 Subject
 =======
--An observable allows us only to subscribe  whereas a subject allows us to both publish and subscribe.
--A subject allows our services to be used as both a publisher and a subscriber.
--Subjects are like EventEmitters: they maintain a registry of many listeners.
--Subject is a special type of Observable that allows values to be multicasted to many Observers,While plain Observables are unicast.
--data can be pushed into a subject and the subject’s subscribers will in turn receive that pushed data.
--The real power of subjects comes into play with multicasting, where a subject is passed as the 
-observer to an observable,which will mean that, when the observable emits, the data is multicasted to all of the subject’s subscriptions.
--The 'asObservable' operator can be used to transform a subject into an observable.
--A subject can emit data, on top of having the capability to be subscribed to.
--To feed a new value to the Subject, just call next(theValue), and it will be multicasted to the Observers registered to listen to the Subject.
--use a Subject in a service to fetch some data, and send the result to all components that subscribed to that Subject.
+-A Subject is a special type of Observable that allows both subscribing and emitting values.
+-Unlike a normal Observable (which is unicast), a Subject is multicast — one emission is received by multiple subscribers.
+-Subjects act like EventEmitters, maintaining a list of observers.
+-Data is pushed into a Subject using next(value), and all subscribers receive it.
+-Subjects are commonly used in services to share data between multiple components.
+-A Subject can be exposed as a read-only Observable using asObservable() to prevent external emissions.
 
--A BehaviorSubject is a Subject that can emit the current value
-(Subjects have no concept of current value)
--With behavior subjects, it does not matter when you subscribe, 
-you always get the latest value right away.
+
 
 
 	Observable 							   Subjects  
