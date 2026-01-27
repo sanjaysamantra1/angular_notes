@@ -480,6 +480,9 @@ Program- Toggle Tasks
  
  
 
+ 
+
+
 
 
 
@@ -499,6 +502,23 @@ Program-18 : Pagination
 
 Program-19 : star Rating
 ========================
+import { faStar as faStarSolid } from '@fortawesome/free-solid-svg-icons';
+import { faStar as faStarRegular } from '@fortawesome/free-regular-svg-icons';
+
+getStarType(rating: number, index: number) {
+    const exactrating = rating; // 4.1
+    const fullRating = Math.floor(rating); // 4
+    if (index <= fullRating) {
+      return faStarSolid;
+    } else if (index == fullRating + 1) {
+      return faStarHalf;
+    } else {
+      return faStarRegular;
+    }
+  }
+
+-----------------------------------------
+
   rating: number = 3;
   maxStars: number = 5;
   stars: boolean[] = [];
@@ -638,6 +658,39 @@ export class NumberonlyDirective {
 
 ******************
 <input type="text" numberonly name="salary" id="salary">
+
+
+
+
+
+Program : Input sanitizer (prevent Special Characters in inputBox)
+==========================
+export class AlphaNumeric {
+  constructor(private renderer: Renderer2) { }
+  
+  @HostListener('input', ['$event'])
+  onInput(event: any) {
+    let rawValue = event.target.value;
+    let sanitizedValue = rawValue.replace(/[^a-zA-Z0-9 ]/g, '');
+    console.log(sanitizedValue)
+    if (rawValue !== sanitizedValue) {
+      this.renderer.setProperty(event.target, 'value', sanitizedValue)
+    }
+  }
+}
+
+
+Program : Disable Copy/Paste
+==========================
+export class DisableCopyPaste {
+  @HostListener('copy', ['$event'])
+  @HostListener('paste', ['$event'])
+  onCopyOrPatse(event: any) {
+    console.log('event ', event.type)
+    event.preventDefault();
+  }
+}
+
 
 
 
@@ -941,6 +994,7 @@ transform(bytes: number): string {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return (bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
 }
+
 
 
 
@@ -2035,11 +2089,9 @@ export class ObservableDemo3Component {
   ngOnInit() {
     this.searchResult$ = this.searchForm.get("searchField").valueChanges.pipe(
       switchMap((term) =>
-        // this.http.get<any>(`https://swapi.dev/api/people/?search=${term}`)
 		this.http.get<any>(`https://dummyjson.com/users/search?q=${term}`)
       ),
       map((response: any) =>
-        // response.count > 0 ? response.results : [];
 		 response.users.length > 0 ? response.users : []
     ));
   }
@@ -3303,7 +3355,7 @@ export class TrafficSignalComponent {
   colorsArr: string[];
   selectedColor: string = 'red';
   timer: any;
-  constructor() {
+  constructor(private cdr:ChangeDetectorRef) {
     this.config = {
       "red": { nextColor: 'green', duration: 3000 },
       "green": { nextColor: 'yellow', duration: 5000 },
@@ -3315,6 +3367,7 @@ export class TrafficSignalComponent {
     const { duration, nextColor } = this.config[this.selectedColor];
     this.timer = setTimeout(() => {
       this.selectedColor = nextColor;
+	  this.cdr.markForCheck();
     }, duration)
   }
   ngOnDestroy() {
