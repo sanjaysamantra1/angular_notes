@@ -901,8 +901,17 @@ Date
   <div>{{ dateObj | date : 'fullTime' }}</div>
   ==============
   <div>{{ dateObj | date : 'dd-MMM-yyyy' }}</div>
-  <div>{{ dateObj | date : 'HH:mm' }}</div>
+  <div>{{ dateObj | date : 'hh:mm:ss a' }}</div>
   <div>{{ dateObj | date: "fullTime":"UTC" }}</div>
+  div>{{ dateObj | date: "fullTime":"IST" }}</div>
+
+Note: 
+hh   12-hour clock   AM/PM (yes)
+HH   24-hour clock   AM/PM (No) 
+<div>{{ dateObj | date : 'HH:mm a' }}</div> (incorrect)
+<div>{{ dateObj | date : 'hh:mm a' }}</div> (correct)
+
+
 
 
 
@@ -940,7 +949,7 @@ sortByValueAsc = (a:any,b:any)=>a.value - b.value;
 slice pipe
 -----------
 -slice pipe can be used with array and string
-<h4>{{cars | slice : 2 : 4}}</h4>
+<div>{{cars | slice : 2 : 4}}</div>
 <div>{{'Angular is a Framework' | slice : 0 : 7}}</div>
 <div>{{'Angular is a Framework' | slice : 0 : -4}}</div>
 
@@ -1260,7 +1269,7 @@ ViewContainerRef.createComponent()
 
 Angular Services
 ****************
--share logic/data across components.
+-share logic/data across components
 -code Reusability
 	(write once use that in multiple components)
 -Lazily instantiated
@@ -1369,7 +1378,7 @@ PUT - Replace an existing resource completely
 	    
 PATCH - Update only specific fields of a resource
 		update password/update mobile number 
-		Idempotent, Partial Update , More Efficient than PUT
+		Idempotent, Partial Update , More Efficient than PUT, Request Body
 
 DELETE - remove a resource/delete a record from DB 
 		 Delete naukri account
@@ -1396,18 +1405,18 @@ PUT vs POST
 
 Idempotent
 ----------
--An HTTP methos id idempotent if making the same request multiple times results in the same server state.
+-An HTTP methos is idempotent if making the same request multiple times results in the same server state.
 -The response may be same or different, but the data on the server doesnt change after the first request.
 -POST is non-idempotent, Whereas GET,PUT,PATCH,DELETE are idempotent
 
-POST /users
+POST   api/users
 {'name':'sanjay','address':'Bangalore'}
 1st request --> User Created ( id=10 )
 2nd request --> User Created ( id=11 )
 3rd request --> another User Created ( id=12 )
 -Server state changes every time, POST is non-idempotent
 
-PUT /users/1 
+PUT  api/users/1 
 {'name':'sanjay','address':'Bangalore'}
 1st request --> user becomes  (Sanjay,Bangalore)
 2nd request --> user is still  (Sanjay,Bangalore)
@@ -1568,8 +1577,9 @@ Class As Model:
 
 Http Interceptor
 ================
+-is the place where we can write common logic that should be executed for all HTTP calls.
 -interceptors are used to manipulate HTTP requests and responses.
--Used before sending request and after getting response from the server. 
+-Used before sending request to server and after getting response from the server. 
 
 Angular Service/Component Triggers API--> Interceptor --> modifies the Request --> Backend Server
 Backend Server --> response --> Interceptor --> modifies the Response --> Angular Service/Component
@@ -1615,7 +1625,7 @@ Authentication Vs Authorization
 	
 observables
 ***********
--An Observable is an entity that emits (or publishes) multiple data values (stream of data)over time and asynchronously.
+-Observables publish/emit data over the time asynchronously
 -Observables are lazy collections of multiple values over time.
 -Observables help to manage asynchronous data, such as data coming from a backend service.
 -To use observables, Angular uses a library called Reactive Extensions (RxJS).
@@ -2090,6 +2100,37 @@ new FormGroup({fName:new FormControl()}, { updateOn: 'submit' })
 
 
 
+SetValue and PatchValue
+-----------------------
+SetValue: 
+-It accepts an object that matches the structure of the FormGroup with control names as key.
+-we need all control data to match the structure and then bind the data to the form
+ ex: this.myForm.setValue({fName:'abc',lName:'pqr',email:''})
+
+PatchValue: 
+-It accepts an object and does its best to match the values. 
+-It can accept partial form group structure.
+  ex: this.myForm.patchValue({name:'UpdatedName'})
+
+
+
+Reset Form
+----------
+-Resets 
+	1. value
+	2. Form State (touched/dirty)
+
+HTML:  <input type="reset" value="Reset">
+
+TypeScript : 
+	<form [formGroup]="registerForm" (submit)="submitMyForm()" (reset)="resetMyForm()">
+	resetMyForm(){
+		// this.registerForm.reset();
+		this.registerForm.reset({ firstName: 'Sanjay' });
+	}
+
+
+
 FormBuilder
 ===========
 -Angular FormBuilder API makes it easier to build reactive forms.
@@ -2117,17 +2158,7 @@ With FormBuilder
 	});
 
 
-SetValue and PatchValue
-=======================
-SetValue: 
--It accepts an object that matches the structure of the FormGroup with control names as key.
--we need all control data to match the structure and then bind the data to the form
-ex: this.myForm.setValue({fName:'abc',lName:'pqr',email:''})
 
-PatchValue: 
--It accepts an object and does its best to match the values. 
--It can accept partial form group structure.
-ex: this.myForm.patchValue({name:'UpdatedName'})
 	
 
 

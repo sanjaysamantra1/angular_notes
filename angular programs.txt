@@ -1474,97 +1474,77 @@ program-44: create a math Services
 import { Injectable } from '@angular/core';
 @Injectable()
 export class MathService {
-    add(a:number,b:number){
-      return a+b;
-    }
-    sub(a:number,b:number){
-      return a-b;
-    }
-    mul(a:number,b:number){
-      return a*b;
-    }
-    div(a:number,b:number){
-      return a/b;
-    }
-}
-*********
-import { Component } from "@angular/core";
-import { MathService } from './math.service'
-
-@Component({
-  selector: 'app-root',
-  templateUrl: 'app.component.html',
-  styleUrls: ['app.component.css']
-})
-export class AppComponent {
-    addResult;
-    subResult;
-    mulResult;
-    divResult;
-
-    constructor(obj : MathService){
-        let a = parseInt(prompt("enter a value"));
-        let b = parseInt(prompt("enter a value"));
-        this.addResult = obj.add(a,b);
-        this.subResult = obj.sub(a,b);
-        this.mulResult = obj.mul(a,b);`
-        this.divResult = obj.div(a,b);
-    }
+  sum(values: number[]): number {
+    return values.reduce((total, ele) => total + ele, 0);
+  }
+  average(values: number[]): number {
+    return values.length ? this.sum(values) / values.length : 0;
+  }
+  indexOfMax(values: number[]): number {
+    return values.indexOf(this.max(values));
+  }
+  
 }
 
 
 
-Clock Service
-=============
+
+
+
+ObjectUtilService
+=================
 import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
-export class ClockService {
-  private format24Hour = true;
-  private paused = false;
-  private intervalId: any = null;
-  private currentTime: string = '';
-  private listeners: ((time: string) => void)[] = [];
-  constructor() {
-    this.start();
+export class ObjectUtilService {
+  // Check if object is empty 
+  isEmpty(obj: any): boolean {
+    return (
+      obj !== null &&
+      typeof obj === 'object' &&
+      !Array.isArray(obj) &&
+      Object.keys(obj).length === 0
+    );
   }
-  private start() {
-    this.intervalId = setInterval(() => {
-      if (!this.paused) {
-        this.currentTime = this.getFormattedTime();
-        this.notifyListeners();
-      }
-    }, 1000);
-  }
-  private getFormattedTime(): string {
-    const now = new Date();
-    if (this.format24Hour) {
-      return now.toLocaleTimeString('en-GB'); // 24-hour
-    } else {
-      return now.toLocaleTimeString('en-US'); // 12-hour
+
+  //  Deep comparison 
+  deepEqual(a: any, b: any): boolean {
+    if (a === b) return true;
+    if (typeof a !== typeof b) return false;
+    if (typeof a === 'object' && a !== null && b !== null) {
+      const keysA = Object.keys(a);
+      const keysB = Object.keys(b);
+      if (keysA.length !== keysB.length) return false;
+      return keysA.every(key =>
+        this.deepEqual(a[key], b[key])
+      );
     }
+    return false;
   }
-  onTick(callback: (time: string) => void) {
-    this.listeners.push(callback);
-    callback(this.currentTime); // send immediately
+  // Remove null, undefined and empty string properties 
+  removeEmptyProps(obj: any): any {
+    const result: any = {};
+    Object.keys(obj || {}).forEach(key => {
+      const value = obj[key];
+      if (value !== null && value !== undefined && value !== '') {
+        result[key] = value;
+      }
+    });
+    return result;
   }
-  private notifyListeners() {
-    this.listeners.forEach(cb => cb(this.currentTime));
-  }
-  toggleFormat() {
-    this.format24Hour = !this.format24Hour;
-  }
-  pause() {
-    this.paused = true;
-  }
-  resume() {
-    this.paused = false;
-  }
-  getTodayDate(): string {
-    return new Date().toLocaleDateString();
+  // Pick selected properties from object 
+  pick(obj: any, keys: string[]): any {
+    const result: any = {};
+    keys.forEach(key => {
+      if (obj && key in obj) {
+        result[key] = obj[key];
+      }
+    });
+    return result;
   }
 }
+
 
 
 
@@ -2315,32 +2295,32 @@ export interface Todo {
   value: string;
 }
 const initialTodos = [
-  { id: 1, value: 'Todo 1' },
-  { id: 2, value: 'Todo 2' },
+  { id: 1, value: 'Complete Angular Assignment' },
+  { id: 2, value: 'Learn Java Stream API' },
 ];
 @Injectable({
   providedIn: 'root',
 })
 export class TodoService {
-  private todoSubject = new BehaviorSubject<Todo[]>(initialTodos);
-  readonly todoObs = this.todoSubject.asObservable();
-
-  private todosArr: Todo[] = initialTodos;
-  private nextId = 2;
-  create(item: Todo) {
-    item.id = ++this.nextId;
-    this.todosArr.push(item);
-    this.todoSubject.next(Object.assign([], this.todosArr));
+  private todoSubject = new BehaviorSubject<Todo[]>(initialTodos); // writeable
+  readonly todoObs = this.todoSubject.asObservable(); // readonly, only subscribe
+  private todoArr: Todo[] = this.todoSubject.value;
+  private nextId = 3;
+  addNewTodo(item: any) {
+    item.id = this.nextId++;
+    this.todoArr.push(item);
+    this.todoSubject.next([...this.todoArr]);
   }
-  remove(id: number) {
-    this.todosArr.forEach((todo, ind) => {
+  deleteToDo(id: number) {
+    this.todoArr.forEach((todo, ind) => {
       if (todo.id === id) {
-        this.todosArr.splice(ind, 1);
+        this.todoArr.splice(ind, 1);
       }
-      this.todoSubject.next(Object.assign([], this.todosArr));
+      this.todoSubject.next([...this.todoArr]);
     });
   }
 }
+
 
 
 
@@ -2363,7 +2343,7 @@ export class TodoAddComponent implements OnInit {
   constructor(private todoService: TodoService) {}
   ngOnInit(): void {}
   addNewTodo(todoText: string) {
-    this.todoService.create({ id: 3, value: todoText });
+    this.todoService.addNewTodo({ id: 3, value: todoText });
   }
 }
 
@@ -2394,7 +2374,7 @@ export class TodoListComponent implements OnInit {
     this.todos$ = this.todoService.todoObs;
   }
   deleteTodo(id: number) {
-    this.todoService.remove(id);
+    this.todoService.deleteToDo(id);
   }
 }
 
@@ -2513,7 +2493,7 @@ export class SignalDemoComponent {
   }
 }
 -----------------------
-<h3 class="text-center">Signal Demo</h3>
+<h3 class="text-center">Counter Example using Signal</h3>
 <div class="border">
     <h4>Num value is {{num()}}</h4>
     <h4>Square value is {{numSquare()}}</h4>
@@ -2523,7 +2503,9 @@ export class SignalDemoComponent {
 	<hr/>
 	 @for(msg of messages();track $index){
 		<div>{{msg}}</div>
-     }
+     }@empty {
+		<div>No Messages to Show</div>
+	}
 </div>
 
 
@@ -2566,6 +2548,129 @@ Program-67 : effects
     </div>
   </div>
 </div>
+
+
+
+Program: Todo App Using Signal
+==============================
+interface Todo {
+  id: number;
+  title: string;
+  isCompleted: boolean;
+}
+export class ToDoAppWithSignal {
+  todos = signal<Todo[]>([
+    { id: 1, title: 'Learn Signals', isCompleted: false },
+    { id: 2, title: 'Build Todo App', isCompleted: true },
+    { id: 2, title: 'Build Project', isCompleted: false }
+  ]);
+
+  newTodo = signal('');
+  selectedFilter = signal<'all' | 'completed' | 'remaining'>('all');
+  completedTodos = computed(() =>
+    this.todos().filter(t => t.isCompleted)
+  );
+  remainingTodos = computed(() =>
+    this.todos().filter(t => !t.isCompleted)
+  );
+  totalTodos = computed(() => this.todos().length);
+  completionPercentage = computed(() =>
+    this.totalTodos() === 0
+      ? 0
+      : Math.round((this.completedTodos().length / this.totalTodos()) * 100)
+  );
+  filteredTodos = computed(() => {
+    switch (this.selectedFilter()) {
+      case 'completed': return this.completedTodos();
+      case 'remaining': return this.remainingTodos();
+      default: return this.todos();
+    }
+  });
+  addTodo() {
+    if (!this.newTodo().trim()) return;
+    const newItem: Todo = {
+      id: Date.now(),
+      title: this.newTodo(),
+      isCompleted: false
+    };
+    this.todos.update(list => [...list, newItem]);
+    this.newTodo.set('');
+  }
+
+  toggleTodo(id: number) {
+    this.todos.update(list =>
+      list.map(todo =>
+        todo.id === id
+          ? { ...todo, isCompleted: !todo.isCompleted }
+          : todo
+      )
+    );
+  }
+  deleteTodo(id: number) {
+    this.todos.update(list => list.filter(t => t.id !== id));
+  }
+  clearCompleted() {
+    this.todos.set(this.remainingTodos());
+  }
+  markAllCompleted() {
+    this.todos.update(list =>
+      list.map(t => ({ ...t, isCompleted: true }))
+    );
+  }
+  resetAll() {
+    this.todos.set([]);
+  }
+  setFilter(filter: 'all' | 'completed' | 'remaining') {
+    this.selectedFilter.set(filter);
+  }
+}
+---------------------------------------------
+<style>
+  .done {
+    text-decoration: line-through;
+    color: green;
+  }
+</style>
+<h3 class="text-center">Signal Based ToDo App</h3>
+
+<select (change)="setFilter($any($event.target).value)">
+  <option>all</option>
+  <option>completed</option>
+  <option>remaining</option>
+</select>
+
+<button class="btn btn-info mx-1" (click)="markAllCompleted()">Mark All Completed</button>
+<button class="btn btn-info mx-1" (click)="clearCompleted()">Clear Completed</button>
+<button class="btn btn-info mx-1" (click)="resetAll()">Reset All</button>
+
+<table class="table table-bordered mt-1">
+  <thead>
+    <tr>
+      <th>Task</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (todo of filteredTodos(); track todo.id) {
+    <tr [class.done]="todo.isCompleted">
+      <td>{{ todo.title }}</td>
+      <td>{{ todo.isCompleted ? 'Completed' : 'Pending' }}</td>
+      <td>
+        <button class="btn btn-primary mx-1" (click)="toggleTodo(todo.id)">Toggle</button>
+        <button class="btn btn-primary mx-1" (click)="deleteTodo(todo.id)">Delete</button>
+      </td>
+    </tr>
+    }
+  </tbody>
+</table>
+<div>
+  {{ completedTodos().length }} completed,
+  {{ remainingTodos().length }} pending,
+  out of total {{ totalTodos() }} Todos
+</div>
+<input placeholder="Enter todo" [value]="newTodo()" (input)="newTodo.set($any($event.target).value)" />
+<button class="btn btn-success mx-2" (click)="addTodo()">Add</button>
 
 
 
