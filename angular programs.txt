@@ -1469,6 +1469,8 @@ export class AppComponent {
 }
 
 
+
+
 program-44: create a math Services
 ======================================
 import { Injectable } from '@angular/core';
@@ -1481,7 +1483,8 @@ export class MathService {
     return values.length ? this.sum(values) / values.length : 0;
   }
   indexOfMax(values: number[]): number {
-    return values.indexOf(this.max(values));
+    const max = Math.max(...values)
+    return values.indexOf(max);
   }
   
 }
@@ -2079,7 +2082,7 @@ export class ObservableDemo3Component {
 
 
 --------------------------------
-<div class="jumbotron">
+<div class="border border-2 rounded-2 p-2">
     <h1>Search Something</h1>
     <form [formGroup]="searchForm">
         <input formControlName="searchField" />
@@ -2149,7 +2152,7 @@ program-61 : exhaustMap Example
 
 ngAfterViewInit() {
     fromEvent(this.loginBtn.nativeElement, 'click').pipe(exhaustMap((val) => {
-      return this.http.get('https://jsonplaceholder.typicode.com/users')
+      return this.http.get('https://httpbin.org/delay/5')
     })).subscribe({
       next: (res) => console.log('Response:', res),
       error: (err) => console.error('Error:', err),
@@ -2513,21 +2516,20 @@ export class SignalDemoComponent {
 
 Program-67 : effects
 ======================
+  httpClient = inject(HttpClient);
   userId = signal(1);
-  userData: any;
+  userData: WritableSignal<any> = signal({})
   userDetailsEffect = effect(() => {
     const id = this.userId();
     this.fetchUserDetails(id);
   });
-  destroyEffect() {
-    this.userDetailsEffect.destroy()
-  }
-  constructor(private httpClient: HttpClient) {
-  }
   fetchUserDetails(id: number) {
     this.httpClient.get(`https://jsonplaceholder.typicode.com/users/${id}`).subscribe(response => {
-      this.userData = response;
+      this.userData.set(response)
     })
+  }
+  destroyEffect() {
+    this.userDetailsEffect.destroy()
   }
   incrementUserId() {
     this.userId.update(val => val + 1);
@@ -2537,17 +2539,18 @@ Program-67 : effects
 <div class="col-sm-4 offset-4">
   <div class="card">
     <div class="card-body text-center">
-      <h5 class="card-title">{{userData.id}}</h5>
-      <h5 class="card-title">{{userData.username}}</h5>
-      <p class="card-text">{{userData.email}}</p>
-      <p class="card-text">{{userData.phone}}</p>
-      <p class="card-text">{{userData.address.city}}</p>
-      <p class="card-text">{{userData.website}}</p>
+      <h5 class="card-title">{{userData().id}}</h5>
+      <h5 class="card-title">{{userData().username}}</h5>
+      <p class="card-text">{{userData().email}}</p>
+      <p class="card-text">{{userData().phone}}</p>
+      <p class="card-text">{{userData().address.city}}</p>
+      <p class="card-text">{{userData().website}}</p>
       <button class="btn btn-primary" (click)="incrementUserId()">Increment</button>
       <button class="btn btn-danger mx-2" (click)="destroyEffect()">Destroy Effect</button>
     </div>
   </div>
 </div>
+
 
 
 
@@ -2562,7 +2565,7 @@ export class ToDoAppWithSignal {
   todos = signal<Todo[]>([
     { id: 1, title: 'Learn Signals', isCompleted: false },
     { id: 2, title: 'Build Todo App', isCompleted: true },
-    { id: 2, title: 'Build Project', isCompleted: false }
+    { id: 3, title: 'Build Project', isCompleted: false }
   ]);
 
   newTodo = signal('');
@@ -3006,46 +3009,48 @@ export class AppComponent {
 }
 ----------------------------------
 <style>
-    button {
-        margin: 5px
-    }
+  button {
+  margin: 5px
+}
 </style>
 <h1>Angular Nested FormArray / Dynamic FormArray</h1>
 <form [formGroup]="empForm" (ngSubmit)="onSubmit()">
-    <div formArrayName="employees">
-        <div *ngFor="let employee of getAllEmployees().controls; let empIndex=index">
-            <div [formGroupName]="empIndex" style="border: 2px solid blue; padding: 10px; width: 700px; margin: 10px;">
-                {{empIndex}} First Name :
-                <input type="text" formControlName="firstName" />
-                Last Name:
-                <input type="text" formControlName="lastName" />
-
-                <button (click)="removeEmployee(empIndex)">Remove</button>
-
-                <div formArrayName="skills">
-                    <div *ngFor="let skill of employeeSkills(empIndex).controls; let skillIndex=index">
-                        <div [formGroupName]="skillIndex">
-                            {{skillIndex}} Skill :
-                            <input type="text" formControlName="skill" />
-                            Exp:
-                            <input type="text" formControlName="exp" />
-
-                            <button (click)="removeEmployeeSkill(empIndex,skillIndex)">
-                                X
-                            </button>
-                        </div>
-                    </div>
+  <div formArrayName="employees">
+    @for (employee of getAllEmployees().controls; track employee; let empIndex = $index) {
+      <div>
+        <div [formGroupName]="empIndex" style="border: 3px solid blue; padding: 10px; width: 700px; margin: 10px;">
+          {{empIndex}} First Name :
+          <input type="text" formControlName="firstName" />
+          Last Name:
+          <input type="text" formControlName="lastName" />
+          <button (click)="removeEmployee(empIndex)">Remove</button>
+          <div formArrayName="skills">
+            @for (skill of employeeSkills(empIndex).controls; track skill; let skillIndex = $index) {
+              <div>
+                <div [formGroupName]="skillIndex">
+                  {{skillIndex}} Skill :
+                  <input type="text" formControlName="skill" />
+                  Exp:
+                  <input type="text" formControlName="exp" />
+                  <button (click)="removeEmployeeSkill(empIndex,skillIndex)">
+                    X
+                  </button>
                 </div>
-                <button type="button" (click)="addEmployeeSkill(empIndex)">
-                    Add Skill
-                </button>
-            </div>
+              </div>
+            }
+          </div>
+          <button type="button" (click)="addEmployeeSkill(empIndex)">
+            Add Skill
+          </button>
         </div>
-        <button type="button" (click)="addEmployee()">Add Employee</button>
-    </div>
+      </div>
+    }
+    <button type="button" (click)="addEmployee()">Add Employee</button>
+  </div>
 </form>
 
 <pre>{{this.empForm.value | json}}</pre>
+
  
 
 

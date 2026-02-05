@@ -1396,16 +1396,13 @@ PUT vs POST
 -----------
 -PUT for UPDATE operations, POST for CREATE operations.
 -PUT is idempotent, where POST is non-idempotent.
--Idempotence(producing the same result even if the same request is made multiple times)
--(PUT)if you retry a request N times, that should be equivalent to single request modification.
--(POST)if you retry the request N times, you will end up having N resources with N different URIs created on server.
 -Use PUT when you want to modify a singular resource which is already a part of resources collection.
 -Use POST when you want to add a child resource under resources collection.
 
 
 Idempotent
 ----------
--An HTTP methos is idempotent if making the same request multiple times results in the same server state.
+-An HTTP method is idempotent if making the same request multiple times results in the same server state.
 -The response may be same or different, but the data on the server doesnt change after the first request.
 -POST is non-idempotent, Whereas GET,PUT,PATCH,DELETE are idempotent
 
@@ -1577,7 +1574,7 @@ Class As Model:
 
 Http Interceptor
 ================
--is the place where we can write common logic that should be executed for all HTTP calls.
+-the place where we can write common logic that should be executed for all HTTP calls.
 -interceptors are used to manipulate HTTP requests and responses.
 -Used before sending request to server and after getting response from the server. 
 
@@ -1645,15 +1642,15 @@ Promises:
 2. not cancellable
 3. more readable code with try/catch and async/await
 4. no Operator support (map,filter,reduce,retry,tap)
-5. then()
+5. then(successHandler,errorHandler)
 
 Observables:
 -----------
 1. multiple values over time
 2. cancellable
-3. support Operators like:- tap(),retry(),distinctUntilChanged(),map()
+3. support Operators like:- tap(),retry(),distinctUntilChanged(),map(), catchError()
 4. use Reactive Extensions (RxJS)
-5. subscribe()
+5. subscribe({next,error,complete})
 
 
 RxJS
@@ -1873,7 +1870,7 @@ update(): Modifies the value based on its current state.
 mutate(): used to modify mutable values(array/objects) (Deprecated)
 
 To change the value of a writable signal:
-	count.set(3);  // when new value is not dependent op previous value
+	count.set(3);  // when new value is not dependent on previous value
 		(OR)
 	count.update(value => value + 1); // update the value by using the previous value
 	
@@ -2051,13 +2048,13 @@ reset(myForm :NgForm) {
 
 Validation
 ----------
-<input name="firstName" #fname="ngModel" [(ngModel)]='user.fname' required minlength="5" />
- <span *ngIf="fname.hasError('required') && fname.dirty" class="text-danger">Plz fill firstname</span>
-<span *ngIf="fname.hasError('minlength') && fname.dirty" class="text-danger">Minimum 5 chars required</span>
-
-<input type="email" name="email" #emailRef="ngModel" [(ngModel)]='user.email' required email />
-<span *ngIf="emailRef.hasError('required') && emailRef.dirty" class="text-danger">plz fill email</span>
-<span *ngIf="emailRef.hasError('email') && emailRef.dirty" class="text-danger">email format is not correct</span>
+	 FirstName: <input name="firstName" #firstName='ngModel' [(ngModel)]='user.firstName' required minlength="5" />
+      @if(firstName.hasError('required')){
+        <span class="text-danger">FirstName is a required field</span>
+      }
+      @if(firstName.hasError('minlength')){
+        <span class="text-danger">FirstName should have minimum 5 chars</span>
+      }
 
 
 
@@ -2212,6 +2209,7 @@ routing Program:
 	ng g c home
 	ng g c aboutus
 	ng g c careers
+	ng g c contactus
 	ng g c notfound
 
 2. in app.routes.ts configure all the routes.
@@ -2257,6 +2255,7 @@ Active-Route
 ------------
 1. <a routerLink="careers" routerLinkActive="active">careers</a>
 2. import  RouterLinkActive in typescript file
+   import { RouterLink, RouterLinkActive } from '@angular/router';
 3. add css for 'active' class 
    .active{background-color: aquamarine;}
 
@@ -2313,16 +2312,16 @@ Path Param
         View Details</button>
 		
 4. add the below code in productdetails.comp.ts
-   constructor(private activatedRoute: ActivatedRoute) 
-   {
-   }
-   ngOnInit() {
+   user: any = signal({});
+  constructor(private activatedRoute: ActivatedRoute, private http: HttpClient) {
+  }
+  ngOnInit() {
     this.activatedRoute.params.pipe(switchMap((params: any) =>
-        this.http.get(`https://jsonplaceholder.typicode.com/users/${params.id}`)
-      )).subscribe((userResponse: any) => {
-      this.user = userResponse;
+      this.http.get(`https://jsonplaceholder.typicode.com/users/${params.id}`)
+    )).subscribe((userResponse: any) => {
+      this.user.set(userResponse);
     });
-  }	
+  }
 
 5. add the below code in productdetails.component.html
 	<h1>This is details for product- {{id}}
@@ -2347,14 +2346,14 @@ Query Param
             [queryParams]="{id:product.id,name:product.title,price:product.price}">Details</button>
 		
 4. add the below code in productdetails.comp.ts
-	constructor(public activatedRoute: ActivatedRoute) {		
-	}
-	ngOnInit(){
-		this.activatedRoute.queryParams.subscribe((queryparams) => {
-		  console.log(queryparams);
-		  this.prod = queryparams;
-		});
-	}
+	  product: any;
+	  activatedRoute = inject(ActivatedRoute);
+	  ngOnInit() {
+		this.activatedRoute.queryParams.subscribe(params => {
+		  this.product = params;
+		  console.log(params)
+		})
+	  }
 
 
 
@@ -2362,24 +2361,29 @@ nested/Child Routing
 ====================
 -A child route is basically a route within a route. 
 
--Ex: there can be multiple components within a single Login route:
-Forgot Password component
-Signup component
-Login component
 
-
-{
-    path:"products",
-    component: ProductsComponent,
+Careers(Parent) --> Permanent Jobs & Contract Jobs (Children)
+1. Configure child routes using 'children' inside app.routes.ts
+  {
+    path: 'careers',
+    component: Careers,
     children: [
-      { path:"new", component: NewProductsComponent},
-      { path:"featured", component: FeaturedProductsComponent}
-	 ]
+      { path: 'permanent', component: PermanentJobs },
+      { path: 'contract', component: ContractJobs },
+    ]
   }
--------------------------
-<a routerLink="/products/new">New Products</a>
-<a routerLink="featured">Featured Products</a>
-<router-outlet></router-outlet>
+2. in main/parent component add <router-outlet>
+  <div class="row">
+	  <div class="col-sm-3">
+		<p><a routerLink="/careers/permanent">Permanent Jobs</a></p>
+		<p><a routerLink="contract">Contract Jobs</a></p>
+	  </div>
+	  <div class="col-sm-9">
+		<router-outlet></router-outlet>
+	  </div>
+   </div>  
+
+
 
 
 
@@ -2396,10 +2400,12 @@ Protecting routes with guard
 -canDeactivate : Checks to see if a user can exit a route while navigating from a route
 -canMatch: helps in dynamically loading the components of our choice
 
-Note:-canActivate Guard prevents unauthorized user from accessing the route. 
-	But it does not stop the module from being downloaded. 
+Note:-canActivate Guard prevents unauthorized user from accessing the route. But it does not stop the component from being downloaded. 
 	The user can use the chrome developer console to see the source code. 
-	The CanLoad Guard prevents the module from being downloaded.
+
+-canMatch Guard prevents the component from being downloaded.
+-canMatch Guard works with only lazy-loaded modules/components.
+
 
 
 Router-Guard
@@ -2466,9 +2472,7 @@ Lazy Loading of components
 
 { 
 path: 'products',
-loadComponent: () =>
-            import('./components/product-list/product-list.component').then((x) => x.ProductListComponent)
-}
+loadComponent: () => import('./components/product-list/product-list').then((x) => x.ProductList)
 	
 	
 Lazy loading a standalone component
@@ -2653,8 +2657,8 @@ Deploy Angular Application in GitHub
 3. Build & Deploy
 	ng build --base-href angular_project_feb_2025 
 	ng build --output-path docs --base-href angular_project_feb_2025
-4. ngh --dir dist/angular_project_feb_2025/browser     /   ngh --dir docs/browser  
-
+4. ngh --dir dist/angular_project_feb_2025/browser 
+   ngh --dir docs/browser       
 5. go to github website & open your Repository
    Settings Tab --> pages --> SelectBranch & Folder(gh-pages & root)
    you should see the live URL
@@ -2694,7 +2698,7 @@ Unit Testing Using Jasmine and karma
 -jasmine is framework for testing javascript code. (https://jasmine.github.io/tutorials/your_first_suite)
 -karma is a test runner ( Runs the test cases & generates Report)
 
-ng test/t --code-coverage=true
+ng test/t --coverage
 
  
 Jasmine Terminologies
