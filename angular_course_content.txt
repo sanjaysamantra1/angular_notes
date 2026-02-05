@@ -23,8 +23,8 @@ Angular Course Content
 -Form (Template Driven , Reactive Form)
 -Routing
 -Lazy Loading
--NgRx (State management)
 -Build & Deploy
+-NgRx (State management)
 -Angular Material
 -Unit testing 
 
