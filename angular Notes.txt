@@ -1831,7 +1831,7 @@ What are signals
 -Signals can contain any value, from primitives to complex data structures.
 -We read a signal's value by calling its getter function, which allows Angular to track where the signal is used.
 -Signals may be either writable or read-only
--A signal is not a replacement for RxJS
+-A signal is not a replacement for RxJS/Observable/Subjects
 -RxJS and Observables are meant for asynchronous operations, such as http.get()
 
 
@@ -2013,13 +2013,21 @@ Template Driven Form
 
 
 
-FormControl
------------
+FormControl & Validation
+------------------------
 -we can get access to the FormControl instance by assigning ngModel to the element.
  <input type="text" name="firstname" #fname="ngModel" ngModel>
 -the variable #fname holds the reference to the firstname FormControl. 
  We can then access the properties of FormControl, like: value, valid, invalid, touched etc.
   <h3>{{fname.value}}</h1>
+  
+	FirstName: <input name="firstName" #firstName='ngModel' [(ngModel)]='user.firstName' required minlength="5" />
+      @if(firstName.hasError('required')){
+        <span class="text-danger">FirstName is a required field</span>
+      }
+      @if(firstName.hasError('minlength')){
+        <span class="text-danger">FirstName should have minimum 5 chars</span>
+      }
  
  
 
@@ -2035,6 +2043,7 @@ There are two ways we can set the value of the form elements:
 2. Use the template reference variable
 
 
+
 Reset the form
 --------------
 <button type="reset">reset</button>
@@ -2046,15 +2055,8 @@ reset(myForm :NgForm) {
 }
 
 
-Validation
-----------
-	 FirstName: <input name="firstName" #firstName='ngModel' [(ngModel)]='user.firstName' required minlength="5" />
-      @if(firstName.hasError('required')){
-        <span class="text-danger">FirstName is a required field</span>
-      }
-      @if(firstName.hasError('minlength')){
-        <span class="text-danger">FirstName should have minimum 5 chars</span>
-      }
+
+	 
 
 
 
@@ -2298,33 +2300,29 @@ Route-Parameter
 
 Path Param
 ===========
-1. create productDetailsComponent
-   ng g c productDetails
+1. create userDetailsComponent
+   ng g c userDetails
    
 2. add the below code in app.routes.ts
-   {
-    path: 'productdetails/:id', 
-    component: ProductdetailsComponent
-   }
+   { path: 'userdetails/:id', component: UserDetails }
   
-3. add the below code in products.html
-   <button class="btn btn-primary" [routerLink]="['/productdetails', x.id]">
-        View Details</button>
+3. add the below code in userList.html
+   <button class="btn btn-primary" [routerLink]="['/userdetails',user.id]">Details</button>
 		
-4. add the below code in productdetails.comp.ts
-   user: any = signal({});
+4. add the below code in userdetails.comp.ts
+  user: any = signal({});
   constructor(private activatedRoute: ActivatedRoute, private http: HttpClient) {
   }
   ngOnInit() {
-    this.activatedRoute.params.pipe(switchMap((params: any) =>
-      this.http.get(`https://jsonplaceholder.typicode.com/users/${params.id}`)
-    )).subscribe((userResponse: any) => {
-      this.user.set(userResponse);
-    });
+    this.activatedRoute.params.subscribe(params => {
+      this.http.get(`https://jsonplaceholder.typicode.com/users/${params['id']}`).subscribe(response => {
+        this.user.set(response)
+      })
+    })
   }
 
-5. add the below code in productdetails.component.html
-	<h1>This is details for product- {{id}}
+5. add the below code in userdetails.component.html
+	<h1>This is details for User- {{id}}
 
 
 
@@ -2475,6 +2473,9 @@ path: 'products',
 loadComponent: () => import('./components/product-list/product-list').then((x) => x.ProductList)
 	
 	
+	
+	
+	
 Lazy loading a standalone component
 ===================================
 -Any route can lazily load its routed, standalone component by using loadComponent
@@ -2610,7 +2611,8 @@ Build & Deploy
 ===============
 Build : preparing the application for browser
 		Converting Source code in to optimized files 
-
+		
+Deploy : Moving/placing the bundled code in a server, so that our application runs 24*7
 
 
 > ng serve:
@@ -2650,16 +2652,14 @@ Hostinger
 
 Deploy Angular Application in GitHub
 ====================================
-1. switch to a branch(optional)
-	git checkout -b mybranch1
-2. Add angular-cli-ghpages package
+1. Add angular-cli-ghpages package
     ng add angular-cli-ghpages / npm i -g angular-cli-ghpages
-3. Build & Deploy
+2. Build & Deploy
 	ng build --base-href angular_project_feb_2025 
-	ng build --output-path docs --base-href angular_project_feb_2025
-4. ngh --dir dist/angular_project_feb_2025/browser 
+	ng build --output-path docs --base-href angular_project_feb_2025 
+3. ngh --dir dist/angular_project_feb_2025/browser 
    ngh --dir docs/browser       
-5. go to github website & open your Repository
+4. go to github website & open your Repository
    Settings Tab --> pages --> SelectBranch & Folder(gh-pages & root)
    you should see the live URL
 
@@ -2695,10 +2695,11 @@ Unit Testing Using Jasmine and karma
 -A unit may be an individual function ,block, component, pipe , or directive, service.
  
 
--jasmine is framework for testing javascript code. (https://jasmine.github.io/tutorials/your_first_suite)
+-vitest testing framework powered by Vite (https://vitest.dev/guide/)
 -karma is a test runner ( Runs the test cases & generates Report)
 
-ng test/t --coverage
+ng test
+ng test --coverage
 
  
 Jasmine Terminologies
@@ -2734,10 +2735,10 @@ afterEach()    N Times
 afterAll()     1
 
 
-fdescribe() - focused describe. If it exists, jasmine will run only fdescribe spec and ignore other type of describe (describe and xdescribe).
-xdescribe() - disabled describe. It will never be executed.
-fit() - focused it()
-xit() - disabled it()
+describe.only() - focused describe. If it exists, jasmine will run only fdescribe spec and ignore other type of describe (describe and xdescribe).
+describe.skip() - disabled describe. It will never be executed.
+it.only() - focused it()
+it.skip() - disabled it()
 
 
 Spy & Stub

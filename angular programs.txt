@@ -1725,12 +1725,12 @@ export class Employee {
 }
 
 
-getEmployees(): Observable<Employee[]> {
-    return this.httpClient.get<Employee[]>(this.url).pipe(
+getAllEmployees(): Observable<Employee[]> {
+    return this.httpClient.get<Employee[]>('http://localhost:3000/employees').pipe(
       map((responseArr: Employee[]) => {
         return responseArr.map((empInfo: Employee) => {
-		  let { id, firstName, lastName, salary, gender } = empInfo;
-          return new Employee(id, firstName, lastName, salary, gender);
+          let { id, firstName, lastName, sal, gender } = empInfo;
+          return new Employee(id, firstName, lastName, sal, gender);
         });
       })
     );
@@ -3696,12 +3696,18 @@ Program-86 : Counter App using NgRx
 		on(decrement, (state) => state - 1),
 		on(reset, (state) => 0)
 	);
-4. Provide the Store to the whole application(app.config.ts)
+	
+4. create a store file (store.ts)
+	export const myStore = {
+		countReducer
+      }
+	  
+5. Provide the Store to the whole application(app.config.ts)
    providers: [
-    provideStore({counterReducer })
+    provideStore(myStore)
   ]
 
-5. Create Counter Component (counter.component.ts)
+6. Create Counter Component (counter.component.ts)
   count$: Observable<number>;
   constructor(private store: Store) {
     this.count$ = store.select((state: any) => state.counterReducer);
@@ -3711,9 +3717,10 @@ Program-86 : Counter App using NgRx
     this.store.dispatch(increment())
   }
   
-6. Counter.component.html
+7. Counter.component.html
    <h2>Count value is : {{count$ | async}}</h2>
    <button (click)="increment()">Increment</button>
+
 
 
 
@@ -3753,15 +3760,21 @@ Program-87 : ToDo App using NgRx
 			});
 		})
 	);
-4. Provide the Store to the whole application(app.config.ts)
+	
+4. create/update  store file (store.ts)
+	export const myStore = {
+		countReducer,todoReducer
+      }
+	  
+5. Provide the Store to the whole application(app.config.ts)
    providers: [
-    provideStore({ todoArr:todoReducer })
+    provideStore(myStore)
   ]
 
-5. Create ToDoCrud Component (todocrud.component.ts)
+6. Create ToDoCrud Component (todocrud.component.ts)
   todos$: Observable<any> | undefined;
   constructor(private store: Store) {
-    this.todos$ = this.store.select((state: any) => state.todoArr);
+    this.todos$ = this.store.select((state: any) => state.todoReducer);
   }
   deleteMyTodo(id: number) {
     this.store.dispatch(deleteTodo({ id: id }));

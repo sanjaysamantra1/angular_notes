@@ -10,9 +10,7 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 ---
 
 ### 1.2 Target Users
-- **End Users (Customers)**: Users who browse events and book tickets
-- **Admin Users**: Users who manage movies, events, venues, shows, and pricing
-- **Evaluators / Interviewers**: Reviewing architecture, scalability, and Angular best practices
+- **End Users (Customers)**: Users who browse events and book ticketspractices
 
 ---
 
@@ -24,7 +22,10 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 - Single-country and single-currency support
 
 **Constraints**
+-Use Bootstrap
 - Angular 20+ must be used
+-use standalone comopnent
+-dont use ngmodule
 - RxJS must be used for async data handling
 - Lazy loading must be implemented
 - No server-side rendering (SSR) required
@@ -42,13 +43,6 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 - Select seats and number of tickets
 - Book tickets and view booking confirmation
 - View booking history
-
-**Admin Capabilities**
-- Login as admin
-- Create, update, delete movies/events
-- Manage venues, screens, and seat layouts
-- Create and schedule shows
-- Set pricing rules
 
 ---
 
@@ -97,16 +91,6 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 
 ---
 
-### 2.2 Admin Features
-- Admin dashboard
-- Movie/event management
-- Venue and screen management
-- Seat layout configuration
-- Show scheduling
-- Price configuration
-
----
-
 ### 2.3 Payment and Booking Features
 - Ticket price calculation
 - Convenience fee calculation
@@ -137,7 +121,6 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 ### 3.1 Feature Modules (Lazy Loaded)
 - AuthModule
 - UserModule
-- AdminModule
 - MoviesModule
 - BookingModule
 - PaymentModule
@@ -218,7 +201,4 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 - Screenshots or short demo (optional)
 - Focus on architecture over styling
 
----
-
-**End of Assignment Document**
 
