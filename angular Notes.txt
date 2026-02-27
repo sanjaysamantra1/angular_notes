@@ -59,7 +59,7 @@ npx @angular/cli new angular-wheather-app --standalone --style=css --routing=fal
 vscode extensions
 =================
 1. ESLint
-2. prettier
+2. prettier EsLint
 3. code spell checker
 4. gitlens
 5. vscode-icons
@@ -102,7 +102,7 @@ Disadvantages : SEO challenges , Large initial load
  templates for fast application development
 -Collection of libraries & APIs					-collection of helper functions,objects
 -cann't be easily replaceable 					-can be easily replaceable 
--angular,vue									-jQuery,lodash,momentjs,ReactJs
+-angular,vue									-jQuery,lodash,momentjs,ReactJs,chart.js
 -Hospital with full of doctors					-A doctor specialized in 1 thing		
 
 
@@ -261,7 +261,16 @@ tsconfig.json	: The base TypeScript configuration for projects in the workspace.
 
 How to Use Bootstrap in Angular 
 ===============================
--Bootstrap can be used in Angular either by using CDN or by installing.
+-Bootstrap can be used in Angular either by using:
+	1. CDN   2. installing 
+
+1. CDN : Paste the below 2 libraries in index.html
+-------------------------------------------------
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" />
+
+2. installing 
+---------------
 1. npm install  bootstrap
 2. add the below line in 'styles.css'
 	@import 'bootstrap/dist/css/bootstrap.css'
@@ -280,7 +289,7 @@ How to Display Images from local folder
 
 Databinding
 ===========
--synchronization of data between Component(TS) and view(HTML).
+-Synchronization of data between Component(TS) and view(HTML).
 -Allows to bind component's properties/data to the view.
 -when component's properties/data change, the view is automatically updated.
 
@@ -381,14 +390,17 @@ Template Reference variables
 
 Assignments: 
 1. Have a paragraph and a toggle button; on clicking the button, control the visibility (Show / Hide) of the paragraph.
-3. Create a textarea with maxLength = 100; as the user keeps typing, count and display how many words and how many characters are typed and  remaining characters.
-4. Create a dropdown with state names; when the user changes the dropdown value, print the selected value in a div.
-5. create a input box, toggle the type of that input box to (text/password)
-6. Create a counter example with three controls: Increment, Decrement, and Reset.
-7. Create a temperature converter to convert Celsius to Fahrenheit.
+2. Create a dropdown with state names; when the user changes the dropdown value, print the selected value in a div.
+3. create a input box, toggle the type of that input box to (text/password)
+4. Create a counter example with three controls: Increment, Decrement, and Reset.
+5. Create an inputBox to enter temperature in celcius, convert temperature from Celsius to Fahrenheit. 
+	formula:  f = (C × (9/5)) + 32
+6. greeting based on time (good mornig, good afternoon, good evening)
+7. Create a textarea with maxLength = 100; as the user keeps typing, count and display how many words and how many characters are typed and  also display remaining characters.
 8. Create two input boxes and a dropdown (+ , - , * , /) and perform arithmetic operations based on the selected operator.
 9. Create a button that increases font size and another button that decreases font size for a paragraph.
 10. Create a dropdown with colors and change the background color of a div based on selection.
+
 
 	
 	
@@ -543,9 +555,9 @@ ngStyle
 -ngStyle is used to apply some style conditionally.
 
 <p [style.color]="num % 2 == 0 ? 'blue' : 'red'"> Add a style </p>
-<p [style.fontSize.px]='48'> Add style with unit </p>
-<p [style.background-color]=" flag?'green':'blue' "> Add style conditionally </p>
-<p [ngStyle]="condition ? myStyle1 : myStyle2"> NgStyle for multiple values </p>
+<p [style.fontSize.px]='num % 2 == 0 ? 24 : 36'> Add style with unit </p>
+<p [style.background-color]=" num % 2 == 0?'green':'blue' "> Add style conditionally </p>
+<p [ngStyle]="num % 2 == 0 ? myStyle1 : myStyle2"> NgStyle for multiple values </p>
 <p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
 
 
@@ -2686,8 +2698,8 @@ Deploy Angular Application in GitHub
 
 
   
-Unit Testing Using Jasmine and karma
-====================================
+Unit Testing Using vitest
+==========================
 -Unit Testing is a type of software testing where individual units or components of a software are tested. 
 -The purpose is to validate that each unit of the software code performs as expected. 
 -Unit Testing is done during the development (coding phase) of an application by the developers. 
@@ -2696,14 +2708,14 @@ Unit Testing Using Jasmine and karma
  
 
 -vitest testing framework powered by Vite (https://vitest.dev/guide/)
--karma is a test runner ( Runs the test cases & generates Report)
+
 
 ng test
 ng test --coverage
 
  
-Jasmine Terminologies
-=====================
+Terminologies
+=============
 describe()  Test suite (Group of testcases)
 it() 		test case / spec
 
@@ -2726,9 +2738,8 @@ toContain()
 
 
 
-Set-up & tear-down
-Jasmine Global Functions
-------------------------
+Set-up & tear-down 
+------------------
 beforeAll()    1
 beforeEach()   N Times
 afterEach()    N Times
@@ -3111,8 +3122,7 @@ store-devtools (https://ngrx.io/guide/store-devtools)
 1. Add 'Redux Devtools Extension' in browser (chrome)
 2. Add below package in your angular project
    ng add @ngrx/store-devtools
-3. add/verify the below code in app.config.ts
-   provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })
+
 
 
 
