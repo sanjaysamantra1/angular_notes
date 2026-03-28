@@ -2759,48 +2759,39 @@ program-70 : Template Driven form with Validation
 
 
 
-program-71 : Template Driven Form with validation
-=================================================
-<h1>template driven Form with validation</h1>
+program-71 : Form with Signal
+=============================
+ loginModel = signal({ email: '', password: '' });
 
-<form name="myForm1" #myForm="ngForm" (submit)="submitMyForm(myForm.value)">
-    name:
-    <input name="name" #name="ngModel" [(ngModel)]="user.name" required pattern="[a-zA-Z]+" />
-    <span *ngIf="name.hasError('required') && name.dirty" class="text-danger">Name is required</span>
-    <span *ngIf="name.hasError('pattern') && name.dirty" class="text-danger">Only alphabets allowed</span>
-    <br><br>
-    age:
-    <input name="age" #age="ngModel" [(ngModel)]="user.age" required pattern="[0-9]{2}" />
-    <span *ngIf="age.hasError('required') && age.dirty" class="text-danger">Age is required</span>
-    <span *ngIf="age.hasError('pattern') && age.dirty" class="text-danger">Only Numbers allowed</span>
-    <br><br>
+  loginForm = form(this.loginModel, (schema) => {
+    required(schema.email, { message: 'Email is required' });
+    email(schema.email, { message: 'Email Format is not correct' });
+    minLength(schema.email, 5, { message: 'Email Should have minimum 5 chars' });
+  });
+-----------------------------------------------------------
+<h3 class="text-center">Let's Learn Signal Form</h3>
+<div class="border border-3 rounded-3 p-3 mt-3 offset-3 col-sm-5">
+  <form>
+    <p>
+      Email: <input type="email" [formField]="loginForm.email" />
+      @if(loginForm.email().touched() && loginForm.email().invalid()){
+    <div>
+      @for (error of loginForm.email().errors(); track $index) {
+      <div class="text-danger">{{error.message}}</div>
+      }
+    </div>
+    }
+    </p>
+    <p>password: <input type="email" [formField]="loginForm.password" /></p>
+    <input type="reset" value="Reset" />
+    <input class="mx-1" type="submit" value="Submit" [disabled]="loginForm().invalid()" />
+  </form>
+  <div>Email: {{loginForm.email().value()}} </div>
+  <div>Password Length: {{loginForm.password().value().length}} </div>
+</div>
 
-    <input type="submit" [disabled]="myForm.invalid" />
 
-</form>
-<hr>
-<div> Form Value: {{ myForm.value | json }}</div>
-<div> Form Valid Status: {{ myForm.status | json }} </div>
 
-<div>Name Value: {{name.value}}</div>
-<div>Age Value: {{age.value}}</div>
-
-**********
-import { Component} from '@angular/core';
-
-@Component({
-  selector: 'app-template',
-  templateUrl: './template.component.html',
-  styles: [
-    'input.ng-invalid.ng-dirty{border:2px solid red}'
-  ]
-})
-export class TemplateComponent {
-   submitMyForm(user: any) {
-    alert(`Name: ${user.name} Age: ${user.age}`);
-  }
-  user: any = { name: 'sanjay', age: 44 };
-}
 
 
 

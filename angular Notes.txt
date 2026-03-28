@@ -1785,7 +1785,7 @@ Subject
 -A Subject can Emit values & can be subscribed also.
 -a normal Observable  is unicast ( 1 Producer per Subscriber)
 -a Subject is multicast — one emission is received by multiple subscribers. ( 1 producer sends values to many subscribers)
--Subjects act like EventEmitters, maintaining a list of observers.
+-Subjects act like EventEmitters, maintaining a list of observers/subscribers.
 -Data is pushed into a Subject using next(value), and all subscribers receive it.
 -Subjects are commonly used in services to share data between multiple components.
 -A Subject can be exposed as a read-only Observable using asObservable() to prevent external emissions.
@@ -1826,6 +1826,7 @@ Subject		 ---------- Only Upcoming values
 BehaviorSubject-------  one previous value(current/initial) & upcoming values
 ReplaySubject---------  all previous values and upcoming values
 AsyncSubject  --------  latest value when stream gets closed (complete)
+ 
 
 
 
@@ -1843,13 +1844,13 @@ Assignment
 
 What are signals
 ================
--A signal is a special type of variable that holds a value. it also provides notification when the variable value changes
--A signal is a wrapper around a value that notifies interested consumers when that value changes. 
+-A signal is a special type of variable that holds a value. it also provides notification when the variable value changes.
 -Signals can contain any value, from primitives to complex data structures.
 -We read a signal's value by calling its getter function, which allows Angular to track where the signal is used.
 -Signals may be either writable or read-only
 -A signal is not a replacement for RxJS/Observable/Subjects
 -RxJS and Observables are meant for asynchronous operations, such as http.get()
+
 
 
 Disadvantage of Change Detection
@@ -1887,7 +1888,7 @@ update(): Modifies the value based on its current state.
 mutate(): used to modify mutable values(array/objects) (Deprecated)
 
 To change the value of a writable signal:
-	count.set(3);  // when new value is not dependent on previous value
+	count.set(0);  // when new value is not dependent on previous value
 		(OR)
 	count.update(value => value + 1); // update the value by using the previous value
 	
@@ -1927,7 +1928,7 @@ Use cases for effects:
 
 @Component()
 export class EffectiveCounterComponent {
-  readonly count = signal(0);
+	  readonly count = signal(0);
 	  private loggingEffect = effect(() => {
 		console.log(`The count is: ${this.count()}`);
 	  });
@@ -2074,7 +2075,37 @@ reset(myForm :NgForm) {
 
 
 
+
+Forms With Signals
+==================
+-Signal Forms manage the form state using angular signals.
+-Automatic synchronization between data model and the UI.
+
+
+1. create a data model that holds form's data
+   loginModel = signal({ email: '', password: '' });
+   
+2. pass the form model to form() to create field 
+   import { form } from '@angular/forms/signals';
+   loginForm = form(this.loginModel);
+   
+3. Bind HTML inputs with [formField] directive
+   <input type="email" [formField]="loginForm.email" />
+   
+4. Read Field Value using value()
+   <div>Email: {{loginForm.email().value()}} </div>
+   
+5. Update the field value with set()
+   loginForm.email().value.set('virat@gmail.com')
 	 
+6. For validation add the below code
+   loginForm = form(this.loginModel, (schema) => {
+    required(schema.email, { message: 'Email is required' });
+    email(schema.email, { message: 'Email Format is not correct' });
+    minLength(schema.email, 5, { message: 'Email Should have minimum 5 chars' });
+  });
+
+
 
 
 
@@ -3402,7 +3433,7 @@ Angular application Performance Improvement
 	
 solution:
 	users$ = this.http.get('/api/users').pipe(
-	  shareReplay(1)
+	  shareReplay(1) // 1=buffersize (Stores last 1 value, Replays to new subscribers)
 	);
 	this.users$.subscribe();
 	this.users$.subscribe();
