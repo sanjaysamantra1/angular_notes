@@ -13,7 +13,7 @@ Angular installation
 
 4. install angular CLI (Command Line Interface)
    npm install -g @angular/cli
-		OR
+		mmuni
    npm install -g @angular/cli@latest
 		OR
    npm install -g @angular/cli@19
@@ -119,6 +119,7 @@ Disadvantages : SEO challenges , Large initial load
 8. No							 8. Form Validation
 9. extra libraries needed		 9. No additional libraries
 10. UI heavy					 10. Functionality heavy
+
 
 
 
@@ -274,7 +275,7 @@ How to Use Bootstrap in Angular
 1. npm install  bootstrap
 2. add the below line in 'styles.css'
 	@import 'bootstrap/dist/css/bootstrap.css'
-3. add 'node_modules/bootstrap/dist/js/bootstrap.bundle.min.js' in 'angular.json'     
+3. add "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" in 'angular.json'     
       projects->architect->build->scripts array
 
 
@@ -348,7 +349,12 @@ console.log(value1, value2); // type something in the box & run these again
  
 Note: 'colspan' is attribute whereAs 'colSpan' is property. 
       'maxlength' is attribute whereAs 'maxLength' is property
+	  
 
+Common Attributes that require attr. binding
+=============================================
+-There is no matching DOM property :  aria-label , aria-hidden , aria-expanded
+-Attribute and property names are different : colspan , maxlength , 
 
 
 
@@ -559,12 +565,12 @@ ngStyle
 <p [style.background-color]=" num % 2 == 0?'green':'blue' "> Add style conditionally </p>
 <p [ngStyle]="num % 2 == 0 ? myStyle1 : myStyle2"> NgStyle for multiple values </p>
 <p [ngStyle]="myFunction()"> NgStyle for multiple values </p>
-
+myStyle1 = { "color": "green", "backgroundColor": "red", "border": "3px dotted yellow" }
 
 
 ngClass
 =======
--ngClass is used to apply css classes conditionally
+-ngClass is used to apply css classes conditionally/dynamically
 
 -Add/Remove Single Class : 
 	<div [ngClass]="{'active': isActive}">
@@ -584,6 +590,13 @@ ngClass
 </button>
 
 
+<span [ngClass]="{'pending':status=='pending','approved':status=='approved','rejected':status=='rejected'}">{{status}}</span>
+.pending{color: orange;}
+.approved{color: green;}
+.rejected{color: red;}
+
+
+
 
 Directive Assignment:
 ====================
@@ -591,6 +604,7 @@ Directive Assignment:
    Every Element Should have a checkbox, When a checkbox is clicked, toggle completion status(true/false)
    for completed tasks show them as striked-out
    add a dropdown with 3 values 'All','Completed','Pending' , based on the value selected, show the tasks
+   display how many are completed, ex: 2 out of 5 tasks are completed 
 
 	tasks = [
 	  { id: 1, title: 'Complete Angular assignment', completed: false },
@@ -627,7 +641,7 @@ Directive Assignment:
    e. Show salary in a badge style with dynamic color
       Green if salary > 70,000 , Orange if between 40,000–70,000, Red if < 40,000
 	  
-	 let employees = [
+	 employees = [
         { id: 1, name: 'Amit Sharma', role: 'Manager', salary: 85000, status: 'Active', gender: 'male' },
         { id: 2, name: 'Priya Verma', role: 'Developer', salary: 65000, status: 'Active', gender: 'female' },
         { id: 3, name: 'Rahul Mehta', role: 'Tester', salary: 38000, status: 'Inactive', gender: 'male' },
@@ -663,6 +677,7 @@ only 1 structural directive is allowed per element
 
 ng-content/ Content projection
 ==============================
+-Content Projection Allows a component to receive and display content from its parent component using <ng-content>
 -Create configurable components. 
 -Component with Dynamic Content.
 -way to pass HTML (content) from a parent component into a child component’s template.
@@ -676,13 +691,14 @@ child
 <ng-content select="#div1"></ng-content>
 <ng-content select=".div2"></ng-content>
 <ng-content select="span"></ng-content>
+<ng-content select="[modal-title]"></ng-content>
 
 parent
 ======
 <h1 id="div1">Registration Form</h1>
 <h1 class="div2">Registration Form</h1>
-
-
+<span>This is Modal Title From Parent<span>
+<h2 modal-title>This is Modal Title From Parent</h2>
 
 
 
@@ -709,9 +725,6 @@ Read data from a JSON file
 Read Data from a typescript file (https://fakestoreapi.com/products)
 ================================= 
 1. create a typeascript file and export the data (employees.ts/products.ts)
-   let productDate = [ {},{},{} ];
-   export default productData;	
-			(OR)
    export default [ {}, {}, {} ]
    
 2. import the data & use in component file (products.component.ts)
@@ -788,7 +801,8 @@ How to use snackbar
 ===================
 1. npm i awesome-snackbar
 2. import Snackbar from 'awesome-snackbar';
-3. new Snackbar('Helloooo, Good Morning',
+3. on button click call a function, function should have the below code	
+	new Snackbar('Helloooo, Good Morning',
       { position: 'top-center', theme: 'light', timeout: 5000, actionText: 'X' }
     );
 
@@ -805,7 +819,7 @@ Assignment
 4. every row should have 'view' button , view the details of selected employee in a modal (bootstrap Modal)
 5. add a new employee to the table (insert a new record to the array)
    use SnackBar to display message ('Employee Added Successfully' - message should be maintained in a constant file)
-6. use font-awesome to display any icons (star , delete, edit)
+6. use font-awesome to display any icons ( delete, edit, view )
 
 
 
@@ -817,7 +831,8 @@ Custom Directives
 	change style on hover
 	restrict input characters
 	show tooltip
-	role based enable/disable
+	disable right click
+	disable copy/paste
 
 
 Component vs Directive
@@ -827,7 +842,7 @@ Component vs Directive
 
 
 
-@HostBinding  -  Set a property on the host element.
+@HostBinding  -  Bind a property on the host element.
 @HostListener  - Listen events from the host element.
 ElementRef - Gives direct access to DOM element
 Renderer2 - Renderer2 is angular's safe abstraction for DOM manipulation
@@ -857,13 +872,13 @@ Angular Pipes
 -Pipes are used in template file, pipes take input data and return a transformed value.
 -Transform strings, currency amounts, dates  etc.
 -Pipes are part of CommonModule
+Note : To Use pipes, CommonModule needs to be imported
 
 
  ex: {{ 5000 | currency }}    output: $5,000.00
             (OR)
 <div [innerHTML]='name | lowercase'></div>
 
-Note : To Use pipes, CommonModule needs to be imported
 
 -Angular provides built-in pipes,The following are commonly used built-in pipes for data formatting.
 1.lowercase
@@ -886,7 +901,7 @@ curreny
   <div>{{ salary | currency : 'USD' }}</div>
   <div>{{ salary | currency : 'INR' }}</div>
   <div>{{ salary | currency : '&euro;' }}</div>
-  <div>{{ salary | currency : '&#xa5;' }}</div>
+  <div>{{ salary | currency : '&yen;' }}</div>
   <div>{{ salary | currency : 'USD' : 'code' }}</div>
   <div>{{ salary | currency : 'USD' : 'symbol' }}</div>
     <!-- input | pipeName : argument1 : argument2 -->
@@ -915,7 +930,8 @@ Date
   <div>{{ dateObj | date : 'dd-MMM-yyyy' }}</div>
   <div>{{ dateObj | date : 'hh:mm:ss a' }}</div>
   <div>{{ dateObj | date: "fullTime":"UTC" }}</div>
-  div>{{ dateObj | date: "fullTime":"IST" }}</div>
+  <div>{{ dateObj | date: "fullTime":"IST" }}</div>
+  <div>{{ dateObj | date: "EEEE" }}</div>  <!-- Weekday-->
 
 Note: 
 hh   12-hour clock   AM/PM (yes)
@@ -929,6 +945,7 @@ HH   24-hour clock   AM/PM (No)
 
 decimal/number
 -------------
+<div> {{100000000 | number}} </div>
 <div>{{ 12.111222333 | number: "3.2-5" }}</div>
 <div>{{ 12.1 | number: "3.2-5" }}</div>
 <div>{{0.5 | number:'3.2-5'}}</div>
@@ -997,9 +1014,9 @@ Assignment
 1. Create a custom pipe(ordinal) which takes a number as input and returns in ordinal format
    input : 21,22,23,24  
    output : 21st, 22nd , 23rd, 24th
-2. create a custom pipe(Roman) which takes a number as input and returns its equivalent roman value
-   input :  4    8     9   
-   output : IV  VIII   IX 
+2. create a custom pipe(creditcard) which takes a creditcard as input and returns masked creditcard
+   input :  1111222233334444  
+   output : 1111-2222-3333-4444 
 3. create a custom pipe called 'age' which takes a date as input and returns the age in years.
    input : 04-06-2020
    output : 5 years old
@@ -1024,7 +1041,7 @@ Pure & Impure Pipe
 Need Of Impure Pipe:
 -------------------
 -Pure pipes don't run when : Data Changes without reference change (push data in an array, change object prop)
--in such cases , angular cannot detect changes, UI doesn't get updated	
+-in such cases , angular cannot detect changes, Pure Pipe will not re-run , UI doesn't get updated	
 -Impure pipe solves this problem by running that pipe on every change detection
 
 
@@ -1056,27 +1073,13 @@ Use custom pipes in component file
 
 Component Communication
 =======================
-parent -->  Child    
-	property Binding []  
-	@input() / inputs:[]
-	
-child -->  parent   
-	event Binding ()
-	@output  / outputs:[]
-	
-Sibling -->  child1--> parent -->child2
-			 
+-Angular Components need to communicate(share data/logic) with each other.
 
-
-Q.How can we share data between 2 components (Unrelated Components)
-  1. services
-  2. Subject / BehaviourSubject
-  
-  
-Props Drilling
-==============
--Prop drilling is basically a situation when the same data is being sent at almost every level due to requirements in the final level.
--Solution : State management Library (NgRX)
+Parent -> Child       	inputs:[] & Property Binding
+Child  -> Parent        outputs:[] & Event Binding
+Sibling -> Sibling      Through the Parent
+Unrelated Components    Service , rxjs 
+Large Apps              NgRx (State management Library)
 
 
 inputs:['title']
@@ -1152,7 +1155,7 @@ ex- ngOnChanges() is a method from 'OnChanges' interface
 The hooks/lifecycle methods are executed in this order:
 --------------------------------------------------------
 constructor()
--This is invoked when Angular creates a component or directive by calling new on the class.
+-Constructor is a typescript class feature, not angular specific.
 -Initialize class variables,dependency Injection.
 -No Business Logic should be written in constructor. 
 -Avoid : Http Requests, Complex Computations, DOM Manipulations
@@ -1281,6 +1284,11 @@ ViewContainerRef.createComponent()
 
 Angular Services
 ****************
+-A Service in Angular is a class used to:
+		Share data between Components.
+		Handle Business Logic
+		Call APIs
+		Keep Components Clean
 -share logic/data across components
 -code Reusability
 	(write once use that in multiple components)
@@ -1326,9 +1334,7 @@ Dependency injection
 
 constructor(private myHttp:HttpClient){}
 	OR
-constructor(){
-	 this.myhttp = inject(HttpClient);
-}
+myHttp = inject(MathService); 
 
 
 
@@ -1463,6 +1469,7 @@ Free Online REST API for Testing
 4. https://api.github.com/users/google
 5. https://dummyjson.com/products
    https://dummyjson.com/users/search?q=michael
+   https://dummyjson.com/users
 6. https://dummy.restapiexample.com/  (CRUD)
 7. https://my-json-server.typicode.com/horizon-code-academy/fake-movies-api/movies
 8. https://api.publicapis.org/entries
@@ -1568,8 +1575,9 @@ models in Angular
  
 -Another good reason for using models is type enforce. We want to know the type of things when we use them and not just define everything as any.
 
--Interfaces are used in Typescript to perform type-checking,Interface cannot be used to instantiate.
--Classes are used not only for type-checking but also if we need some methods,they are used to instantiate.
+-Interfaces are used to perform compile time type-checking, Interfaces cannot be instantiated.
+-Classes are used as models when we need runtime objects with behaviour. 
+
 
 Types of Models:
 ---------------
@@ -1634,8 +1642,7 @@ Authentication Vs Authorization
 	
 observables
 ***********
--Observables publish/emit data over the time asynchronously
--Observables are lazy collections of multiple values over time.
+-Observables publish/emit data over the time asynchronously.
 -Observables help to manage asynchronous data, such as data coming from a backend service.
 -To use observables, Angular uses a library called Reactive Extensions (RxJS).
 -used for event handling, asynchronous programming, and handling multiple values.
@@ -1700,11 +1707,7 @@ Mathematical  		count, max , min , reduce
    
 Digital Clock
 =============
-currentTime$: Observable<string> | undefined;
-digital_clock() {
-  this.currentTime$ = interval(1000).pipe(map(()=>new Date().toLocaleTimeString()))
-}
-
+currentTime$ = interval(1000).pipe(map(() => new Date().toLocaleTimeString()));
 
 
 
@@ -1759,7 +1762,7 @@ switchMap() = map + switch
 
    
 ExhaustMap()
-	-Ignore new requests until the cureent one finishes. "Do not disturb!" operator.
+	-Ignore new requests until the curent one finishes. "Do not disturb!" operator.
 	-we have a login screen with a login button, where each click is mapped to 1 login request.
 	-If the user clicks more than once on the login button, it will cause multiple calls to the server.
 	-use exhaustMap to temporarily “disable” the mapping while the first http request is still on the go.
@@ -1779,7 +1782,9 @@ Hot and Cold Observables
 Subject
 =======
 -A Subject is a special type of Observable that allows both subscribing and emitting values.
--Unlike a normal Observable (which is unicast), a Subject is multicast — one emission is received by multiple subscribers.
+-A Subject can Emit values & can be subscribed also.
+-a normal Observable  is unicast ( 1 Producer per Subscriber)
+-a Subject is multicast — one emission is received by multiple subscribers. ( 1 producer sends values to many subscribers)
 -Subjects act like EventEmitters, maintaining a list of observers.
 -Data is pushed into a Subject using next(value), and all subscribers receive it.
 -Subjects are commonly used in services to share data between multiple components.
@@ -1946,6 +1951,7 @@ Signal Assignment
 -Display the todo list in a table or list format.
 -Add a Toggle button for each row to toggle the isCompleted flag.
 -Add a Delete button for each todo, to delete todo
+-Implement Add ToDo Functionality
 
 
 
@@ -2290,8 +2296,8 @@ Navigate Previous / Next Route
 ==============================
 1. Inject Location Service  
    import { Location } from '@angular/common';
-   constructor(private location: Location) {
-   }
+   
+   location = inject(Location);
 2. user location service methods like: back() , historyGo()
    this.location.back()
    this.location.forward()
@@ -2323,8 +2329,8 @@ Path Param
 		
 4. add the below code in userdetails.comp.ts
   user: any = signal({});
-  constructor(private activatedRoute: ActivatedRoute, private http: HttpClient) {
-  }
+  httpClient = inject(HttpClient);
+  activatedRoute = inject(ActivatedRoute);
   ngOnInit() {
     this.activatedRoute.params.subscribe(params => {
       this.http.get(`https://jsonplaceholder.typicode.com/users/${params['id']}`).subscribe(response => {
@@ -2334,7 +2340,8 @@ Path Param
   }
 
 5. add the below code in userdetails.component.html
-	<h1>This is details for User- {{id}}
+	<h5 class="card-title">{{user().name}}</h5>
+    <p class="card-text">{{user().id}}</p>
 
 
 
@@ -2364,6 +2371,13 @@ Query Param
 		  console.log(params)
 		})
 	  }
+5. display product info in product-details.html 
+	<h3 class="text-center">Product Details</h3>
+	<div class="col-sm-4 offset-4 card text-center">
+		<div>{{product.id}}</div>
+		<div>{{product.name}}</div>
+		<div>{{product.price}}</div>
+	</div>
 
 
 
@@ -2373,6 +2387,7 @@ nested/Child Routing
 
 
 Careers(Parent) --> Permanent Jobs & Contract Jobs (Children)
+
 1. Configure child routes using 'children' inside app.routes.ts
   {
     path: 'careers',
@@ -2382,8 +2397,8 @@ Careers(Parent) --> Permanent Jobs & Contract Jobs (Children)
       { path: 'contract', component: ContractJobs },
     ]
   }
-2. in main/parent component add <router-outlet>
-  <div class="row">
+2. in main/parent(careers.html) component add <router-outlet>
+   <div class="row">
 	  <div class="col-sm-3">
 		<p><a routerLink="/careers/permanent">Permanent Jobs</a></p>
 		<p><a routerLink="contract">Contract Jobs</a></p>
@@ -2473,6 +2488,8 @@ Steps to use resolvers
   }
 
 
+
+
 Lazy Loading of components
 ==========================
 -Lazy loading is the process of loading components, modules, or other assets of a website as they're required.
@@ -2483,6 +2500,7 @@ Lazy Loading of components
 { 
 path: 'products',
 loadComponent: () => import('./components/product-list/product-list').then((x) => x.ProductList)
+}
 	
 	
 	
@@ -2624,7 +2642,7 @@ Build & Deploy
 Build : preparing the application for browser
 		Converting Source code in to optimized files 
 		
-Deploy : Moving/placing the bundled code in a server, so that our application runs 24*7
+Deploy : Moving/placing the bundled code in to a server, so that our application runs 24*7
 
 
 > ng serve:
@@ -2668,6 +2686,7 @@ Deploy Angular Application in GitHub
     ng add angular-cli-ghpages / npm i -g angular-cli-ghpages
 2. Build & Deploy
 	ng build --base-href angular_project_feb_2025 
+			(OR)
 	ng build --output-path docs --base-href angular_project_feb_2025 
 3. ngh --dir dist/angular_project_feb_2025/browser 
    ngh --dir docs/browser       
@@ -2735,6 +2754,7 @@ toBeFalsy();
 toBeGreaterThan();
 toBeLessThan();
 toContain()
+toBeInstanceOf(Array);
 
 
 
@@ -2755,9 +2775,11 @@ it.skip() - disabled it()
 Spy & Stub
 ==========
 Spy: Used to track calls to a function without altering its actual behavior.
-	 spyOn(obj, 'greet'); // spy
-Stub: Used to replace the function's implementation to control its behavior during testing.
-     spyOn(obj, 'greet').and.returnValue("Stubbed greeting!"); // stub
+	 Watches a real function (track calls, arguments , return values)
+	 vi.spyOn(obj, 'greet'); // spy
+Stub: Replaces a function with a fake implementation
+      vi.spyOn(obj, 'greet').and.returnValue("Stubbed greeting!"); // stub
+	  vi.spyOn(obj, 'greet').mockResolvedValue([ {}, {}])
 
 
 
@@ -2771,22 +2793,14 @@ Stub
 		A fake implementation.
 -ex: if we are testing a function that writes a value to the database, we should write a stub that avoids the db interaction but returns a successful result.
 
-function saveUser(userData, userModel) { 
-  let result = userModel.create(userData)
-  return result;
-}
+	vi.spyOn(app, 'fetchuserData').mockResolvedValue([
+      { name: 'laksheet', age: 25 },
+      { name: 'sanjay', age: 55 },
+    ]);
 
-makeStub(userModel, 'create', () => {
-  return true;
-})
+    let userResponse = await app.fetchuserData();
+    expect(userResponse.length).toBe(2);
 
-it("should return TRUE when the query succeeds", () => {
-  let result = saveUser({
-    name: "Fernando",
-    password: "1234"
-  }, userModel)
-  result.should.be.true
-})
 
 
 Spy
@@ -2800,7 +2814,7 @@ spyOn(someObj, 'func').withArgs(2, 3).and.returnValue(5);
 
 app.component.ts
 ================
- processData(data: any) {
+  processData(data: any) {
     console.log('Processing data:', data);
     return data.length;
   }
@@ -2812,15 +2826,10 @@ app.component.ts
 
 describe('fetchData functionality', () => {
   it('should call processData with the correct data', () => {
-    // Spy on processData,  callThrough() ensures the original implementation still runs
-    spyOn(app, 'processData').and.callThrough();
-
-    // Call fetchData
+    const processDataSpy = vi.spyOn(app, 'processData'); // Spy For processData function
     const result = app.fetchData();
-
-    // Assertions
-    expect(app.processData).toHaveBeenCalled(); // Verify processData was called
-    expect(app.processData).toHaveBeenCalledWith(['item1', 'item2', 'item3']); // Verify correct arguments
+    expect(processDataSpy).toHaveBeenCalled(); // Verify processData was called
+    expect(processDataSpy).toHaveBeenCalledWith(['item1', 'item2', 'item3']); // Verify correct arguments
     expect(result).toBe(3); // Verify the return value
   });
 });
@@ -3071,10 +3080,12 @@ The ng add command will additionally perform the following configurations:
 Props/Data Drilling
 ===================
 -pass data (props) from a parent component to deeply nested child components, even if intermediate components don’t need the data.
+-Solution : State management Library (NgRX)
 
-Code Maintainability: Passing props through multiple layers makes the code messy.
-Performance Issues: Unnecessary re-renders of components that don’t need the props.
-Tightly Coupled Components: Makes refactoring difficult, as changes to props affect multiple components.
+
+Code Maintainability: Passing data through multiple layers makes the code messy.
+Performance Issues: Unnecessary re-renders of components that don’t need the data.
+Tightly Coupled Components: Makes refactoring difficult, as changes to data affect multiple components.
 
 -Solution : State management Library (NgRX)
 
@@ -3120,6 +3131,7 @@ State is accessed with the Store, an observable of state and an observer of acti
 store-devtools (https://ngrx.io/guide/store-devtools)
 ==============
 1. Add 'Redux Devtools Extension' in browser (chrome)
+   https://chromewebstore.google.com/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd
 2. Add below package in your angular project
    ng add @ngrx/store-devtools
 
@@ -3356,20 +3368,46 @@ Progressive Web App (PWA)
 
 Angular application Performance Improvement 
 ============================================
-1. trackBy in ngFor 
+1. Avoid Heavy Logic in Templates
+   <div>{{ calculateTotal() }}</div>
+
+2. use trackBy with ngFor 
    -without trackBy, angular re-renders the whole list when an item changes in the list, 
    -use trackBy to optimize rendering.
-   
    @for (item of statesArr;track $index){}	
-
-2. Change detection Startegy 
-   changeDetection: ChangeDetectionStrategy.OnPush
-	
-3. Lazy Loading 
-   Load module/component only when needed, not upfront when application starts
-   dynamic Import makes a component to load lazily
    
-4. Preloading Strategy
+3. Use async Pipe Instead of Subscribe
+   Auto unsubscribe, Cleaner code
+   
+4. Avoid using more impure pipes, use pure pipes
+
+5. Change detection Startegy 
+   changeDetection: ChangeDetectionStrategy.OnPush
+   
+6. Unsubscribe the subscriptions
+	
+7. Lazy Loading 
+   Load module/component only when needed, not upfront when application starts
+   loadComponent ,  dynamic Import makes a component to load lazily
+   
+8. Pagination instead of large data load
+   Debounce API calls (search). ex: search$.pipe(debounceTime(300),distinctUntilChanged())
+   
+9. use shareReplay
+	getUsers() {
+	  return this.http.get('/api/users');
+	}
+	this.userService.getUsers().subscribe();
+	this.userService.getUsers().subscribe();   // 2 API calls
+	
+solution:
+	users$ = this.http.get('/api/users').pipe(
+	  shareReplay(1)
+	);
+	this.users$.subscribe();
+	this.users$.subscribe();
+
+   
    
  
 

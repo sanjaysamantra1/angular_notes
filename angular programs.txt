@@ -13,7 +13,7 @@ Note: As alternate to point-3, the below code can be added in index.html
 
 program-2:display Local image
 -----------------------------
-1. place the images inside 'public' folder (project1/public/images)
+1. place the images insstaride 'public' folder (project1/public/images)
 2. use it in HTML file
    <img src='images/sachin.jpg' />
   
@@ -681,7 +681,7 @@ export class AlphaNumeric {
 
 
 Program : Disable Copy/Paste
-==========================
+=============================
 export class DisableCopyPaste {
   @HostListener('copy', ['$event'])
   @HostListener('paste', ['$event'])
@@ -1133,12 +1133,23 @@ export class ChildComponent {
 
 program-35 : Flipkart Categories
 =================================
+const categoryArr = [
+  { label: "Grocery", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/8b4adaace948fe23.jpg?q=60" },
+  { label: "Mobile", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/a6189afdd765a687.jpg?q=60" },
+  { label: "Appliances", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/51b0d5f9aabc2462.jpg?q=60" },
+  { label: "Beauty", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/d31d524f681630af.jpg?q=60" },
+  { label: "Furniture", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/9be859f78d39cc22.jpg?q=60" },
+  { label: "Fashion", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/5dca7713b355df43.jpg?q=60" },
+  { label: "Travel", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/d7eae409dc461a54.jpg?q=60" },
+  { label: "Electronics", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/a080ac3397f3612d.png?q=60" },
+  { label: "Supercoin", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/e476bbcf4677c695.jpg?q=60" }
+];
 allCategories = [
     { label: 'Grocery', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/29327f40e9c4d26b.png?q=100' },
     { label: 'Mobile', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/22fddf3c7da4c4f4.png?q=100' },
     { label: 'Fashion', img_url: 'https://rukminim2.flixcart.com/fk-p-flap/72/72/image/0d75b34f7d8fbcb3.png?q=100' },
     { label: 'Electronics', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/69c6589653afdb9a.png?q=100' },
-    { label: 'Home & Furniture', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/ab7e2b022a4587dd.jpg?q=100' },
+    { label: 'Furniture', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/ab7e2b022a4587dd.jpg?q=100' },
     { label: 'Appliances', img_url: 'https://rukminim2.flixcart.com/fk-p-flap/72/72/image/0139228b2f7eb413.jpg?q=100' },
     { label: 'Travel', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/71050627a56b4693.png?q=100' },
     { label: 'Beauty & Toys', img_url: 'https://rukminim2.flixcart.com/flap/72/72/image/dff3f7adcf3a90c6.png?q=100' },
@@ -1471,6 +1482,30 @@ export class AppComponent {
 
 
 
+Program @ContentChild and ngAfterContentInit
+============================================= 
+  @ContentChild('myTitle') myTitle: any; (#myTitle is in parent HTML)
+  @ViewChild('myBox') myBox: any;
+  constructor() {
+    console.log('MyModal constructor');
+    console.log(this.myTitle);
+    console.log(this.myBox);
+  }
+  ngAfterContentInit() {
+    console.log('MyModal ngAfterContentInit');
+    console.log(this.myTitle);
+    this.myTitle.nativeElement.style.color = 'red';
+  }
+  ngAfterViewInit() {
+    console.log('MyModal ngAfterViewInit');
+    console.log(this.myBox);
+    this.myBox.nativeElement.style.color = 'blue';
+  }
+
+
+
+
+
 program-44: create a math Services
 ======================================
 import { Injectable } from '@angular/core';
@@ -1709,12 +1744,8 @@ export class Employee {
   lastName: string;
   sal: number;
   gender: string;
-  constructor(id: number, firstName: string, lastName: string, sal: number, gender: string) {
-    this.id = id;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.sal = sal;
-    this.gender = gender;
+  constructor(data: any) {
+    Object.assign(this, data);
   }
   getFullName(): string {
     return `${this.firstName} ${this.lastName}`;
@@ -1728,13 +1759,10 @@ export class Employee {
 getAllEmployees(): Observable<Employee[]> {
     return this.httpClient.get<Employee[]>('http://localhost:3000/employees').pipe(
       map((responseArr: Employee[]) => {
-        return responseArr.map((empInfo: Employee) => {
-          let { id, firstName, lastName, sal, gender } = empInfo;
-          return new Employee(id, firstName, lastName, sal, gender);
-        });
+        return responseArr.map((responseObj: Employee) => new Employee(responseObj));
       })
     );
-  }	
+ }	
   
   
 
@@ -1924,54 +1952,6 @@ fetchDataFromMultipleAPIs() {
 
 Program-58 :  MergeMap()
 ========================
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
-import { fromEvent, Observable } from 'rxjs';
-import { mergeMap } from 'rxjs/operators';
-
-@Component({
-  selector: 'app-test',
-  templateUrl: './test.component.html',
-  styleUrls: ['./test.component.css']
-})
-export class TestComponent implements AfterViewInit {
-
-  @ViewChild('btn1', { static: true }) button: any;
-  clickObservable: Observable<any>;
-  count: number = 0;
-
-  constructor() {
-    this.clickObservable = new Observable();
-  }
-
-
-  ngAfterViewInit() {
-    this.clickObservable = fromEvent(this.button.nativeElement, 'click');
-    this.mergeMapExample();
-  }
-
-  innerObservable(count: number) {
-    return new Observable((observer) => {
-      setTimeout(() => { observer.next(count + " A") }, 1000);
-      setTimeout(() => { observer.next(count + " B") }, 2000);
-      setTimeout(() => { observer.next(count + " C") }, 3000);
-      setTimeout(() => { observer.next(count + " D") }, 4000);
-      setTimeout(() => { observer.next(count + " E"); observer.complete() }, 5000);
-    })
-  }
-
-  mergeMapExample() {
-    let obs =
-      this.clickObservable
-        .pipe(
-          mergeMap(() => {
-            this.count = this.count + 1;
-            return this.innerObservable(this.count)
-          })
-        )
-        .subscribe(val => console.log(val));
-  }
-}
------------------------------
 // without mergeMap()
   usersPublisher = of(1, 2, 3, 4);
   usersSubscriber = this.usersPublisher.subscribe((user) => {
@@ -3689,7 +3669,7 @@ Program-86 : Counter App using NgRx
 3. Create Reducer File(counter.reducer.ts)
 	import { createReducer, on } from '@ngrx/store';
 	import { increment, decrement, reset } from '../actions/counter.actions';
-	export const initialState = 0;
+	const initialState = 0;
 	export const counterReducer = createReducer(
 		initialState,
 		on(increment, (state) => state + 1),
@@ -3731,12 +3711,19 @@ Program-87 : ToDo App using NgRx
    
 2. Create action File (todo.actions.ts)
 	import { createAction, props } from '@ngrx/store';
-	import { Todo } from '../../models/todo';
+	import { Todo } from '../models/todo';
 	export const addTodo = createAction('Add Todo', props<{ payload: Todo }>());
 	export const deleteTodo = createAction('Delete Todo', props<{ id: number }>());
 	export const toggleTodo = createAction('Toggle Todo', props<{ id: number }>());
+	
+3. create ToDo model (ng g interface models/todo) 
+    export interface Todo {
+	  id: number;
+	  text: string;
+	  isCompleted: boolean;
+	}
 
-3. Create Reducer File(todo.reducer.ts)
+4. Create Reducer File(todo.reducer.ts)
 	import { createReducer, on } from '@ngrx/store';
 	import { addTodo, deleteTodo, toggleTodo } from '../actions/todo.actions';
 	export const initialState = [
@@ -3761,17 +3748,17 @@ Program-87 : ToDo App using NgRx
 		})
 	);
 	
-4. create/update  store file (store.ts)
+5. create/update  store file (store.ts)
 	export const myStore = {
 		countReducer,todoReducer
       }
 	  
-5. Provide the Store to the whole application(app.config.ts)
+6. Provide the Store to the whole application(app.config.ts)
    providers: [
     provideStore(myStore)
   ]
 
-6. Create ToDoCrud Component (todocrud.component.ts)
+7. Create ToDoCrud Component (todocrud.component.ts)
   todos$: Observable<any> | undefined;
   constructor(private store: Store) {
     this.todos$ = this.store.select((state: any) => state.todoReducer);
@@ -3783,7 +3770,7 @@ Program-87 : ToDo App using NgRx
     this.store.dispatch(toggleTodo({ id: id }));
   }
   
-6. todocrud.component.html
+8. todocrud.component.html
     <h3 class="text-center">This is Todo CRUD Component using NGRX</h3>
 	<div class="border border-3 p-2 text-center col-sm-4 offset-4">
 		<ol>
@@ -3809,7 +3796,7 @@ Program-88 : Employee CRUD using NgRx
    
 2. Create action File (employee.actions.ts)
 	import { createAction, props } from '@ngrx/store';
-	import { Employee } from '../../models/employee';
+	import { Employee } from '../models/employee';
 	export const fetchEmployees = createAction('[EmployeeList Page] Fetch Employees');
 	export const fetchEmployeesSucess = createAction(
 		'[Employees API] Employees Loaded Successfully',
@@ -3849,10 +3836,9 @@ Program-88 : Employee CRUD using NgRx
 		loadEmployees$: any;
 		deleteEmployee$: any;
 		addEmployee$: any;
-		constructor(
-			private actions$: Actions,
-			private employeeService: EmployeeService
-		) {
+		actions$ = inject(Actions);
+		employeeService = inject(EmployeeService);
+		constructor() {
         this.loadEmployees$ = createEffect(() => this.actions$.pipe(
             ofType(fetchEmployees),
             exhaustMap(() => this.employeeService.fetchAllEmployees()
@@ -3930,6 +3916,8 @@ Program-88 : Employee CRUD using NgRx
 		  this.store.dispatch(deleteEmployee({ id }));
 		}
 	  }
+
+
 
 
 Program-89 : angular & GraphQL
