@@ -13,7 +13,7 @@ Angular installation
 
 4. install angular CLI (Command Line Interface)
    npm install -g @angular/cli
-		mmuni
+		OR
    npm install -g @angular/cli@latest
 		OR
    npm install -g @angular/cli@19
@@ -68,10 +68,11 @@ vscode extensions
 
 Browser Extensions
 ===================
-1. Mobile Simulator
-2. Angular DevTools
-3. Redux DevTools
-4. Json Viewer
+1. Json Viewer
+2. Mobile Simulator
+3. Angular DevTools
+4. Redux DevTools
+
 
 
 
@@ -127,9 +128,9 @@ Bootstrapping angular Application
 =================================
 -Bootstrapping is a technique of initializing/loading our Angular application.
 
-1. index.html --> <app-root></app-root> (component)
+1. index.html --> <app-root></app-root> (Root Component)
 2. main.ts   --> bootstrapApplication(AppComponent, appConfig)
-3. app.config.ts --> configuration information about our application (Application level route info)
+3. app.config.ts --> Application Level Configurations (Route , HttpClient)
 4. app.component.ts-->app.component.html-->app.component.css
 
 steps to bootstrap the application:
@@ -138,6 +139,8 @@ steps to bootstrap the application:
 3. Execute main.ts File
 4. Load Application-Level Component
 5. Process Template
+
+
 
 
 Modules
@@ -354,7 +357,7 @@ Note: 'colspan' is attribute whereAs 'colSpan' is property.
 Common Attributes that require attr. binding
 =============================================
 -There is no matching DOM property :  aria-label , aria-hidden , aria-expanded
--Attribute and property names are different : colspan , maxlength , 
+-Attribute and property names are different : colspan , maxlength 
 
 
 
@@ -406,7 +409,6 @@ Assignments:
 8. Create two input boxes and a dropdown (+ , - , * , /) and perform arithmetic operations based on the selected operator.
 9. Create a button that increases font size and another button that decreases font size for a paragraph.
 10. Create a dropdown with colors and change the background color of a div based on selection.
-
 
 	
 	
@@ -749,7 +751,8 @@ How to use font-awesome (https://fontawesome.com/v4/icons/)
  
    
 2. import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-   import { faStar } from '@fortawesome/free-solid-svg-icons';  / import { faStar } from '@fortawesome/free-regular-svg-icons';
+   import { faStar } from '@fortawesome/free-solid-svg-icons';  
+   import { faStar } from '@fortawesome/free-regular-svg-icons';
 
    imports: [FontAwesomeModule]
    
@@ -959,9 +962,11 @@ maxFractionDigits = 5
 
 Percent Pipe
 -------------
-{{ 2.5 | percent}}  o/p- 250%
-{{ 2.5 | percent:'2.2-5'}}  o/p- 250.00%
-{{0.024 | percent}}
+<div>{{ 2.5 | percent}}</div>
+<div>{{ 2.5 | percent:'2.2-5'}}</div>
+<div> {{0.024 | percent}}</div>
+
+
 
 
 keyvalue
@@ -1163,8 +1168,8 @@ constructor()
 
 ngOnChanges()
 -Called after constructor and before ngOnInit
--whenever @input() / inputs:[] property value changes
 -ngOnchanges() will not be invoked if the component doesn't have inputs:[]
+-whenever @input() / inputs:[] property value changes
 -inside ngOnchanges() we can access previous and current value of a variable.
 
 
@@ -1334,7 +1339,7 @@ Dependency injection
 
 constructor(private myHttp:HttpClient){}
 	OR
-myHttp = inject(MathService); 
+myHttp = inject(HttpClient); 
 
 
 
@@ -1399,7 +1404,7 @@ PATCH - Update only specific fields of a resource
 		Idempotent, Partial Update , More Efficient than PUT, Request Body
 
 DELETE - remove a resource/delete a record from DB 
-		 Delete naukri account
+		 Delete account
 		 Idempotent, No Body
 		 
 HEAD - Get Headers only	, Same as GET but no response body
@@ -2075,40 +2080,6 @@ reset(myForm :NgForm) {
 
 
 
-
-Forms With Signals
-==================
--Signal Forms manage the form state using angular signals.
--Automatic synchronization between data model and the UI.
-
-
-1. create a data model that holds form's data
-   loginModel = signal({ email: '', password: '' });
-   
-2. pass the form model to form() to create field 
-   import { form } from '@angular/forms/signals';
-   loginForm = form(this.loginModel);
-   
-3. Bind HTML inputs with [formField] directive
-   <input type="email" [formField]="loginForm.email" />
-   
-4. Read Field Value using value()
-   <div>Email: {{loginForm.email().value()}} </div>
-   
-5. Update the field value with set()
-   loginForm.email().value.set('virat@gmail.com')
-	 
-6. For validation add the below code
-   loginForm = form(this.loginModel, (schema) => {
-    required(schema.email, { message: 'Email is required' });
-    email(schema.email, { message: 'Email Format is not correct' });
-    minLength(schema.email, 5, { message: 'Email Should have minimum 5 chars' });
-  });
-
-
-
-
-
 Assignment
 ----------
 -Create a Registration form with validation (inputbox,radio,checkbox,dropdown,textarea)
@@ -2126,7 +2097,7 @@ Model driven form
 	a. use formGroup with form
 		<form [formGroup]="registerForm"> </form>
 	b. use formControlName with every form field
-		<input formControlName="firstname">
+		<input formControlName="firstName">
 	c. use formGroupName to group multiple form fields
 	    <div formGroupName="address">...</div>
 
@@ -2186,7 +2157,7 @@ FormBuilder
 -Provides factory methods like .group() , .array() which simplify form creation
 
 
-without FormBuilder
+without FormGroup
 ===================
 loginForm = new FormGroup({
 	  email: new FormControl('')
@@ -2207,14 +2178,56 @@ With FormBuilder
 
 
 
-	
+Why Signal Forms?
+=================
+-Reactive Forms rely on RxJS (valueChanges$, subscribe) — Signal Forms replace that with plain field.value() signals
+-Reactive Forms are tied to Zone.js — Signal Forms are zoneless-ready, meaning better performance
+-State management in Reactive Forms is verbose and imperative — Signal Forms make derived state trivial with computed()
+
+-No subscriptions to manage or unsubscribe from — no memory leaks
+-computed() for derived state — e.g. isValid = computed(() => name.valid() && email.valid())
+-Validators can be signals themselves — reactive to other field values
+-Synchronous testing — no async setup, just set value and assert
+-Works with zoneless Angular (provideExperimentalZonelessChangeDetection)
+-Less boilerplate — fewer imports, no FormBuilder needed
+
+
+Forms With Signals
+==================
+-Signal Forms manage the form state using angular signals.
+-Automatic synchronization between data model and the UI.
+
+
+1. create a data model that holds form's data
+   loginModel = signal({ email: '', password: '' });
+   
+2. pass the form model to form() to create field 
+   import { form } from '@angular/forms/signals';
+   loginForm = form(this.loginModel);
+   
+3. Bind HTML inputs with [formField] directive
+   <input type="email" [formField]="loginForm.email" />
+   
+4. Read Field Value using value()
+   <div>Email: {{loginForm.email().value()}} </div>
+   
+5. Update the field value with set()
+   loginForm.email().value.set('virat@gmail.com')
+	 
+6. For validation add the below code
+   loginForm = form(this.loginModel, (schema) => {
+    required(schema.email, { message: 'Email is required' });
+    email(schema.email, { message: 'Email Format is not correct' });
+    minLength(schema.email, 5, { message: 'Email Should have minimum 5 chars' });
+  });
+  
 
 
 	
 	
 Routing
 =======
--Single-Page Applications (SPAs) are Web apps that load a single HTML page and dynamically update that page as the user interacts with the application.
+-Single Page Applications (SPAs) are Web apps that load a single HTML page and dynamically update that page as the user interacts with the application.
 -Complete page reload doesn't happen. only a portion of a page gets loaded.
 -Every time a link is clicked or the browser URL changes, Angular router makes sure our application reacts accordingly.
 
@@ -2240,18 +2253,6 @@ guard: script that runs when a route is loaded, activated or deactivated
 resolver: script that fetches data before the requested page is activated
 router outlet: location in the DOM where Angular router can place activated components
 URL segments: parts of the URL that are divided by slashes
-
-
-Location Strategies
-===================
-Angular supports two Location Strategies:
-1.HashLocationStrategy
-	ex: http://localhost:4200/#/product
-2. PathLocationStrategy
-   ex: http://localhost:4200/product
-
-
-
 
 
 routing Program:
@@ -2316,9 +2317,10 @@ Navigate from one route to another
 ----------------------------------
 <button routerLink="/home">take me to Home </button>			
 			(OR)
-constructor(private routerObj : Router) { }
-takeMeToHtml() {
-  this.routerObj.navigate(['/home'])
+router = inject(Router);
+doSomethingAndGoToHome() {
+  console.log('Doing Something....');
+  this.router.navigateByUrl('/home');
 }
   
 
@@ -2327,7 +2329,7 @@ Navigate Previous / Next Route
 ==============================
 1. Inject Location Service  
    import { Location } from '@angular/common';
-   
+ 
    location = inject(Location);
 2. user location service methods like: back() , historyGo()
    this.location.back()
@@ -2384,16 +2386,13 @@ Query Param
     ng g c productDetails
 	
 2. add the component in route configuration
-   {
-    path: 'productdetails', 
-    component: ProductdetailsComponent
-  }
+   { path: 'productdetails', component: Productdetails },
   
 3. add the below code in products.html
    <button class="btn btn-primary mx-1" [routerLink]="['/productdetails']"
-            [queryParams]="{id:product.id,name:product.title,price:product.price}">Details</button>
+            [queryParams]="{id:product.id,title:product.title,price:product.price}">Details</button>
 		
-4. add the below code in productdetails.comp.ts
+4. Read the Params in target component (productdetails.comp.ts)
 	  product: any;
 	  activatedRoute = inject(ActivatedRoute);
 	  ngOnInit() {
@@ -2406,7 +2405,7 @@ Query Param
 	<h3 class="text-center">Product Details</h3>
 	<div class="col-sm-4 offset-4 card text-center">
 		<div>{{product.id}}</div>
-		<div>{{product.name}}</div>
+		<div>{{product.title}}</div>
 		<div>{{product.price}}</div>
 	</div>
 
@@ -2552,6 +2551,9 @@ Lazy loading a standalone component
  }
 
 
+
+
+
 @defer()
 ========
 -To reduce the initial bundle size of our application.
@@ -2577,6 +2579,8 @@ Note:
 
 ex: 
 1. import the component dynamically(home.component.ts) // Import CommonModule
+  import { NgComponentOutlet } from '@angular/common';
+
    largeComponent:any;
   constructor() {
     import('../large-component/large-component').then(m => {
@@ -2669,7 +2673,7 @@ AOT
   
  
 Build & Deploy
-===============
+==============
 Build : preparing the application for browser
 		Converting Source code in to optimized files 
 		
@@ -2716,10 +2720,10 @@ Deploy Angular Application in GitHub
 1. Add angular-cli-ghpages package
     ng add angular-cli-ghpages / npm i -g angular-cli-ghpages
 2. Build & Deploy
-	ng build --base-href angular_project_feb_2025 
+	ng build --base-href angular_project_feb_2026 
 			(OR)
-	ng build --output-path docs --base-href angular_project_feb_2025 
-3. ngh --dir dist/angular_project_feb_2025/browser 
+	ng build --output-path docs --base-href angular_project_feb_2026 
+3. ngh --dir dist/angular_project_feb_2026/browser 
    ngh --dir docs/browser       
 4. go to github website & open your Repository
    Settings Tab --> pages --> SelectBranch & Folder(gh-pages & root)
@@ -2761,7 +2765,9 @@ Unit Testing Using vitest
 
 
 ng test
-ng test --coverage
+ng test --coverage  
+
+Note: npm install @vitest/coverage-v8
 
  
 Terminologies
@@ -2801,6 +2807,7 @@ describe.only() - focused describe. If it exists, jasmine will run only fdescrib
 describe.skip() - disabled describe. It will never be executed.
 it.only() - focused it()
 it.skip() - disabled it()
+
 
 
 Spy & Stub
@@ -3111,14 +3118,10 @@ The ng add command will additionally perform the following configurations:
 Props/Data Drilling
 ===================
 -pass data (props) from a parent component to deeply nested child components, even if intermediate components don’t need the data.
--Solution : State management Library (NgRX)
-
 
 Code Maintainability: Passing data through multiple layers makes the code messy.
 Performance Issues: Unnecessary re-renders of components that don’t need the data.
 Tightly Coupled Components: Makes refactoring difficult, as changes to data affect multiple components.
-
--Solution : State management Library (NgRX)
 
 
 Need Of state management
@@ -3126,6 +3129,8 @@ Need Of state management
 -For smaller applications, it is fine to use components and services for application state management.
 -It would become difficult to manage the application state when our application gets complex and big.
 
+
+-Solution : State management Library (NgRX)
 
 
 State Management using NGRX

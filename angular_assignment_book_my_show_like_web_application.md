@@ -69,13 +69,6 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 7. Proceeds to payment
 8. Views booking confirmation
 
-**Admin Flow – Managing Shows**
-1. Admin logs in
-2. Creates/updates a movie
-3. Assigns venue and show timings
-4. Sets seat pricing
-
----
 
 ## 2. DETAILED LIST OF FEATURES
 
@@ -109,7 +102,7 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 ---
 
 ### 2.5 Security and Access Control
-- Role-based access (User vs Admin)
+- Role-based access 
 - Route guards
 - Token-based authentication (mock JWT)
 - Secure route segregation
@@ -136,7 +129,6 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 - MovieDetailContainer
 - BookingContainer
 - SeatSelectionContainer
-- AdminDashboardContainer
 
 **Presentational (Dumb) Components**
 - MovieCardComponent
@@ -168,14 +160,12 @@ The goal is **not** to replicate BookMyShow fully, but to implement a **simplifi
 - MovieService
 - BookingService
 - PaymentService
-- AdminService
 - NotificationService
 
 ---
 
 ### 3.6 Guards
 - AuthGuard
-- AdminGuard
 - BookingGuard
 
 ---

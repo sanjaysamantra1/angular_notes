@@ -7,7 +7,7 @@ program-1:Use bootstrap
    projects ->architect->build->scripts:[]  
    
 Note: As alternate to point-3, the below code can be added in index.html
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 
 
@@ -1133,7 +1133,7 @@ export class ChildComponent {
 
 program-35 : Flipkart Categories
 =================================
-const categoryArr = [
+categoryArr = [
   { label: "Grocery", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/8b4adaace948fe23.jpg?q=60" },
   { label: "Mobile", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/a6189afdd765a687.jpg?q=60" },
   { label: "Appliances", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/51b0d5f9aabc2462.jpg?q=60" },
@@ -1282,29 +1282,36 @@ export class MychildComponent implements OnInit {
 
 program-37 :  ngDOCheck()
 ============================
-import { Component, OnInit, OnChanges, ChangeDetectionStrategy, DoCheck, 
-  ChangeDetectorRef } from '@angular/core';
-
 @Component({
-  selector: 'app-child',
-  templateUrl: './child.component.html',
-  styleUrls: ['./child.component.css'],
-  inputs: ['xChild'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  selector: 'app-cart',
+  imports: [],
+  templateUrl: './cart.html',
+  styleUrl: './cart.css',
+  inputs: ['cartItems'],
 })
-export class ChildComponent implements OnChanges, OnInit, DoCheck {
-  constructor(private changeDetectorObj: ChangeDetectorRef) {
+export class Cart {
+  itemCount = 0;
+  total = 0;
+  cartItems: any;
+
+  differ: IterableDiffer<any> | undefined;
+  constructor(private differs: IterableDiffers) {
+    this.differ = this.differs.find([]).create();
   }
-  ngOnChanges(myChanges) {
-    console.log('onchanges called', myChanges)
-  }
-  ngOnInit() {
-    console.log('oninit called')
+  ngOnChanges() {
+    console.log('cart ngOnchanges');
   }
   ngDoCheck() {
-    this.changeDetectorObj.markForCheck();
+    console.log('cart Updated in ngDocheck');
+    const changes = this.differ?.diff(this.cartItems);
+    if (changes) {
+      this.itemCount = this.cartItems.length;
+      this.total = this.cartItems.reduce((sum: any, item: any) => sum + item.price, 0);
+    }
   }
 }
+
+
 
 
 program-38 - ngDoCheck
@@ -1739,11 +1746,11 @@ export class AppComponent {
 Program-49 : Model Class
 ==========================
 export class Employee {
-  id: number;
-  firstName: string;
-  lastName: string;
-  sal: number;
-  gender: string;
+   id!: number;
+  firstName!: string;
+  lastName!: string;
+  sal!: number;
+  gender!: string;
   constructor(data: any) {
     Object.assign(this, data);
   }
