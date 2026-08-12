@@ -291,6 +291,7 @@ How to Display Images from local folder
 
 
 
+
 Databinding
 ===========
 -Synchronization of data between Component(TS) and view(HTML).
@@ -1150,7 +1151,7 @@ constructor()
 ngOnChanges()
 -Called after constructor and before ngOnInit
 -ngOnchanges() will not be invoked if the component doesn't have inputs:[]
--ngOnChanges() is invokekd whenever input property value changes
+-ngOnChanges() is invoked whenever input property value changes
 -inside ngOnchanges() we can access previous and current value of a variable.
 
 
@@ -1160,7 +1161,7 @@ ngOnInit()
 -Time Consuming Logic goes here. Ex:- Fetching Data, Complex Computations
 
 
-ngDoCheck()
+ngDoCheck() 
 -Invoked when the change detector of the given component is invoked. 
 -ngOnChanges can't detect if someone changes a property of an object or push an item into array. So ngDoCheck comes to recuse. data changes might be seen in child component UI but ngOnChanges is not being called.
 -By using ngDoCheck, we can monitor changes in complex objects that might not be caught by Angular's default change detection mechanism.
@@ -1291,7 +1292,7 @@ steps to create and use service
 --------------------------------
 1. create a service (ng g s service-name)
 	a. class with set of methods and properties.
-	b. That class is decorated with @injectable decorator
+	b. That class is decorated with @Service decorator
 	 
 2. use a service in component
    a. import service to component file
@@ -1360,7 +1361,7 @@ https://docs.angular.lat/guide/dependency-injection-providers
   
 Communicating with backend services using HTTP
 ==============================================
--frontEnd applications need to communicate with a BackEnd Server to Fetch or Send data from/to database.
+-FrontEnd applications need to communicate with a BackEnd Server to Fetch or Send data from/to database.
 -Angular application communicates with BackEnd Server Using 'HttpClient' module.
 
 
@@ -1645,8 +1646,8 @@ Promises:
 -----------
 1. return a single value
 2. not cancellable 
-3. more readable code with try/catch and async/await
-4. no Operator support (map,filter,reduce,retry,tap)
+3. no Operator support (map,filter,reduce,retry,tap)
+4. more readable code with try/catch and async/await
 5. then(successHandler,errorHandler)
 
 Observables:
@@ -1871,7 +1872,7 @@ let flag = isSignal(this.count);
 Writable signals:
 set(): Replaces the entire value.
 update(): Modifies the value based on its current state.
-mutate(): used to modify mutable values(array/objects) (Deprecated)
+
 
 To change the value of a writable signal:
 	count.set(0);  // when new value is not dependent on previous value

@@ -638,9 +638,9 @@ Program-20 : Custom Directive
 import { Directive, HostBinding, HostListener } from '@angular/core';
 
 @Directive({
-  selector: '[numberonly]'
+  selector: '[appCharonly]'
 })
-export class NumberonlyDirective {
+export class CharOnly {
   @HostBinding('style.background-color')
   myBgColor: string = '';
 
@@ -655,7 +655,7 @@ export class NumberonlyDirective {
 }
 
 ******************
-<input type="text" numberonly name="salary" id="salary">
+<input type="text" appCharonly name="salary" id="salary">
 
 
 
@@ -2511,6 +2511,73 @@ export class SignalDemoComponent {
 
 
 
+
+Program: ComputedSignal
+=======================
+items = signal(['Apple', 'Banana', 'Apricot', 'Orange' , 'Mango' , 'Pineapple' , 'Guava' ]);
+searchTerm = signal('');
+filteredItems = computed(() => {
+  const lowerCaseSearchTerm = this.searchTerm().toLowerCase();
+  return this.items().filter(item =>
+    item.toLowerCase().includes(lowerCaseSearchTerm)
+  );
+});
+------------
+<input [value]="searchTerm()" (input)="searchTerm.set($event.target.value)" />
+<ul>
+  @for (item of filteredItems(); track $index) {
+    <li>{{ item }}</li>
+  }
+</ul>
+
+
+
+
+
+Program: linkedSignal  Demo
+===============================
+  country = signal('India');
+  stateMap: any = {
+    India: ['Karnataka', 'Tamilnadu', 'Maharastra', 'Andhra Pradesh'],
+    USA: ['Texas', 'california', 'New York'],
+    Canada: ['Ontario', 'Alberta'],
+  };
+  // depends on the country, but its writable
+  selectedState = linkedSignal(() => {
+    const country = this.country();
+    return this.stateMap[country][0];
+  });
+  changeCountry(event: any) {
+    this.country.set(event.target.value);
+  }
+  changeState(event: any) {
+    this.selectedState.set(event.target.value);
+  }
+-----------------------------
+<h3 class="text-center">Let's Learn linkedSignal</h3>
+<div class="border border-3 rounded-3 m-3 p-3 row">
+  <select [value]="country()" (change)="changeCountry($event)" class="form-control col">
+    <option>India</option>
+    <option>USA</option>
+    <option>Canada</option>
+  </select>
+  <select [value]="selectedState()" (change)="changeState($event)" class="form-control col">
+    @for (state of stateMap[country()]; track $index) {
+      <option>{{state}}</option>
+    }
+  </select>
+
+  <div>Selected Coutry: {{country()}} </div>
+  <div>Selected State: {{selectedState()}} </div>
+</div>
+
+
+
+
+
+
+
+
 Program-67 : effects
 ======================
   httpClient = inject(HttpClient);
@@ -2951,21 +3018,20 @@ export class AppComponent {
 }
 ----------------------------------
 <style>
-  button {
-  margin: 5px
-}
+  button { margin: 5px }
 </style>
+
 <h1>Angular Nested FormArray / Dynamic FormArray</h1>
 <form [formGroup]="empForm" (ngSubmit)="onSubmit()">
   <div formArrayName="employees">
     @for (employee of getAllEmployees().controls; track employee; let empIndex = $index) {
       <div>
-        <div [formGroupName]="empIndex" style="border: 3px solid blue; padding: 10px; width: 700px; margin: 10px;">
+        <div [formGroupName]="empIndex" style="border: 3px solid blue; padding: 10px; width: 700px; margin: 10px;" class="rounded shadow-sm">
           {{empIndex}} First Name :
           <input type="text" formControlName="firstName" />
           Last Name:
           <input type="text" formControlName="lastName" />
-          <button (click)="removeEmployee(empIndex)">Remove</button>
+          <button class="btn btn-danger btn-sm" (click)="removeEmployee(empIndex)">Remove</button>
           <div formArrayName="skills">
             @for (skill of employeeSkills(empIndex).controls; track skill; let skillIndex = $index) {
               <div>
@@ -2974,26 +3040,72 @@ export class AppComponent {
                   <input type="text" formControlName="skill" />
                   Exp:
                   <input type="text" formControlName="exp" />
-                  <button (click)="removeEmployeeSkill(empIndex,skillIndex)">
-                    X
-                  </button>
+                  <button class="btn btn-outline-danger btn-sm" (click)="removeEmployeeSkill(empIndex,skillIndex)">X</button>
                 </div>
               </div>
             }
           </div>
-          <button type="button" (click)="addEmployeeSkill(empIndex)">
-            Add Skill
-          </button>
+          <button type="button" class="btn btn-success btn-sm" (click)="addEmployeeSkill(empIndex)">Add Skill</button>
         </div>
       </div>
     }
-    <button type="button" (click)="addEmployee()">Add Employee</button>
+    <button type="button" class="btn btn-primary btn-sm" (click)="addEmployee()">Add Employee</button>
   </div>
 </form>
 
 <pre>{{this.empForm.value | json}}</pre>
 
+
  
+Program-  Signal Form
+=====================
+  loginModel = signal({ email: '', password: '', confirmPassword: '' });
+
+  loginForm = form(this.loginModel, (schema) => {
+    required(schema.email, { message: 'Email is required' });
+    email(schema.email, { message: 'Invalid email' });
+    required(schema.password, { message: 'Password is required' });
+    required(schema.confirmPassword, { message: 'Confirm password is required' });
+    validate(schema.confirmPassword, ({ value, valueOf }) =>
+      value() !== valueOf(schema.password)
+        ? { kind: 'mismatch', message: 'Passwords do not match' }
+        : null,
+    );
+  });
+  submit() {
+    if (this.loginForm().valid()) {
+      console.log(this.loginModel());
+    }
+  }
+  reset() {
+    this.loginModel.set({ email: '', password: '', confirmPassword: '' });
+  }
+---------------------------
+<h3 class="text-center">Signal Form</h3>
+<div class="col-sm-6 offset-3 border border-3 rounded-3 p-3">
+  <form (submit)="submit(); $event.preventDefault()">
+    <p>Email: <input type="email" class="form-control" [formField]="loginForm.email" /></p>
+    <p>Password: <input type="password" class="form-control" [formField]="loginForm.password" /></p>
+    <p>Confirm Password:
+      <input type="password" class="form-control" [formField]="loginForm.confirmPassword" />
+    </p>
+    @if (loginForm.confirmPassword().invalid()) {
+      @for (error of loginForm.confirmPassword().errors(); track error) {
+        <div class="text-danger">{{ error.message }}</div>
+      }
+    }
+    <button type="submit" class="btn btn-primary me-2" [disabled]="loginForm().invalid()">Submit</button>
+    <button type="button" class="btn btn-secondary" (click)="reset()">Reset</button>
+  </form>
+  <hr />
+  <h5>Form Data</h5>
+  <div>Email: {{ loginForm.email().value() }}</div>
+  <div>Password: {{ loginForm.password().value() }}</div>
+  <div>Confirm Password: {{ loginForm.confirmPassword().value() }}</div>
+</div>
+
+
+
 
 
 
