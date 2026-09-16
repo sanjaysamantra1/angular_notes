@@ -15,11 +15,10 @@ Angular installation
    npm install -g @angular/cli
 		OR
    npm install -g @angular/cli@latest
-		OR
-   npm install -g @angular/cli@19
+		
 Note: for MAC if the above command doesn't work plz add sudo (sudo npm install -g @angular/cli)
 
-5. check if angular CLI  is installed??
+5. check if angular CLI  is installed?
    ng v  
    npx ng v
    ng help
@@ -117,7 +116,7 @@ Disadvantages : SEO challenges , Large initial load
 5. Virtual DOM					 5. Regular DOM
 6. Axios 				 		 6. HttpClientModule 
 7. No 		 					 7. Dependency Injection
-8. No							 8. Form Validation
+8. No (formik)					 8. Form Validation
 9. extra libraries needed		 9. No additional libraries
 10. UI heavy					 10. Functionality heavy
 
@@ -142,26 +141,6 @@ steps to bootstrap the application:
 
 
 
-
-Modules
-=======
--Module in Angular refers to a place where we can group the components, directives, pipes, and services, which are related to the application.
--Modules are used in Angular to put logical boundaries in your application. instead of coding everything into one application, we can instead build everything into separate modules to separate the functionality of your application.
--In case we are developing a website, the header, footer, left, center and the right section become part of a module.
--Every application should have at least one Angular module, the root/app module, which must be present for bootstrapping the application on launch.
-
-
-important properties of module are:
-----------------------------------
--declarations: The set of components, directives, and pipes that belong to this module
--exports: set of components, directives, and pipes declared in this NgModule that should be visible and usable in the component templates of other NgModules.
--imports: Other modules whose exported classes are needed by component templates declared in this NgModule.
--providers: The set of injectable objects that are available in the injector of this module.
--bootstrap: The main application view, called the root component, which hosts all other app views. Only the root NgModule should set the bootstrap property.
--entryComponents: set of components to compile when this NgModule is defined, so that they can be dynamically loaded into the view
--schemas: Elements and properties that are neither Angular components nor directives must be declared in a schema
--id: A name or path that uniquely identifies this NgModule in getModuleFactory
--jit: When present, this module is ignored by the AOT compiler
 
 
 
@@ -200,7 +179,7 @@ Decorators
 @NgModule  - Decorator that marks a class as an NgModule
 @Component - Decorator marks a class as an Angular component
 @Directive - Decorator marks a class as an Angular Directive
-@Injectable - Decorator marks a class as an Angular Service
+@Service - Decorator marks a class as an Angular Service
 @Pipe - Decorator marks a class as an Angular Pipe
 @Input - collect data from parent component
 @Output  - Child component emits event to parent component
@@ -354,6 +333,7 @@ console.log(value1, value2); // type something in the box & run these again
 Note: 'colspan' is attribute whereAs 'colSpan' is property. 
       'maxlength' is attribute whereAs 'maxLength' is property
 	  
+
 
 Common Attributes that require attr. binding
 =============================================
@@ -830,8 +810,8 @@ Component vs Directive
 
 @HostBinding  -  Bind a property on the host element.
 @HostListener  - Listen events from the host element.
-ElementRef - Gives direct access to DOM element
-Renderer2 - Renderer2 is angular's safe abstraction for DOM manipulation
+ElementRef -  Gives direct access to DOM element
+Renderer2 -  access DOM element (Renderer2 is angular's safe abstraction for DOM manipulation)
 
 
 @HostBinding vs ElementRef
@@ -999,6 +979,8 @@ Custom Pipe
   }
    
 
+
+
 Assignment
 ==========
 1. Create a custom pipe(ordinal) which takes a number as input and returns in ordinal format
@@ -1117,6 +1099,8 @@ component lifecycle hooks/method
 
 constructor - ngOnChanges - ngOnInit  - ngDoCheck - ngAfterContentInit - 
 ngAfterContentChecked - ngAfterViewInit - ngAfterViewChecked - ngOnDestroy. (1+8)
+
+
 
 afterNextRender(() => {
 });
@@ -1255,8 +1239,6 @@ Programmatically rendering components
 https://angular.dev/guide/components/programmatic-rendering
 
 
-
-
 ViewContainerRef.createComponent()
 ==================================
 -to load components dynamically rather than declaring them statically in the template.
@@ -1265,9 +1247,11 @@ ViewContainerRef.createComponent()
 
 	
 	
+	
+	
 
 Angular Services
-****************
+================
 -share logic/data across components
 -A Service in Angular is a class used to:
 		Share data between Components.
@@ -1380,7 +1364,7 @@ PUT - Replace an existing resource completely
 	    
 PATCH - Update only specific fields of a resource
 		update password/update mobile number 
-		Idempotent, Partial Update , More Efficient than PUT, Request Body
+		Partial Update , More Efficient than PUT, Request Body
 
 DELETE - remove a resource/delete a record from DB 
 		 Delete an account
@@ -1496,7 +1480,7 @@ How to use HttpClient
    ]
 
 2. inject 'HttpClient' in custom-service / Component
-   constructor(private http: HttpClient) { }
+    httpClient = inject(HttpClient);
    
 3. using that referrence variable call httpClient methods(GET,POST,PUT,PATCH,DELETE)
 	this.httpClient.get(this.users_url).subscribe(response => {
@@ -1745,7 +1729,7 @@ switchMap() = map + switch
 	-SwitchMap cancels previous inner Observables when a new inner Observable appears. 
 	-A very common use case for switchMap is a search Typeahead.
 	 where we are no longer concerned with the response of the previous request when a new input arrives.
-	-If only one inner subscription should be active at a time, try switchMap
+	-If only one inner subscription should be active at a time, use switchMap
 
    
 ExhaustMap()
@@ -1878,7 +1862,15 @@ To change the value of a writable signal:
 	count.set(0);  // when new value is not dependent on previous value
 		(OR)
 	count.update(value => value + 1); // update the value by using the previous value
-	
+
+
+
+Converting writable signals to readonly
+========================================
+-WritableSignal provides an asReadonly() method that returns a readonly version of the signal. This is useful when you want to expose a signal's value to consumers without allowing them to modify it directly
+	private readonly _count = signal(0);
+    readonly count = this._count.asReadonly(); // public readonly
+
 
 
 Computed signals:
@@ -1892,6 +1884,28 @@ Computed signals:
 const count: WritableSignal<number> = signal(0);
 const countDouble: Signal<number> = computed(() => count() * 2);
 const countSquare: Signal<number> = computed(() => count() * count());
+
+Example:
+-Type in the search box to filter the list
+-A computed signal automatically recalculates the filteredItems whenever the searchTerm signal changes
+
+
+
+
+
+Dependent state with linkedSignal()
+===================================
+computed()  = derived value + Readonly
+linkedSignal()  = derived/defaulted + writable
+
+-consider 2 selections:
+	Country: India   ,    State:Karnataka
+	
+if user changes country (india-->USA ) ,  state:karnataka (not correct)
+
+
+
+
 
 
 
@@ -2043,9 +2057,8 @@ Set value in template-driven forms
 There are two ways we can set the value of the form elements:
 1. Two-way data binding (recomended)
 	 user: any = { firstName: 'sachin', lastName: 'tendulkar' };
-	
-	<p>First Name: <input name="firstName" ngModel [(ngModel)]='user.fname'/></p>
-    <p>Last Name: <input name="lastName" ngModel [(ngModel)]='user.lname'></p>
+	<p>FirstName: <input name="firstName" #firstName="ngModel" [(ngModel)]="user.firstName" /></p>
+    <p>lastName: <input name="lastName" #lastName="ngModel" [(ngModel)]="user.lastName" /></p>
 	
 2. Use the template reference variable
 
@@ -2194,7 +2207,7 @@ Forms With Signals
 4. Read Field Value using value()
    <div>Email: {{loginForm.email().value()}} </div>
    
-5. Update the field value with set()
+5. Update the field value programmatically with set()
    loginForm.email().value.set('virat@gmail.com')
 	 
 6. For validation add the below code
@@ -2342,9 +2355,9 @@ Route-Parameter
 
 
 Path Param
-===========
+==========
 1. create userDetailsComponent
-   ng g c userDetails
+   ng g c components/userDetails
    
 2. add the below code in app.routes.ts
    { path: 'userdetails/:id', component: UserDetails }
@@ -2573,15 +2586,16 @@ ex:
 1. import the component dynamically(home.component.ts) // Import CommonModule
   import { NgComponentOutlet } from '@angular/common';
 
-   largeComponent:any;
+ heavyComponent: any;
   constructor() {
-    import('../large-component/large-component').then(m => {
-      this.largeComponent = m.LargeComponent;
+    import('../heavy/heavy').then((m) => {
+      this.heavyComponent = m.HeavyComponent;
     });
   }
+   
 2. Render the component using ng-container
 	@defer {
-		<ng-container *ngComponentOutlet="largeComponent"></ng-container>
+		<ng-container *ngComponentOutlet="heavyComponent"></ng-container>
 	} @placeholder (minimum 500ms) {
 		<p>Placeholder content</p>
 	}
@@ -2707,6 +2721,8 @@ GitHub pages
 Hostinger
 
 
+
+
 Deploy Angular Application in GitHub
 ====================================
 1. Add angular-cli-ghpages package
@@ -2760,6 +2776,8 @@ ng test
 ng test --coverage  
 
 Note: npm install @vitest/coverage-v8
+			OR
+      npm install @vitest/coverage-istanbul
 
  
 Terminologies
@@ -2807,29 +2825,10 @@ Spy & Stub
 Spy: Used to track calls to a function without altering its actual behavior.
 	 Watches a real function (track calls, arguments , return values)
 	 vi.spyOn(obj, 'greet'); // spy
+	 
 Stub: Replaces a function with a fake implementation
       vi.spyOn(obj, 'greet').and.returnValue("Stubbed greeting!"); // stub
 	  vi.spyOn(obj, 'greet').mockResolvedValue([ {}, {}])
-
-
-
-Stub
-====
--stub is a function/object that replaces the actual behavior of a unit with a fixed response.
--stub avoids calling the real implementation by overriding the original function with our custom implementation.
--Allows to control the function behavior entirely.
-	Replaces the original function with:
-		A return value.
-		A fake implementation.
--ex: if we are testing a function that writes a value to the database, we should write a stub that avoids the db interaction but returns a successful result.
-
-	vi.spyOn(app, 'fetchuserData').mockResolvedValue([
-      { name: 'laksheet', age: 25 },
-      { name: 'sanjay', age: 55 },
-    ]);
-
-    let userResponse = await app.fetchuserData();
-    expect(userResponse.length).toBe(2);
 
 
 
@@ -2853,16 +2852,39 @@ app.component.ts
     return this.processData(data);
   }
 
-
 describe('fetchData functionality', () => {
   it('should call processData with the correct data', () => {
-    const processDataSpy = vi.spyOn(app, 'processData'); // Spy For processData function
-    const result = app.fetchData();
+    const processDataSpy = vi.spyOn(component, 'processData'); // Spy For processData function
+    const result = component.fetchData();
     expect(processDataSpy).toHaveBeenCalled(); // Verify processData was called
     expect(processDataSpy).toHaveBeenCalledWith(['item1', 'item2', 'item3']); // Verify correct arguments
     expect(result).toBe(3); // Verify the return value
   });
 });
+
+
+
+Stub
+====
+-stub is a function/object that replaces the actual behavior of a unit with a fixed response.
+-stub avoids calling the real implementation by overriding the original function with our custom implementation.
+-Allows to control the function behavior entirely.
+	Replaces the original function with:
+		A return value.
+		A fake implementation.
+-ex: if we are testing a function that writes a value to the database, we should write a stub that avoids the db interaction but returns a successful result.
+
+	vi.spyOn(app, 'fetchuserData').mockResolvedValue([
+      { name: 'laksheet', age: 25 },
+      { name: 'sanjay', age: 55 },
+    ]);
+
+    let userResponse = await app.fetchuserData();
+    expect(userResponse.length).toBe(2);
+
+
+
+
 
 
 
@@ -3083,7 +3105,7 @@ Angular Material
 
 How to use Angular-Material
 ---------------------------
-1. ng add @angular/material
+1. ng add @angular/material 
 -The ng add command will install Angular Material, the Component Dev Kit (CDK), Angular Animations and ask you the following questions to determine which features to include:
 -Choose a prebuilt theme name, or "custom" for a custom theme:
 -You can choose from prebuilt material design themes or set up an extensible custom theme.
@@ -3104,6 +3126,8 @@ The ng add command will additionally perform the following configurations:
 2. Display a component
  a. import { MatSliderModule } from '@angular/material/slider';
  b. <mat-slider min="1" max="100" step="1" value="1"></mat-slider>
+
+
 
 
 

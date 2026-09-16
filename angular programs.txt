@@ -1,13 +1,18 @@
 program-1:Use bootstrap 
 -----------------------
+Option-1: CDN LInks 
+-Add Below links in index.html
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+
+Option-2: install 
 1. npm install bootstrap
 2. add the below line in 'styles.css'
 	@import 'bootstrap/dist/css/bootstrap.css';
 3. add "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js" in angular.json
    projects ->architect->build->scripts:[]  
-   
-Note: As alternate to point-3, the below code can be added in index.html
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
 
 
 
@@ -1145,6 +1150,16 @@ export class ChildComponent {
 
 program-35 : Flipkart Categories
 =================================
+const categories = [
+  { label: "Fashion", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/fashion.svg" },
+  { label: "Mobiles", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/mobiles.svg" },
+  { label: "Electronics", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/electronics.svg" },
+  { label: "Home", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/home.svg" },
+  { label: "Appliances", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/tv.svg" },
+  { label: "Furnitures", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/furniture.svg" },
+  { label: "Food", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/food.svg" },
+  { label: "2 wheeler", img_url: "https://static-assets-web.flixcart.com/apex-static/images/svgs/L1Nav/auto-new.svg" },
+];
 categoryArr = [
   { label: "Grocery", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/8b4adaace948fe23.jpg?q=60" },
   { label: "Mobile", img_url: "https://rukminim1.flixcart.com/fk-p-flap/196/196/image/a6189afdd765a687.jpg?q=60" },
@@ -1527,8 +1542,8 @@ Program @ContentChild and ngAfterContentInit
 
 program-44: create a math Services
 ======================================
-import { Injectable } from '@angular/core';
-@Injectable()
+import { Service } from '@angular/core';
+@Service()
 export class MathService {
   sum(values: number[]): number {
     return values.reduce((total, ele) => total + ele, 0);
@@ -1540,65 +1555,33 @@ export class MathService {
     const max = Math.max(...values)
     return values.indexOf(max);
   }
-  
 }
 
 
 
+Program:   Logger Service
+==========================
+import { Service } from '@angular/core';
 
+type logLevel = 'debug' | 'info' | 'warn' | 'error';
 
-
-ObjectUtilService
-=================
-import { Injectable } from '@angular/core';
-@Injectable({
-  providedIn: 'root'
-})
-export class ObjectUtilService {
-  // Check if object is empty 
-  isEmpty(obj: any): boolean {
-    return (
-      obj !== null &&
-      typeof obj === 'object' &&
-      !Array.isArray(obj) &&
-      Object.keys(obj).length === 0
-    );
+@Service()
+export class LoggerService {
+  private log(level: logLevel, message: string, data?: unknown): void {
+    const time = new Date().toLocaleTimeString();
+    console[level](`${time} ${message}`, data);
   }
-
-  //  Deep comparison 
-  deepEqual(a: any, b: any): boolean {
-    if (a === b) return true;
-    if (typeof a !== typeof b) return false;
-    if (typeof a === 'object' && a !== null && b !== null) {
-      const keysA = Object.keys(a);
-      const keysB = Object.keys(b);
-      if (keysA.length !== keysB.length) return false;
-      return keysA.every(key =>
-        this.deepEqual(a[key], b[key])
-      );
-    }
-    return false;
+  debug(message: string, data?: unknown): void {
+    this.log('debug', message, data);
   }
-  // Remove null, undefined and empty string properties 
-  removeEmptyProps(obj: any): any {
-    const result: any = {};
-    Object.keys(obj || {}).forEach(key => {
-      const value = obj[key];
-      if (value !== null && value !== undefined && value !== '') {
-        result[key] = value;
-      }
-    });
-    return result;
+  info(message: string, data?: unknown): void {
+    this.log('info', message, data);
   }
-  // Pick selected properties from object 
-  pick(obj: any, keys: string[]): any {
-    const result: any = {};
-    keys.forEach(key => {
-      if (obj && key in obj) {
-        result[key] = obj[key];
-      }
-    });
-    return result;
+  warn(message: string, data?: unknown): void {
+    this.log('warn', message, data);
+  }
+  error(message: string, data?: unknown): void {
+    this.log('error', message, data);
   }
 }
 
@@ -1956,7 +1939,7 @@ zipDemo() {
 program-57 : forkjoin()
 ========================
 fetchDataFromMultipleAPIs() {
-    let userNames = ['sanjaysamantra1', 'ushamahesh818', 'seun035','vamshi5454'];
+    let userNames = ['sanjaysamantra1', 'ushamahesh818', 'Manish-surya', 'GurramSarika09'];
     let requests = userNames.map(userName => {
       return this.httpClient.get(`https://api.github.com/users/${userName}`)
     });
@@ -2067,13 +2050,10 @@ export class ObservableDemo3Component {
     });
   }
   ngOnInit() {
-    this.searchResult$ = this.searchForm.get("searchField").valueChanges.pipe(
-      switchMap((term) =>
-		this.http.get<any>(`https://dummyjson.com/users/search?q=${term}`)
-      ),
-      map((response: any) =>
-		 response.users.length > 0 ? response.users : []
-    ));
+    this.searchResult$ = this.searchForm.get('searchField').valueChanges.pipe(
+      switchMap((term) => this.http.get<any>(`https://dummyjson.com/users/search?q=${term}`)),
+      map((response: any) => (response.users.length > 0 ? response.users : [])),
+    );
   }
 }
 
@@ -2298,9 +2278,7 @@ const initialTodos = [
   { id: 1, value: 'Complete Angular Assignment' },
   { id: 2, value: 'Learn Java Stream API' },
 ];
-@Injectable({
-  providedIn: 'root',
-})
+@Service()
 export class TodoService {
   private todoSubject = new BehaviorSubject<Todo[]>(initialTodos); // writeable
   readonly todoObs = this.todoSubject.asObservable(); // readonly, only subscribe
@@ -3056,6 +3034,7 @@ export class AppComponent {
 <pre>{{this.empForm.value | json}}</pre>
 
 
+
  
 Program-  Signal Form
 =====================
@@ -3733,6 +3712,8 @@ Program-86 : Counter App using NgRx
 ===================================
 1. Install NgRx Store in the project
     ng add @ngrx/store
+	ng add @ngrx/store@22 --force
+	npm install @ngrx/store@22.0.0-beta.0
    
 2. Create action File (counter.actions.ts)
 	import { createAction } from '@ngrx/store';
@@ -3902,7 +3883,7 @@ Program-88 : Employee CRUD using NgRx
 	import { Actions, createEffect, ofType } from '@ngrx/effects';
 	import { of } from 'rxjs';
 	import { map, exhaustMap, catchError } from 'rxjs/operators';
-	import { EmployeeService } from '../../services/employee-service';
+	import { EmployeeService } from '../services/employee-service';
 	import { addEmployee, deleteEmployee, fetchEmployees } from '../actions/employee.actions';
 	
 	@Injectable()
@@ -3951,22 +3932,22 @@ Program-88 : Employee CRUD using NgRx
 
 5. create employee.service.ts
 	import { HttpClient } from '@angular/common/http';
-	import { Injectable } from '@angular/core';
-	@Injectable({
-	  providedIn: 'root'
-	})
+	import { inject, Service } from '@angular/core';
+	@Service()
 	export class EmployeeService {
-	  constructor(private httpClient: HttpClient) { }
+	  httpClient = inject(HttpClient);
+
 	  fetchAllEmployees() {
 		return this.httpClient.get('http://localhost:3000/employees');
 	  }
 	  deleteEmployee(id: string) {
-		return this.httpClient.delete(`http://localhost:3000/employees/${id}`)
+		return this.httpClient.delete(`http://localhost:3000/employees/${id}`);
 	  }
 	  addEmployee(newEmp: any) {
-		return this.httpClient.post('http://localhost:3000/employees', newEmp)
+		return this.httpClient.post('http://localhost:3000/employees', newEmp);
 	  }
 	}
+
 
 6. create/update  store file (store.ts)
 	export const myStore = {
@@ -3982,7 +3963,7 @@ Program-88 : Employee CRUD using NgRx
 8. Add Employee-list and add-employee component
 	  employees$: Observable<Employee[]> | undefined;
 	  constructor(private store: Store<{ employees: Employee[] }>) {
-		this.employees$ = this.store.select(state => state.employees);
+		this.employees$ = this.store.select(state => state.employeeData);
 	  }
 	  ngOnInit() {
 		// this.store.dispatch({ type: '[EmployeeList Page] Fetch Employees' });
