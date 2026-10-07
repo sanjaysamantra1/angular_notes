@@ -2472,19 +2472,19 @@ export class SignalDemoComponent {
 }
 -----------------------
 <h3 class="text-center">Counter Example using Signal</h3>
-<div class="border">
-    <h4>Num value is {{num()}}</h4>
-    <h4>Square value is {{numSquare()}}</h4>
-    <button (click)="decrement()">Decrement</button>
-    <button (click)="reset()" class="m-1">Reset</button>
-    <button (click)="increment()">Increment</button>
-	<hr/>
-	 @for(msg of messages();track $index){
-		<div>{{msg}}</div>
-     }@empty {
-		<div>No Messages to Show</div>
-	}
-</div>
+  <h4>Num value is {{num()}}</h4>
+  <h4>Square value is {{numSquare()}}</h4>
+  <h4>Double value is {{numDouble()}}</h4>
+  <button (click)="decrement()">Decrement</button>
+  <button (click)="reset()" class="m-1">Reset</button>
+  <button (click)="increment()">Increment</button>
+  <hr />
+  @for(msg of messages();track $index){
+    <div>{{msg}}</div>
+  }@empty {
+    <div>No Messages to Show</div>
+  }
+
 
 
 
@@ -3759,88 +3759,94 @@ Program-86 : Counter App using NgRx
 
 
 
-Program-87 : ToDo App using NgRx
+Program-87 : Task List using NgRx
 =================================
 1. Install NgRx Store in the project
    ng add @ngrx/store
    
-2. Create action File (todo.actions.ts)
+2. Create action File (task.actions.ts)
 	import { createAction, props } from '@ngrx/store';
-	import { Todo } from '../models/todo';
-	export const addTodo = createAction('Add Todo', props<{ newToDo: Todo }>());
-	export const deleteTodo = createAction('Delete Todo', props<{ id: number }>());
-	export const toggleTodo = createAction('Toggle Todo', props<{ id: number }>());
+	import { Task } from '../models/task';
+	export const addTask = createAction('Add Task', props<{ newTask: Task }>());
+	export const deleteTask = createAction('Delete Task', props<{ id: number }>());
+	export const toggleTask = createAction('Toggle Task', props<{ id: number }>());
 	
-3. create ToDo model (ng g interface models/Todo) 
-    export interface Todo {
+3. create Task model (ng g interface models/Task) 
+    export interface Task {
 	  id: number;
 	  text: string;
 	  isCompleted: boolean;
 	}
 
-4. Create Reducer File(todo.reducer.ts)
+4. Create Reducer File(task.reducer.ts)
 	import { createReducer, on } from '@ngrx/store';
-	import { addTodo, deleteTodo, toggleTodo } from '../actions/todo.actions';
-	
+	import { addTask, deleteTask, toggleTask } from '../actions/task.actions';
+
 	const initialState = [
-		{ id: 1, text: 'Learn javascript', isCompleted: true },
-		{ id: 2, text: 'Go to Gym', isCompleted: false },
-		{ id: 3, text: 'Buy Grocery', isCompleted: false },
+	  { id: 1, text: 'Learn javascript', isCompleted: true },
+	  { id: 2, text: 'Go to Gym', isCompleted: false },
+	  { id: 3, text: 'Buy Grocery', isCompleted: false },
 	];
-	export const todoReducer = createReducer(
-		initialState,
-		on(addTodo, (state, action: any) => {
-			return [...state, action.newToDo]
-		}),
-		on(deleteTodo, (state, action: any) => {
-			return state.filter(todo => todo.id != action.id);
-		}),
-		on(toggleTodo, (state, action: any) => {
-			return state.map((todo) => {
-				return todo.id !== action.id
-					? todo
-					: { ...todo, isCompleted: !todo.isCompleted }
-			});
-		})
+	export const taskReducer = createReducer(
+	  initialState,
+	  on(addTask, (state, action: any) => {
+		return [...state, action.newTask];
+	  }),
+	  on(deleteTask, (state, action: any) => {
+		return state.filter((Task) => Task.id != action.id);
+	  }),
+	  on(toggleTask, (state, action: any) => {
+		return state.map((Task) => {
+		  return Task.id !== action.id ? Task : { ...Task, isCompleted: !Task.isCompleted };
+		});
+	  }),
 	);
+
 	
 5. create/update  store file (store.ts)
 	export const myStore = {
-		count:countReducer, todoData:todoReducer
+		count:countReducer, taskData: taskReducer
       }
 	  
 6. Provide the Store to the whole application(app.config.ts)
    providers: [
     provideStore(myStore)
   ]
+  
 
 7. Create ToDoCrud Component (todocrud.component.ts)
-  todoArr$: Observable<any> | undefined;
+  taskArr$: Observable<Task[]>;
   constructor(private store: Store) {
-    this.todoArr$ = this.store.select((state: any) => state.todoData);
+    this.taskArr$ = this.store.select((store: any) => store.taskData); // selector
   }
-  deleteMyTodo(id: number) {
-    this.store.dispatch(deleteTodo({ id: id }));
+  deleteMyTask(taskId: number) {
+    this.store.dispatch(deleteTask({ id: taskId }));
   }
-  toggleMyTodo(id: number) {
-    this.store.dispatch(toggleTodo({ id: id }));
+  toggleMyTask(taskId: number) {
+    this.store.dispatch(toggleTask({ id: taskId }));
   }
+  
+  
 8. todocrud.component.html
-    <h3 class="text-center">This is Todo CRUD Component using NGRX</h3>
+    <h3 class="text-center">This is Task CRUD Component using NGRX</h3>
 	<div class="border border-3 p-2 text-center col-sm-4 offset-4">
-		<ol>
-			@for(todo of todoArr$|async;track $index){
-			<li class="my-2">
-				<span [ngStyle]="{ 'text-decoration': todo.isCompleted ? 'line-through' : 'none' }">{{todo.text}} &nbsp; {{todo.isCompleted}}
-					&nbsp;</span>
-				<button class="btn btn-danger" (click)="deleteMyTodo(todo.id)">Delete</button>
-				<button class="btn btn-secondary mx-1" (click)="toggleMyTodo(todo.id)">Toggle</button>
-			</li>
-			}
-		</ol>
+	  <ol>
+		@for(task of taskArr$ | async;track $index){
+		<li class="my-2">
+		  <span [ngStyle]="{ 'text-decoration': task.isCompleted ? 'line-through' : 'none' }">
+			{{task.text}} &nbsp;
+			{{task.isCompleted}}
+			&nbsp;</span>
+		  <button class="btn btn-danger" (click)="deleteMyTask(task.id)">Delete</button>
+		  <button class="btn btn-secondary mx-1" (click)="toggleMyTask(task.id)">Toggle</button>
+		</li>
+		}
+	  </ol>
 	</div>
    
    
+
+
 
 
 Program-88 : Employee CRUD using NgRx

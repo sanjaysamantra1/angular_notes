@@ -146,7 +146,7 @@ steps to bootstrap the application:
 
 Component
 =========
--Components are building blocks of angular applications. Each component controls a part of the user interface.
+-A Component is a re-usable part of user interface. such as header, Login Form,  Product Card
 -An Angular app contains a tree of Angular components.
 -Each component defines a class that contains application data and logic, and is associated with an HTML template that defines a view to be displayed.
 -@Component() decorator identifies the class immediately below it as a component, and provides the template and related component-specific metadata.
@@ -273,37 +273,28 @@ How to Display Images from local folder
 
 Databinding
 ===========
--Synchronization of data between Component(TS) and view(HTML).
+-Synchronization of data between Component(Typescript) and view(HTML).
 -Allows to bind component's properties/data to the view.
 -when component's properties/data change, the view is automatically updated.
 
-1.  interpolation  	 {{ }} (1-way)   (component-->view)
-2.  property Binding  [ ]  (1-way)   (component-->view)
+1.  Interpolation  	 {{ value }} 
+
+2.  property Binding   [property]="value" 
 	bind-property (bind-innerHTML / bind-src)
-3.  Event Binding     ( )  (1-way)   (view-->component)
-	(click)   /  on-click
-4.  2-way Binding  [(ngModel)] (2-way) (component<-->view)
-    bindon-ngModel
-    Note:For 2-way bindning "FormsModule" should be imported
 	
-InterPolation: to bind text-content/expressions to an element, converts the bound value to a string.
-Property: assigns the bound value to a DOM property, preserves the type of the bound value.
-2-way : When user updates the view, component's data is also updated, and vice versa.
+3.  Event Binding     (event)="action()"   
+	(click)   /  on-click
+	
+4.  2-way Binding  [(ngModel)]="value"
+    bindon-ngModel
+    
+	
 
-
-2-way Binding:
-	1. import FormsModule 
-		a. import { FormsModule } from '@angular/forms'
-		b. imports: [ FormsModule]
-	2. in view file use [(ngModel)]='variable'
-		<input type="text" [(ngModel)]='x'>
-		
-<input type="text" on-keyup="userIdChanged()"	[(ngModel)]="userId" />
-			(OR)
-<input [(ngModel)]="userId" (ngModelChange)="onUserIdChange($event)" />
-onUserIdChange(userId: number): void {
-    console.log('Value Changed');
-}
+InterPolation: To bind text-content/expressions to an element, converts the bound value to a string.
+Property: Sets an Element Property, preserves the type of the bound value.
+Event : Respond to an Event
+2-way : Keep an input and component value in sync
+Note: for 2-way binding, import FormsModule from @angular/forms
 
 
 
@@ -366,10 +357,9 @@ Angular automatically keeps the variable's value up-to-date with the given expre
 
 Template Reference variables
 ============================
--allows to reference DOM elements present in the template
--access and manipulate DOM elements, child components, or directives
--access in the template without directly accessing them in the TypeScript code.
--They are only accessible within the same template.
+-Gives a name to an element,component so we can use it elsewhere in the template
+-They are accessible in the declaring template scope, reference variable declared inside @if/@for can not be accessed outside @if/@for
+
 -In the template, we use the hash symbol, # or 'ref' to declare a template variable.
  <input #phone placeholder="phone number" />
 				OR
@@ -399,7 +389,7 @@ CSS
 1. inline 		(style attribute)
 2. internal		(style element/tag)
 3. styles[] in component
-   styles: ['h1 { color:red; }']
+   styles: ['h3 { color:red; }']
 4. styleUrl / styleUrls in component
 5. styles.css global
 
@@ -2011,7 +2001,7 @@ ng-touched: already touched (blur)
 
 Template Driven Form
 --------------------
-1. import FormsModule to our Component
+1. import FormsModule in our Component
    imports: [FormsModule]
 
 2. view/HTML File-
@@ -2085,7 +2075,7 @@ https://www.tektutorialshub.com/angular/template-driven-form-validation-in-angul
 
 Model driven form
 -----------------
-1. import  
+1. import  ReactiveFormsModule
 	a. import { ReactiveFormsModule } from '@angular/forms';
 	b. imports:[ReactiveFormsModule]  
 	
@@ -2378,8 +2368,12 @@ Path Param
   }
 
 5. add the below code in userdetails.component.html
-	<h5 class="card-title">{{user().name}}</h5>
-    <p class="card-text">{{user().id}}</p>
+	<div class="col-sm-4 offset-4 border border-3 rounded-3 p-3 text-center">
+	  <h5 class="card-title">{{user().name}}</h5>
+	  <p class="card-text">{{user().id}}</p>
+	  <p class="card-text">{{user().username}}</p>
+	  <p class="card-text">{{user().phone}}</p>
+	</div>
 
 
 
@@ -2413,6 +2407,7 @@ Query Param
 		<div>{{product.title}}</div>
 		<div>{{product.price}}</div>
 	</div>
+
 
 
 
@@ -2545,7 +2540,7 @@ Lazy loading a standalone component
 ===================================
 -Any route can lazily load its routed, standalone component by using loadComponent
 
-1. Remove the import at the top
+1. Remove the eager/static import at the top
    import { ProductListComponent } from './components/product-list/product-list.component';
 2. use loadComponent() instead of component
  { path: 'productlist', component: ProductListComponent }
@@ -2778,6 +2773,8 @@ ng test --coverage
 Note: npm install @vitest/coverage-v8
 			OR
       npm install @vitest/coverage-istanbul
+	         OR
+	  npm install --save-dev @vitest/coverage-istanbul@4.1.11
 
  
 Terminologies
